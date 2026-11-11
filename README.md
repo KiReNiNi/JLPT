@@ -28,7 +28,7 @@ python3 build/assemble.py
 1. **只改 `build/template.html` 的 `<style>` 部分和图片**。JS 里的数据读写、`data-act` 属性、`data-k` / `data-q` / `data-n` 等属性都不要动，改了会坏功能或丢记录。
 2. 颜色都写成 `:root` 里的变量（`--accent`、`--card` 等），橘园主题的变量在 `body[data-skin="orchard"]` 里。改配色优先改变量。
 3. **不能用内联 `style="..."` 属性**，页面运行环境会拦掉。宽度和背景图需要动态设置的，用 `data-w` / `data-bgi`，由 JS 的 `paint()` 设置。换背景图就替换 `site/bg/` 里的文件（保持 bg1.jpg…的命名），不要在 CSS 里写 `url("bg/...")`，那样在网站上显示不出来。
-4. 外部资源只能来自：cdnjs.cloudflare.com、cdn.jsdelivr.net、unpkg.com（脚本），fonts.googleapis.com（字体）。其他图片和图标放进 `site/bg/` 这类本地文件，或者直接写成内联 SVG。
+4. 外部资源只能来自：cdnjs.cloudflare.com、cdn.jsdelivr.net、unpkg.com（脚本），fonts.googleapis.com（字体）。图标直接写成内联 SVG；新加的图片要像背景图一样在 `assemble.py` 里转成 data URI，不能按文件路径引用。
 5. 要在手机宽度（约 390px）下正常显示，不能出现横向滚动。
 6. 改完提交回这个仓库就行，由 Claude 重新生成并发布到原来的网址，记录不会丢。
 
