@@ -11,7 +11,7 @@ N1 真题刷题网站。现在收录 2026 年 7 月的言語知識（問題1–7
 | `build/template.html` | 页面本体：CSS、HTML 外壳和全部 JS。题目数据的位置写的是 `__DATA__` |
 | `build/assemble.py` | 把 `data.json` 填进模板，生成 `site/index.html` |
 | `site/index.html` | 生成出来的页面，不要直接改 |
-| `site/bg/bg1–8.jpg` | 橘园主题的 8 张背景图 |
+| `site/bg/bg1–8.jpg` | 橘园主题的 8 张背景图（720×1280）。生成页面时会转成 data URI 嵌进 `index.html`，因为 Artifact 页面里按相对路径引用的图片加载不出来 |
 
 重新生成页面：
 
@@ -27,7 +27,7 @@ python3 build/assemble.py
 
 1. **只改 `build/template.html` 的 `<style>` 部分和图片**。JS 里的数据读写、`data-act` 属性、`data-k` / `data-q` / `data-n` 等属性都不要动，改了会坏功能或丢记录。
 2. 颜色都写成 `:root` 里的变量（`--accent`、`--card` 等），橘园主题的变量在 `body[data-skin="orchard"]` 里。改配色优先改变量。
-3. **不能用内联 `style="..."` 属性**，页面运行环境会拦掉。宽度和背景图需要动态设置的，用 `data-w` / `data-bgi`，由 JS 的 `paint()` 设置。
+3. **不能用内联 `style="..."` 属性**，页面运行环境会拦掉。宽度和背景图需要动态设置的，用 `data-w` / `data-bgi`，由 JS 的 `paint()` 设置。换背景图就替换 `site/bg/` 里的文件（保持 bg1.jpg…的命名），不要在 CSS 里写 `url("bg/...")`，那样在网站上显示不出来。
 4. 外部资源只能来自：cdnjs.cloudflare.com、cdn.jsdelivr.net、unpkg.com（脚本），fonts.googleapis.com（字体）。其他图片和图标放进 `site/bg/` 这类本地文件，或者直接写成内联 SVG。
 5. 要在手机宽度（约 390px）下正常显示，不能出现横向滚动。
 6. 改完提交回这个仓库就行，由 Claude 重新生成并发布到原来的网址，记录不会丢。

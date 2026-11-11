@@ -306,7 +306,8 @@ const PAPERS = [
 const MT = {1:'读音',2:'填词',3:'近义',4:'用法',5:'语法',6:'排序',7:'文章语法'};
 const Q = {}; DATA.questions.forEach(q => Q[q.id] = q);
 const QS = DATA.questions;
-const BG_COUNT = 8;
+const BG = __BG__;  /* 背景图以 data URI 内嵌：Artifact 页面里相对路径的图片加载不出来 */
+const BG_COUNT = BG.length;
 
 const ICON = {
   back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
@@ -393,7 +394,7 @@ let bgPick = 1 + Math.floor(Math.random() * BG_COUNT);
 function applySkin(){
   document.body.dataset.skin = S.settings.skin;
   const n = S.settings.bg === 'random' ? bgPick : +S.settings.bg;
-  document.getElementById('bgimg').style.backgroundImage = S.settings.skin === 'orchard' ? `url("bg/bg${n}.jpg")` : 'none';
+  document.getElementById('bgimg').style.backgroundImage = S.settings.skin === 'orchard' ? `url("${BG[n - 1]}")` : 'none';
 }
 try { const s = JSON.parse(localStorage.getItem('n1skin') || 'null'); if (s && s.skin) S.settings = s } catch(e) {}
 applySkin();
@@ -692,7 +693,7 @@ function render(fromData){
 /* 宽度、背景图用脚本设置，不写在 style 属性里（页面不允许内联 style 属性） */
 function paint(root){
   root.querySelectorAll('[data-w]').forEach(el => el.style.width = el.dataset.w + '%');
-  root.querySelectorAll('[data-bgi]').forEach(el => el.style.backgroundImage = `url("bg/bg${el.dataset.bgi}.jpg")`);
+  root.querySelectorAll('[data-bgi]').forEach(el => el.style.backgroundImage = `url("${BG[+el.dataset.bgi - 1]}")`);
 }
 
 /* ---------- 交互 ---------- */
