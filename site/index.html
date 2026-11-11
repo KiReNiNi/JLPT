@@ -1,0 +1,838 @@
+<title>橘园 N1</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<style>
+/* ===== 设计变量（美化时主要改这里） =====
+   页面结构：顶栏 .top → 内容 .stack → 固定底栏 .foot
+   橘园皮肤 body[data-skin="orchard"]：#bgimg 插画背景 + 磨砂卡片；简洁皮肤：淡色纯底，跟随深浅模式 */
+:root{
+  --bg:#F3F1F6; --card:#FFFFFF; --card2:#F7F5FA; --ink:#2C2733; --mute:#7B7387; --line:#E3DEE9;
+  --accent:#E07A38; --accent2:#C9652A; --accent-soft:#FBE7D8; --lav:#8F7EC6; --lav-soft:#ECE7F7;
+  --sel:#4A72D6; --sel-bg:#E2EAFB; --mark:#2F6B28; --mark-bg:#D3EBC8;
+  --hold:#E2B32E; --hold-bg:#FFF4CC; --good:#2E8B57; --good-bg:#DDF1E5; --bad:#CC4B45; --bad-bg:#FBE3E1;
+  --on-accent:#FFFFFF; --sheet:#FBF8FC; --glass:none;
+  --shadow:0 1px 2px rgba(60,40,80,.06),0 4px 14px rgba(60,40,80,.05);
+  --r-card:20px; --r-ctl:14px;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","PingFang SC",sans-serif;
+  --f-body:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans","Noto Sans SC","Microsoft YaHei",sans-serif;
+  --f-ja:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1B1920; --card:#25222C; --card2:#2C2834; --ink:#ECE7F3; --mute:#A79FB3; --line:#3A3544;
+  --accent:#F0955A; --accent2:#F6AD7B; --accent-soft:#4A3022; --lav:#B4A6E6; --lav-soft:#332D45;
+  --sel:#88A6F2; --sel-bg:#27324D; --mark:#AEDDA0; --mark-bg:#2B4527;
+  --hold:#E9C552; --hold-bg:#43391A; --good:#6FCB95; --good-bg:#1F3A2A; --bad:#F08B85; --bad-bg:#4A2422;
+  --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1B1920; --card:#25222C; --card2:#2C2834; --ink:#ECE7F3; --mute:#A79FB3; --line:#3A3544;
+  --accent:#F0955A; --accent2:#F6AD7B; --accent-soft:#4A3022; --lav:#B4A6E6; --lav-soft:#332D45;
+  --sel:#88A6F2; --sel-bg:#27324D; --mark:#AEDDA0; --mark-bg:#2B4527;
+  --hold:#E9C552; --hold-bg:#43391A; --good:#6FCB95; --good-bg:#1F3A2A; --bad:#F08B85; --bad-bg:#4A2422;
+  --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
+body[data-skin="orchard"]{
+  --bg:#EAD8E4; --card:rgba(255,250,246,.82); --card2:rgba(255,247,242,.66); --ink:#3B2B3A; --mute:#7D6979; --line:rgba(150,110,150,.22);
+  --accent:#E8803C; --accent2:#C8652B; --accent-soft:rgba(250,214,186,.75); --lav:#8B76C2; --lav-soft:rgba(234,226,248,.85);
+  --sel:#4A72D6; --sel-bg:#DCE6FB; --mark:#2F6B28; --mark-bg:#CDEAC0;
+  --hold:#D9A21C; --hold-bg:#FFF0BF; --good:#2E8B57; --good-bg:#DAF0E2; --bad:#C9443E; --bad-bg:#FADCDA;
+  --on-accent:#FFFFFF; --sheet:#FBF2EE; --glass:blur(14px) saturate(1.15);
+  --shadow:0 2px 6px rgba(120,70,90,.10),0 10px 30px rgba(120,70,90,.10);
+  color-scheme:light;
+}
+
+/* ===== 基础 ===== */
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;-webkit-tap-highlight-color:transparent}
+#bgimg{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;pointer-events:none}
+#bgimg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,244,238,.15),rgba(255,240,236,.35) 40%,rgba(250,236,240,.55))}
+body:not([data-skin="orchard"]) #bgimg{display:none}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+body[data-skin="orchard"]::before{background:transparent}
+.wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 140px}
+:lang(ja){font-family:var(--f-ja)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+button:disabled{cursor:default}
+:focus-visible{outline:2px solid var(--sel);outline-offset:2px}
+h1{font-family:var(--f-display);font-weight:700;text-wrap:balance;margin:0}
+svg{width:18px;height:18px;flex:none}
+.stack{display:flex;flex-direction:column;gap:14px}
+.label{font-size:12px;letter-spacing:.06em;color:var(--mute)}
+.hint{font-size:13px;color:var(--mute)}
+.empty{text-align:center;padding:28px 12px;color:var(--mute);background:var(--card);border-radius:var(--r-card)}
+.warn{background:var(--bad-bg);color:var(--bad);border-radius:var(--r-ctl);padding:10px 14px;font-size:14px}
+
+/* ===== 顶栏 ===== */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:10px;padding-block:12px;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+body[data-skin="orchard"] .top{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(255,246,242,.35)}
+body:not([data-skin="orchard"]) .top{background:var(--bg)}
+.top .ttl{flex:1;min-width:0;font-family:var(--f-display);font-weight:700;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .ttl.prog small{font-size:14px;color:var(--mute);font-weight:500}
+.ibtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:40px;min-width:40px;padding:0 12px;border-radius:999px;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--shadow)}
+.cloud{font-size:12px;color:var(--mute);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.cloud i{width:7px;height:7px;border-radius:50%;background:var(--mute)}
+.cloud.ok i{background:var(--good)} .cloud.off i{background:var(--bad)} .cloud.ld i{background:var(--hold)}
+/* 模式切换：蓝 = 选答案，绿 = 标生词 */
+.mode{display:inline-flex;padding:3px;border-radius:999px;background:var(--card);box-shadow:var(--shadow);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
+.mode button{display:inline-flex;align-items:center;gap:5px;height:34px;padding:0 12px;border-radius:999px;font-size:13px;color:var(--mute)}
+.mode button svg{width:16px;height:16px}
+.mode .a.on{background:var(--sel);color:var(--on-accent)}
+.mode .k.on{background:var(--mark);color:var(--on-accent)}
+@media (max-width:380px){.mode button span{display:none}}
+
+/* ===== 按钮 ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 20px;border-radius:999px;font-weight:600;font-size:15px;white-space:nowrap}
+.btn.pri{background:var(--accent);color:var(--on-accent);box-shadow:0 6px 18px rgba(232,128,60,.28)}
+.btn.sec{background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--shadow)}
+.btn.full{width:100%}
+.btn:disabled{opacity:.45}
+
+/* ===== 首页 ===== */
+.hero{padding:18px 4px 4px}
+.hero h1{font-size:30px;letter-spacing:.02em}
+.hero p{margin:4px 0 0;color:var(--mute)}
+.resume{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 12px;text-align:left;padding:14px 18px;border-radius:var(--r-card);background:var(--accent-soft);border:1.5px dashed var(--accent)}
+.resume .rs-t{font-family:var(--f-display);font-weight:700;font-size:17px}
+.resume .rs-s{grid-column:1;font-size:13px;color:var(--mute)}
+.resume svg{grid-row:1/3;grid-column:2;color:var(--accent);width:24px;height:24px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-ctl);box-shadow:var(--shadow);padding:12px 14px}
+.tile b{font-family:var(--f-display);font-size:24px;line-height:1.2;font-variant-numeric:tabular-nums}
+.tile span{font-size:12px;color:var(--mute)}
+.tile.hold b{color:var(--hold)} .tile.word b{color:var(--mark)}
+.papers{display:flex;flex-direction:column;gap:10px}
+.paper{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 18px;border-radius:var(--r-card);background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--shadow)}
+.paper .pp{flex:1;min-width:0;display:flex;flex-direction:column}
+.paper .yr{font-family:var(--f-display);font-weight:700;font-size:17px}
+.paper .ps{font-size:13px;color:var(--mute)}
+.paper .bar{display:block;height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:8px}
+.paper .bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:6px}
+.paper .pct{font-family:var(--f-display);font-size:18px;color:var(--accent2);font-variant-numeric:tabular-nums}
+.paper.off{opacity:.55;box-shadow:none}
+
+/* ===== 套卷题库 ===== */
+.tabs{display:flex;gap:4px;background:var(--card2);border-radius:999px;padding:4px;backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
+.tabs button{flex:1;height:36px;border-radius:999px;font-size:14px;color:var(--mute)}
+.tabs button.on{background:var(--card);color:var(--ink);font-weight:600;box-shadow:var(--shadow)}
+.tabs button:disabled{opacity:.5}
+.filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.filters::-webkit-scrollbar{display:none}
+.flt{display:inline-flex;align-items:center;gap:6px;flex:none;height:34px;padding:0 12px;border-radius:999px;font-size:13px;background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.flt i{width:12px;height:12px;border-radius:4px}
+.flt.hold i{background:var(--hold-bg);box-shadow:inset 0 0 0 1.5px var(--hold)}
+.flt.pass i{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.flt.wrong i{background:var(--bad);border-radius:50%;width:8px;height:8px}
+.flt.on{background:var(--ink);color:var(--bg)}
+.flt.on.pass i{box-shadow:inset 0 0 0 2.5px var(--bg)}
+.grp{background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);overflow:hidden}
+.grp-h{display:flex;width:100%;align-items:center;gap:10px;padding:15px 18px;text-align:left}
+.grp-h b{flex:1;font-size:16px}
+.grp-h .gs{font-size:13px;color:var(--mute)}
+.chev{width:18px;height:18px;color:var(--mute);transition:transform .2s}
+.open>button>.chev,.grp.open .grp-h .chev{transform:rotate(90deg)}
+.qlist{display:flex;flex-direction:column;gap:8px;padding:0 12px 12px}
+.qc{position:relative;display:flex;flex-direction:column;width:100%;text-align:left;background:var(--card2);border-radius:var(--r-ctl);padding:10px 14px;box-shadow:inset 0 0 0 1px transparent}
+.qc .qn{font-size:12px;font-weight:700}
+.qc .s{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:14px}
+.qc.hold{background:var(--hold-bg)}
+.qc.pass{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.dot{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--bad)}
+
+/* ===== 题目卡 ===== */
+.card{background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);padding:18px}
+.qhead{display:flex;align-items:center;gap:8px;min-height:32px}
+.qhead .tag-l{flex:1;min-width:0;font-size:13px;color:var(--mute)}
+.peek{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--card2);color:var(--mute)}
+.peek.on{background:var(--lav-soft);color:var(--lav)}
+.peek svg{width:17px;height:17px}
+.stem{font-size:19px;line-height:2.05;margin:6px 0 2px}
+.stem-sm{font-size:16px;margin-top:12px}
+.stem-word{font-size:24px;font-weight:700}
+.u{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.blank{display:inline-block;min-width:3.2em;text-align:center;color:var(--mute)}
+.psg-intro{font-size:13px;color:var(--mute);margin:4px 0 6px}
+.psg{font-size:16px;line-height:2;max-height:46vh;overflow:auto;padding:12px 14px;border-radius:var(--r-ctl);background:var(--card2)}
+.psg p{margin:0 0 .6em;text-indent:1em}
+.psg .blank{min-width:2.4em;box-shadow:inset 0 0 0 1.5px var(--line);border-radius:6px;font-size:13px;line-height:1.5;padding:0 4px}
+.psg .blank.cur{box-shadow:inset 0 0 0 1.5px var(--accent);background:var(--accent-soft);color:var(--accent2);font-weight:700}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opts.two{grid-template-columns:1fr 1fr}
+.op{display:flex;gap:10px;align-items:flex-start;text-align:left;padding:12px 14px;border-radius:var(--r-ctl);background:var(--card);box-shadow:inset 0 0 0 1.5px var(--line);min-width:0;font-size:16px;line-height:1.7}
+body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
+.op .no{font-family:var(--f-display);font-weight:700;color:var(--mute);flex:none;width:1.1em}
+.op .tx{min-width:0;flex:1}
+.op .sub{display:block;font-size:13px;color:var(--mute);line-height:1.5;margin-top:2px}
+.op .tag{flex:none;font-size:12px;font-weight:700}
+.op .tag.ok{color:var(--good)} .op .tag.ng{color:var(--bad)}
+.op.x .main{text-decoration:line-through;color:var(--mute)}
+.ans .op.pick{background:var(--sel-bg);box-shadow:inset 0 0 0 2px var(--sel)}
+.ans .op.pick .no{color:var(--sel)}
+.ans .op.right{background:var(--card);box-shadow:inset 0 0 0 2px var(--good)}
+.ans .op.right .no{color:var(--good)}
+.ans .op.wrong{background:var(--bad-bg);box-shadow:inset 0 0 0 2px var(--bad)}
+.ans .op.wrong .no{color:var(--bad)}
+/* 排序题 */
+.sortline{font-size:18px;line-height:2.4}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:4.2em;min-height:1.8em;margin:0 3px;padding:0 6px;border-bottom:2px solid var(--mute);vertical-align:middle;font-size:15px;line-height:1.4;cursor:pointer}
+.slot.star{border-bottom-color:var(--accent);color:var(--accent2)}
+.slot.f{background:var(--sel-bg);border-radius:8px 8px 0 0;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chip{display:inline-flex;align-items:baseline;gap:6px;padding:9px 14px;border-radius:12px;background:var(--card);box-shadow:inset 0 0 0 1.5px var(--line);font-size:15px}
+.chip .no{font-weight:700;color:var(--mute)}
+.chip.used{opacity:.35}
+/* 解析 */
+.exp{margin-top:14px;padding:14px 16px;border-radius:var(--r-ctl);background:var(--lav-soft);font-size:14px;line-height:1.75}
+.exp .zh{font-size:15px}
+.exp .pt{margin-top:8px}
+.exp .pt b{color:var(--lav)}
+.exp .full{font-size:16px;margin-bottom:4px}
+.exp .starw{color:var(--accent2)}
+.exp .ord{font-size:13px;color:var(--mute);margin-bottom:6px}
+.verdict{font-weight:700;font-size:14px;margin-bottom:6px}
+.verdict.ok{color:var(--good)} .verdict.ng{color:var(--bad)} .verdict.na{color:var(--mute)}
+.times{font-size:12px;color:var(--mute);margin-top:8px}
+/* 备用 / 过 */
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.act{min-height:46px;border-radius:var(--r-ctl);font-weight:600;background:var(--card2);box-shadow:inset 0 0 0 1.5px var(--line)}
+.act.hold.on{background:var(--hold-bg);box-shadow:inset 0 0 0 2px var(--hold)}
+.act.pass.on{box-shadow:inset 0 0 0 2.5px var(--ink)}
+
+/* ===== 标生词 ===== */
+.marking .tk{box-shadow:inset 0 0 0 1px var(--line);border-radius:6px;padding:1px 3px;margin:0 1px;cursor:pointer}
+.marking .tk.on{background:var(--mark-bg);color:var(--mark);box-shadow:none}
+.marking .op.mk,.marking .chip.mk{cursor:pointer}
+.marking .op.whole,.marking .chip.whole{background:var(--mark-bg);box-shadow:inset 0 0 0 2px var(--mark)}
+.marking .op.whole .no,.marking .chip.whole .no{color:var(--mark)}
+.markbar{display:flex;align-items:center;gap:4px;margin:0 auto 10px;width:fit-content;max-width:100%;padding:5px;border-radius:999px;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--shadow)}
+.markbar .mb-n{padding:0 10px;font-size:13px;white-space:nowrap}
+.markbar .mb-n em{font-style:normal;color:var(--accent2);margin-left:4px}
+.markbar .mb-i,.markbar .mb-ok{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;color:var(--mute)}
+.markbar .mb-ok{background:var(--mark);color:var(--on-accent)}
+.markbar button:disabled{opacity:.35}
+
+/* ===== 备注（可收起） ===== */
+.note{background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);overflow:hidden}
+.note-h{display:flex;align-items:center;gap:10px;width:100%;padding:13px 18px;text-align:left}
+.note-t{font-size:14px;font-weight:600;flex:none}
+.note-pv{flex:1;min-width:0;font-size:13px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.note-b{position:relative;padding:0 14px 14px}
+.note textarea{width:100%;min-height:90px;border-radius:var(--r-ctl);border:0;box-shadow:inset 0 0 0 1.5px var(--line);background:var(--card2);color:var(--ink);padding:10px 50px 10px 12px;font:inherit;font-size:14px;resize:vertical}
+.note-ok{position:absolute;right:22px;bottom:24px;width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--card);color:var(--mute);box-shadow:var(--shadow)}
+.note-ok.dirty{background:var(--accent);color:var(--on-accent)}
+
+/* ===== 底栏 ===== */
+.foot{position:fixed;left:0;right:0;bottom:0;z-index:25;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));pointer-events:none}
+.foot>*{pointer-events:auto}
+.foot .in{max-width:680px;margin:0 auto;display:flex;gap:10px}
+.foot .in .btn{flex:1}
+.dots{display:flex;flex-wrap:wrap;gap:6px}
+.dots button{width:28px;height:28px;border-radius:8px;font-size:11px;background:var(--card2);color:var(--mute);font-variant-numeric:tabular-nums}
+.dots button.done{background:var(--sel-bg);color:var(--sel)}
+.dots button.ok{background:var(--good-bg);color:var(--good)}
+.dots button.ng{background:var(--bad-bg);color:var(--bad)}
+.dots button.cur{box-shadow:0 0 0 2px var(--accent)}
+
+/* ===== 选题 ===== */
+.fs{display:flex;flex-direction:column;gap:10px;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);padding:16px 18px}
+.chs{display:flex;flex-wrap:wrap;gap:8px}
+.ch{height:38px;padding:0 14px;border-radius:999px;background:var(--card2);box-shadow:inset 0 0 0 1.5px var(--line);font-size:14px;white-space:nowrap}
+.ch.on{background:var(--accent);box-shadow:none;color:var(--on-accent)}
+.ch:disabled{opacity:.4}
+.stepper{display:flex;align-items:center;gap:10px}
+.stp{width:44px;height:44px;border-radius:50%;background:var(--card2);box-shadow:inset 0 0 0 1.5px var(--line);font-size:20px}
+.stepper output{min-width:56px;text-align:center;font-family:var(--f-display);font-size:22px;font-variant-numeric:tabular-nums}
+.stepper .ch{margin-left:auto}
+.chk{display:flex;align-items:center;gap:10px;font-size:15px}
+.chk input{width:20px;height:20px;accent-color:var(--accent)}
+
+/* ===== 结果 ===== */
+.score{text-align:center;padding:26px 16px;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow)}
+.score b{font-family:var(--f-display);font-size:48px;color:var(--accent2);font-variant-numeric:tabular-nums}
+.score span{color:var(--mute)}
+.score p{margin:4px 0 0;font-size:13px;color:var(--mute)}
+.rlist{display:flex;flex-direction:column;gap:8px}
+.rrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;border-radius:var(--r-ctl);background:var(--card)}
+.rrow.hold{background:var(--hold-bg)}
+.rrow.pass{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.rrow .ic{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex:none}
+.rrow .ic.ok{background:var(--good-bg);color:var(--good)} .rrow .ic.ng{background:var(--bad-bg);color:var(--bad)} .rrow .ic.na{background:var(--line);color:var(--mute)}
+.rrow .t{flex:1;min-width:0;display:flex;flex-direction:column}
+.rrow .t small{color:var(--mute)}
+.rrow .t .s{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rrow .r{font-size:12px;color:var(--mute);white-space:nowrap}
+
+/* ===== 单词 ===== */
+.wd{display:flex;gap:12px;align-items:flex-start;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);padding:14px 16px}
+.wd .main{flex:1;min-width:0}
+.wd .w{font-size:19px;font-weight:600}
+.wd .rd{font-size:13px;color:var(--mute);margin-left:6px}
+.wd .z{font-size:14px;margin-top:2px}
+.wd .ctx{font-size:13px;color:var(--mute);margin-top:4px;line-height:1.6}
+.wd .ctx em{font-style:normal;background:var(--mark-bg);color:var(--mark);border-radius:4px;padding:0 3px}
+.wd .src{font-size:12px;color:var(--mute);margin-top:2px}
+.wd .del{flex:none;height:32px;padding:0 12px;border-radius:999px;font-size:12px;color:var(--mute);background:var(--card2)}
+.wd .del.sure{background:var(--bad);color:var(--on-accent)}
+
+/* ===== 弹层 ===== */
+.sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:rgba(40,25,45,.35)}
+.sheet .pn{display:flex;flex-direction:column;gap:12px;width:100%;max-width:680px;background:var(--sheet);border-radius:24px 24px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));max-height:86vh;overflow:auto}
+.sh-h{display:flex;align-items:center;justify-content:space-between}
+.sh-h b{font-family:var(--f-display);font-size:18px}
+.bgs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bgs button{aspect-ratio:9/16;width:100%;border-radius:12px;background-color:var(--card2);background-size:cover;background-position:center;box-shadow:inset 0 0 0 1px var(--line)}
+.bgs button.on{box-shadow:0 0 0 3px var(--accent)}
+.bgs .rnd{display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--mute);line-height:1.5}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(140px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;box-shadow:var(--shadow);white-space:nowrap}
+.modal{position:fixed;inset:0;z-index:45;display:flex;align-items:center;justify-content:center;background:rgba(40,25,45,.35);padding:16px}
+.modal .pn{display:flex;flex-direction:column;gap:8px;background:var(--sheet);border-radius:var(--r-card);padding:20px;max-width:360px;width:100%}
+.modal .pn b{font-size:17px}
+.modal .pn p{margin:0 0 6px;font-size:13px;color:var(--mute)}
+.modal .row{display:flex;gap:10px}
+.modal .row .btn{flex:1}
+@media (max-width:420px){.stem{font-size:18px}.opts.two .op{font-size:15px;padding:11px 12px}.hero h1{font-size:26px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div id="bgimg"></div>
+<div class="wrap" id="app"></div>
+<div id="layer"></div>
+
+<script>
+const DATA = {"questions":[{"id":"2026-07-01","p":"2026.07","m":1,"n":1,"ty":"read","stem":[["相手","","w"],["チーム","","w"],["の","","f"],["多彩","","w"],["な","だ","f"],["攻撃","","w"],["に","","f"],["翻弄","","u"],["された","する","w"],["。","","f"]],"plain":"相手チームの多彩な攻撃に翻弄された。","zh":"被对方队伍多样的进攻耍得团团转。","ans":3,"opts":[{"t":"ばんろう","k":"","z":"","x":1,"tk":[["ばん","","w"],["ろう","","w"]]},{"t":"ほんりょう","k":"本領","z":"真本事、本色","x":0,"tk":[["ほん","","w"],["りょう","","w"]]},{"t":"ほんろう","k":"翻弄","z":"摆布、耍弄","x":0,"tk":[["ほんろう","","w"]]},{"t":"ばんりょう","k":"","z":"","x":1,"tk":[["ばん","","w"],["りょう","","w"]]}],"pt":""},{"id":"2026-07-02","p":"2026.07","m":1,"n":2,"ty":"read","stem":[["仲間","","w"],["が","","f"],["裏切った","裏切る","w"],["と","","f"],["悟った","悟る","u"],["主人公","","w"],["は","","f"],["、","","f"],["その","","f"],["場","","w"],["から","","f"],["脱出した","脱出する","w"],["。","","f"]],"plain":"仲間が裏切ったと悟った主人公は、その場から脱出した。","zh":"察觉到同伴背叛了自己的主人公，从那里逃了出去。","ans":1,"opts":[{"t":"さとった","k":"悟った","z":"察觉、醒悟","x":0,"tk":[["さとった","さとる","w"]]},{"t":"あせった","k":"焦った","z":"着急","x":0,"tk":[["あせった","あせる","w"]]},{"t":"さぐった","k":"探った","z":"摸索、打探","x":0,"tk":[["さぐった","さぐる","w"]]},{"t":"うたがった","k":"疑った","z":"怀疑","x":0,"tk":[["うたがった","うたがう","w"]]}],"pt":""},{"id":"2026-07-03","p":"2026.07","m":1,"n":3,"ty":"read","stem":[["歴史書","","w"],["は","","f"],["、","","f"],["現代","","w"],["に","","f"],["生きる","","w"],["私たち","","w"],["に","","f"],["も","","f"],["多く","","w"],["の","","f"],["示唆","","u"],["を","","f"],["与えてくれる","与える","w"],["。","","f"]],"plain":"歴史書は、現代に生きる私たちにも多くの示唆を与えてくれる。","zh":"史书也给生活在现代的我们很多启示。","ans":4,"opts":[{"t":"しげぎ","k":"","z":"","x":1,"tk":[["しげ","しげい","w"],["ぎ","","w"]]},{"t":"しや","k":"視野","z":"视野","x":0,"tk":[["しや","する","w"]]},{"t":"しさく","k":"思索・試作","z":"思考／试做","x":0,"tk":[["し","する","w"],["さく","","w"]]},{"t":"しさ","k":"示唆","z":"启示、暗示","x":0,"tk":[["し","する","w"],["さ","","w"]]}],"pt":""},{"id":"2026-07-04","p":"2026.07","m":1,"n":4,"ty":"read","stem":[["社長","","w"],["に","","f"],["なって","なる","w"],["から","","f"],["も","","f"],["、","","f"],["彼","","w"],["は","","f"],["常に","","w"],["謙虚","","u"],["だ","","f"],["。","","f"]],"plain":"社長になってからも、彼は常に謙虚だ。","zh":"当上社长以后，他也一直很谦虚。","ans":3,"opts":[{"t":"けんりょ","k":"","z":"","x":1,"tk":[["けんり","ける","w"],["ょ","","w"]]},{"t":"げんきょ","k":"","z":"","x":1,"tk":[["げんき","","w"],["ょ","","w"]]},{"t":"けんきょ","k":"謙虚","z":"谦虚","x":0,"tk":[["けんき","ける","w"],["ょ","","w"]]},{"t":"げんりょ","k":"","z":"","x":1,"tk":[["げん","","w"],["り","","f"],["ょ","","w"]]}],"pt":""},{"id":"2026-07-05","p":"2026.07","m":1,"n":5,"ty":"read","stem":[["この","","f"],["クリーム","","w"],["を","","f"],["塗る","","w"],["と","","f"],["、","","f"],["肌","","w"],["が","","f"],["滑らか","","u"],["に","","f"],["なります","なる","w"],["。","","f"]],"plain":"このクリームを塗ると、肌が滑らかになります。","zh":"涂了这款霜，皮肤会变得光滑。","ans":2,"opts":[{"t":"やわらか","k":"柔らか","z":"柔软","x":0,"tk":[["やわらか","やわらかい","w"]]},{"t":"なめらか","k":"滑らか","z":"光滑","x":0,"tk":[["なめらか","","w"]]},{"t":"きよらか","k":"清らか","z":"清澈、纯洁","x":0,"tk":[["きよら","","w"],["か","","f"]]},{"t":"なだらか","k":"（无汉字）","z":"坡度平缓","x":0,"tk":[["なだらか","","w"]]}],"pt":""},{"id":"2026-07-06","p":"2026.07","m":1,"n":6,"ty":"read","stem":[["先","","w"],["に","","f"],["本人","","w"],["の","","f"],["承諾","","u"],["を","","f"],["得た","得る","w"],["ほう","","w"],["が","","f"],["いい","","w"],["。","","f"]],"plain":"先に本人の承諾を得たほうがいい。","zh":"最好先得到本人的同意。","ans":1,"opts":[{"t":"しょうだく","k":"承諾","z":"同意、答应","x":0,"tk":[["しょう","","w"],["だく","","w"]]},{"t":"しょだく","k":"","z":"","x":1,"tk":[["しょ","","w"],["だく","","w"]]},{"t":"しょうどく","k":"消毒","z":"消毒","x":0,"tk":[["しょう","","w"],["どく","","w"]]},{"t":"しょどく","k":"","z":"","x":1,"tk":[["しょ","","w"],["どく","","w"]]}],"pt":""},{"id":"2026-07-07","p":"2026.07","m":2,"n":7,"ty":"fill","stem":[["この","","f"],["ゴム","","w"],["の","","f"],["ボール","","w"],["は","","f"],["、","","f"],["","","b"],["が","","f"],["ある","","w"],["ので","","f"],["、","","f"],["手","","w"],["で","","f"],["押して","押す","w"],["潰して","潰す","w"],["も","","f"],["すぐ","","w"],["に","","f"],["元","","w"],["の","","f"],["形","","w"],["に","","f"],["戻る","","w"],["。","","f"]],"plain":"このゴムのボールは、（　）があるので、手で押して潰してもすぐに元の形に戻る。","zh":"这个橡胶球有弹性，用手压扁也会马上恢复原形。","ans":3,"opts":[{"t":"迫力","k":"はくりょく","z":"震撼力、魄力","x":0,"tk":[["迫力","","w"]]},{"t":"効力","k":"こうりょく","z":"效力","x":0,"tk":[["効力","","w"]]},{"t":"弾力","k":"だんりょく","z":"弹性","x":0,"tk":[["弾力","","w"]]},{"t":"活力","k":"かつりょく","z":"活力","x":0,"tk":[["活力","","w"]]}],"pt":""},{"id":"2026-07-08","p":"2026.07","m":2,"n":8,"ty":"fill","stem":[["この","","f"],["ダム","","w"],["は","","f"],["完成","","w"],["まで","","f"],["に","","f"],["20年","","w"],["という","","f"],["年月","","w"],["を","","f"],["","","b"],["。","","f"]],"plain":"このダムは完成までに20年という年月を（　）。","zh":"这座水坝花了20年的岁月才建成。","ans":4,"opts":[{"t":"ふるまった","k":"振る舞った","z":"举止；款待","x":0,"tk":[["ふるまった","ふるまう","w"]]},{"t":"ささげた","k":"捧げた","z":"奉献","x":0,"tk":[["ささげた","ささげる","w"]]},{"t":"尽くした","k":"つくした","z":"竭尽","x":0,"tk":[["尽くした","尽くす","w"]]},{"t":"費やした","k":"ついやした","z":"花费（时间、金钱）","x":0,"tk":[["費やした","費やす","w"]]}],"pt":""},{"id":"2026-07-09","p":"2026.07","m":2,"n":9,"ty":"fill","stem":[["この","","f"],["劇場","","w"],["は","","f"],["座席","","w"],["が","","f"],["狭くて","狭い","w"],["、","","f"],["座っている","座る","w"],["間","","w"],["、","","f"],["足","","w"],["を","","f"],["伸ばす","","w"],["こと","","w"],["が","","f"],["できず","できる","w"],["","","b"],["だっ","だ","f"],["た","","f"],["。","","f"]],"plain":"この劇場は座席が狭くて、座っている間、足を伸ばすことができず（　）だった。","zh":"这个剧场座位很窄，坐着的时候腿伸不开，很憋屈。","ans":2,"opts":[{"t":"煩雑","k":"はんざつ","z":"繁杂","x":0,"tk":[["煩雑","","w"]]},{"t":"窮屈","k":"きゅうくつ","z":"狭窄、拘束","x":0,"tk":[["窮屈","","w"]]},{"t":"過密","k":"かみつ","z":"过度密集","x":0,"tk":[["過密","","w"]]},{"t":"濃厚","k":"のうこう","z":"浓厚","x":0,"tk":[["濃厚","","w"]]}],"pt":""},{"id":"2026-07-10","p":"2026.07","m":2,"n":10,"ty":"fill","stem":[["彼","","w"],["の","","f"],["デザイン","","w"],["は","","f"],["、","","f"],["花","","w"],["や","","f"],["木","","w"],["など","","f"],["の","","f"],["自然","","w"],["を","","f"],["","","b"],["に","","f"],["した","する","w"],["もの","","w"],["が","","f"],["多い","","w"],["。","","f"]],"plain":"彼のデザインは、花や木などの自然を（　）にしたものが多い。","zh":"他的设计很多以花草树木等自然为题材。","ans":2,"opts":[{"t":"メモリー","k":"","z":"记忆、存储","x":0,"tk":[["メモリー","","w"]]},{"t":"モチーフ","k":"","z":"创作题材、主题","x":0,"tk":[["モチーフ","","w"]]},{"t":"ムード","k":"","z":"气氛","x":0,"tk":[["ムード","","w"]]},{"t":"ニーズ","k":"","z":"需求","x":0,"tk":[["ニーズ","","w"]]}],"pt":""},{"id":"2026-07-11","p":"2026.07","m":2,"n":11,"ty":"fill","stem":[["登山道","","w"],["の","","f"],["あちこち","","w"],["に","","f"],["登山者","","w"],["の","","f"],["注意","","w"],["を","","f"],["","","b"],["する","","w"],["ため","","w"],["の","","f"],["看板","","w"],["が","","f"],["ある","","w"],["。","","f"]],"plain":"登山道のあちこちに登山者の注意を（　）するための看板がある。","zh":"登山道各处都有提醒登山者注意的告示牌。","ans":1,"opts":[{"t":"喚起","k":"かんき","z":"唤起","x":0,"tk":[["喚起","","w"]]},{"t":"挑発","k":"ちょうはつ","z":"挑衅","x":0,"tk":[["挑発","","w"]]},{"t":"誘導","k":"ゆうどう","z":"引导","x":0,"tk":[["誘導","","w"]]},{"t":"増進","k":"ぞうしん","z":"增进","x":0,"tk":[["増進","","w"]]}],"pt":""},{"id":"2026-07-12","p":"2026.07","m":2,"n":12,"ty":"fill","stem":[["「","","f"],["30年","","w"],["以上","","w"],["の","","f"],["付き合い","","w"],["な","だ","f"],["のに","","f"],["相談","","w"],["も","","f"],["してくれない","する","w"],["なんて","","f"],["","","b"],["なあ","","f"],["」","","f"],["と","","f"],["友人","","w"],["は","","f"],["言った","言う","w"],["。","","f"]],"plain":"「30年以上の付き合いなのに相談もしてくれないなんて（　）なあ」と友人は言った。","zh":"朋友说：“都交往三十多年了，竟然连商量都不跟我商量，太见外了。”","ans":1,"opts":[{"t":"水くさい","k":"みずくさい","z":"见外","x":0,"tk":[["水","","w"],["くさい","","w"]]},{"t":"はかない","k":"儚い","z":"短暂、虚幻","x":0,"tk":[["はかない","","w"]]},{"t":"手ぬるい","k":"てぬるい","z":"手段宽松、不严厉","x":0,"tk":[["手ぬるい","","w"]]},{"t":"とぼしい","k":"乏しい","z":"缺乏","x":0,"tk":[["とぼしい","","w"]]}],"pt":""},{"id":"2026-07-13","p":"2026.07","m":2,"n":13,"ty":"fill","stem":[["プレゼン","","w"],["の","","f"],["途中","","w"],["で","","f"],["予想外","","w"],["の","","f"],["質問","","w"],["が","","f"],["あり","ある","w"],["、","","f"],["すぐ","","w"],["に","","f"],["答えられず","答える","w"],["、","","f"],["","","b"],["資料","","w"],["を","","f"],["探してしまい","探す","w"],["恥ずかしかった","恥ずかしい","w"],["。","","f"]],"plain":"プレゼンの途中で予想外の質問があり、すぐに答えられず、（　）資料を探してしまい恥ずかしかった。","zh":"演讲中途被问了意料之外的问题，没能马上回答，手忙脚乱地翻资料，很丢人。","ans":4,"opts":[{"t":"くるくると","k":"","z":"团团转","x":0,"tk":[["くるくる","","w"],["と","","f"]]},{"t":"じろじろと","k":"","z":"盯着打量","x":0,"tk":[["じろじろ","","w"],["と","","f"]]},{"t":"ごしごしと","k":"","z":"使劲擦","x":0,"tk":[["ごしごし","","w"],["と","","f"]]},{"t":"あたふたと","k":"","z":"慌慌张张","x":0,"tk":[["あたふた","","w"],["と","","f"]]}],"pt":""},{"id":"2026-07-14","p":"2026.07","m":3,"n":14,"ty":"syn","stem":[["今年","","w"],["は","","f"],["不況","","u"],["で","","w"],["、","","f"],["ボーナス","","w"],["が","","f"],["支給されなかった","支給する","w"],["。","","f"]],"plain":"今年は不況で、ボーナスが支給されなかった。","zh":"今年经济不景气，没发奖金。","ans":3,"opts":[{"t":"成績が悪くて","k":"","z":"成绩差","x":0,"tk":[["成績","","w"],["が","","f"],["悪くて","悪い","w"]]},{"t":"売り上げが悪くて","k":"","z":"销售额差","x":0,"tk":[["売り上げ","","w"],["が","","f"],["悪くて","悪い","w"]]},{"t":"景気が悪くて","k":"","z":"经济不景气","x":0,"tk":[["景気","","w"],["が","","f"],["悪くて","悪い","w"]]},{"t":"態度が悪くて","k":"","z":"态度差","x":0,"tk":[["態度","","w"],["が","","f"],["悪くて","悪い","w"]]}],"pt":"不況（ふきょう）= 不景气。回忆版卷子这一题的选项编号印成了1、2、2、4，「景気が悪くて」实际是第3项。"},{"id":"2026-07-15","p":"2026.07","m":3,"n":15,"ty":"syn","stem":[["この","","f"],["記事","","w"],["に","","f"],["は","","f"],["、","","f"],["うまく","うまい","w"],["仕事","","w"],["を","","f"],["こなす","","u"],["方法","","w"],["が","","f"],["書かれている","書く","w"],["。","","f"]],"plain":"この記事には、うまく仕事をこなす方法が書かれている。","zh":"这篇文章写了把工作处理好的方法。","ans":4,"opts":[{"t":"依頼する","k":"","z":"委托","x":0,"tk":[["依頼する","","w"]]},{"t":"指導する","k":"","z":"指导","x":0,"tk":[["指導する","","w"]]},{"t":"習得する","k":"","z":"学会、掌握","x":0,"tk":[["習得する","","w"]]},{"t":"処理する","k":"","z":"处理","x":0,"tk":[["処理する","","w"]]}],"pt":"こなす = 熟练地处理完。"},{"id":"2026-07-16","p":"2026.07","m":3,"n":16,"ty":"syn","stem":[["私","","w"],["も","","f"],["倹約する","","u"],["ことに","","w"],["した","する","w"],["。","","f"]],"plain":"私も倹約することにした。","zh":"我也决定节俭了。","ans":2,"opts":[{"t":"時間を無駄に使わない","k":"","z":"不浪费时间","x":0,"tk":[["時間","","w"],["を","","f"],["無駄","","w"],["に","","f"],["使わない","使う","w"]]},{"t":"お金を無駄に使わない","k":"","z":"不浪费钱","x":0,"tk":[["お金","","w"],["を","","f"],["無駄","","w"],["に","","f"],["使わない","使う","w"]]},{"t":"スペースを無駄に使わない","k":"","z":"不浪费空间","x":0,"tk":[["スペース","","w"],["を","","f"],["無駄","","w"],["に","","f"],["使わない","使う","w"]]},{"t":"エネルギーを無駄に使わない","k":"","z":"不浪费能源","x":0,"tk":[["エネルギー","","w"],["を","","f"],["無駄","","w"],["に","","f"],["使わない","使う","w"]]}],"pt":"倹約（けんやく）= 节约花钱。"},{"id":"2026-07-17","p":"2026.07","m":3,"n":17,"ty":"syn","stem":[["その","","f"],["件","","w"],["について","","f"],["は","","f"],["、","","f"],["断固","","u"],["抗議","","w"],["を","","f"],["する","","w"],["つもり","","w"],["だ","","f"],["。","","f"]],"plain":"その件については、断固抗議をするつもりだ。","zh":"关于那件事，我打算坚决抗议。","ans":3,"opts":[{"t":"即座に","k":"","z":"立即","x":0,"tk":[["即座","","w"],["に","","f"]]},{"t":"じっくり","k":"","z":"慢慢地、仔细","x":0,"tk":[["じっくり","","w"]]},{"t":"きっぱりと","k":"","z":"干脆、断然","x":0,"tk":[["きっぱり","","w"],["と","","f"]]},{"t":"当然","k":"","z":"理所当然","x":0,"tk":[["当然","","w"]]}],"pt":"断固（だんこ）= 坚决。回忆版卷子把「抗議」录成了「講義」。"},{"id":"2026-07-18","p":"2026.07","m":3,"n":18,"ty":"syn","stem":[["相手側","","w"],["は","","f"],["裁判","","w"],["も","","f"],["辞さない","辞す","w"],["という","","f"],["構え","","u"],["だ","","f"],["。","","f"]],"plain":"相手側は裁判も辞さないという構えだ。","zh":"对方摆出了不惜打官司的架势。","ans":1,"opts":[{"t":"姿勢","k":"","z":"姿态、态度","x":0,"tk":[["姿勢","","w"]]},{"t":"主張","k":"","z":"主张","x":0,"tk":[["主張","","w"]]},{"t":"印象","k":"","z":"印象","x":0,"tk":[["印象","","w"]]},{"t":"決断","k":"","z":"决断","x":0,"tk":[["決断","","w"]]}],"pt":"構え（かまえ）= 架势、态度。"},{"id":"2026-07-19","p":"2026.07","m":3,"n":19,"ty":"syn","stem":[["期待していた","期待する","w"],["試合","","w"],["の","","f"],["内容","","w"],["は","","f"],["あっけない","","u"],["もの","","w"],["だっ","だ","f"],["た","","f"],["。","","f"]],"plain":"期待していた試合の内容はあっけないものだった。","zh":"期待已久的比赛，内容却一下子就结束了，很不过瘾。","ans":3,"opts":[{"t":"もったいない","k":"","z":"可惜","x":0,"tk":[["もったいない","","w"]]},{"t":"ありえない","k":"","z":"不可能","x":0,"tk":[["ありえない","ある","w"]]},{"t":"物足りない","k":"","z":"不够满足","x":0,"tk":[["物足りない","","w"]]},{"t":"みっともない","k":"","z":"不像样","x":0,"tk":[["みっともない","","w"]]}],"pt":"あっけない = 太简单、不尽兴。"},{"id":"2026-07-20","p":"2026.07","m":4,"n":20,"ty":"use","word":"納入","rd":"のうにゅう","wz":"交付、缴纳（商品、钱款）","stem":[["納入","","w"]],"plain":"納入","zh":"納入（のうにゅう）：交付、缴纳（商品、钱款）","ans":2,"opts":[{"t":"議会では新制度をいつ納入するかを検討している。","tk":[["議会","","w"],["で","","f"],["は","","f"],["新","","w"],["制度","","w"],["を","","f"],["いつ","いる","w"],["納入","","u"],["する","","w"],["か","","f"],["を","","f"],["検討している","検討する","w"],["。","","f"]],"z":"应该用「導入」（引入）"},{"t":"販売店に新商品を納入する日は、来月の10日に決まった。","tk":[["販売店","","w"],["に","","f"],["新","","w"],["商品","","w"],["を","","f"],["納入","","u"],["する","","w"],["日","","w"],["は","","f"],["、","","f"],["来月","","w"],["の","","f"],["10日","","w"],["に","","f"],["決まった","決まる","w"],["。","","f"]],"z":"✔ 向销售店交付新商品的日子定在下个月10号。"},{"t":"この時期の子どもたちは知識を納入するのが早い。","tk":[["この","","f"],["時期","","w"],["の","","f"],["子どもたち","","w"],["は","","f"],["知識","","w"],["を","","f"],["納入","","u"],["する","","w"],["の","","w"],["が","","f"],["早い","","w"],["。","","f"]],"z":"应该用「吸収」（吸收）"},{"t":"私の家では押し入れに布団と衣類を納入している。","tk":[["私","","w"],["の","","f"],["家","","w"],["で","","f"],["は","","f"],["押し入れ","","w"],["に","","f"],["布団","","w"],["と","","f"],["衣類","","w"],["を","","f"],["納入","","u"],["している","する","w"],["。","","f"]],"z":"应该用「収納」（收纳）"}],"pt":""},{"id":"2026-07-21","p":"2026.07","m":4,"n":21,"ty":"use","word":"格差","rd":"かくさ","wz":"差距（贫富、待遇等的等级差）","stem":[["格差","","w"]],"plain":"格差","zh":"格差（かくさ）：差距（贫富、待遇等的等级差）","ans":3,"opts":[{"t":"鈴木さんは、見た目と性格の格差が激しいので誤解されやすい。","tk":[["鈴木さん","","w"],["は","","f"],["、","","f"],["見た目","","w"],["と","","f"],["性格","","w"],["の","","f"],["格差","","u"],["が","","f"],["激しい","","w"],["ので","","f"],["誤解されやすい","誤解する","w"],["。","","f"]],"z":"应该用「ギャップ」（反差）"},{"t":"社会人になってから、学生と話していると話題の格差を感じる。","tk":[["社会人","","w"],["に","","f"],["なって","なる","w"],["から","","f"],["、","","f"],["学生","","w"],["と","","f"],["話している","話す","w"],["と","","f"],["話題","","w"],["の","","f"],["格差","","u"],["を","","f"],["感じる","","w"],["。","","f"]],"z":"应该用「ずれ・ギャップ」"},{"t":"大企業と中小企業では賃金に格差があると指摘されている。","tk":[["大","","w"],["企業","","w"],["と","","f"],["中小","","w"],["企業","","w"],["で","","f"],["は","","f"],["賃金","","w"],["に","","f"],["格差","","u"],["が","","f"],["ある","","w"],["と","","f"],["指摘されている","指摘する","w"],["。","","f"]],"z":"✔ 有人指出大企业和中小企业的工资存在差距。"},{"t":"弟はマラソン大会で、二位の選手に格差をつけて優勝した。","tk":[["弟","","w"],["は","","f"],["マラソン","","w"],["大会","","w"],["で","","f"],["、","","f"],["二位","","w"],["の","","f"],["選手","","w"],["に","","f"],["格差","","u"],["を","","f"],["つけて","つける","w"],["優勝した","優勝する","w"],["。","","f"]],"z":"应该用「大差」（很大差距）"}],"pt":""},{"id":"2026-07-22","p":"2026.07","m":4,"n":22,"ty":"use","word":"引き締まる","rd":"ひきしまる","wz":"绷紧；（精神）振作、紧张起来","stem":[["引き締まる","","w"]],"plain":"引き締まる","zh":"引き締まる（ひきしまる）：绷紧；（精神）振作、紧张起来","ans":4,"opts":[{"t":"長時間パソコンの作業をしていると、肩が引き締まる。","tk":[["長時間","","w"],["パソコン","","w"],["の","","f"],["作業","","w"],["を","","f"],["している","する","w"],["と","","f"],["、","","f"],["肩","","w"],["が","","f"],["引き締まる","","u"],["。","","f"]],"z":"应该用「凝る」（肩膀僵硬）"},{"t":"大谷さんは、疑うような引き締まった視線を向けてきた。","tk":[["大谷さん","","w"],["は","","f"],["、","","f"],["疑う","","w"],["よう","","w"],["な","だ","f"],["引き締まった","引き締まる","u"],["視線","","w"],["を","","f"],["向けてきた","向ける","w"],["。","","f"]],"z":"应该用「鋭い」（锐利）"},{"t":"佐藤さんと話をしたが、退職の意思は引き締まっているようだ。","tk":[["佐藤さん","","w"],["と","","f"],["話","","w"],["を","","f"],["した","する","w"],["が","","f"],["、","","f"],["退職","","w"],["の","","f"],["意思","","w"],["は","","f"],["引き締まって","引き締まる","u"],["いる","","w"],["よう","","w"],["だ","","f"],["。","","f"]],"z":"应该用「固まって」（已坚定）"},{"t":"重要な仕事を任されて、気持ちが引き締まる思いがする。","tk":[["重要","","w"],["な","だ","f"],["仕事","","w"],["を","","f"],["任されて","任す","w"],["、","","f"],["気持ち","","w"],["が","","f"],["引き締まる","","u"],["思い","","w"],["が","","f"],["する","","w"],["。","","f"]],"z":"✔ 被委以重任，感觉精神都振作起来了。"}],"pt":""},{"id":"2026-07-23","p":"2026.07","m":4,"n":23,"ty":"use","word":"満喫","rd":"まんきつ","wz":"尽情享受","stem":[["満喫","","w"]],"plain":"満喫","zh":"満喫（まんきつ）：尽情享受","ans":2,"opts":[{"t":"私たちは科学の発達により、様々な恩恵を満喫している。","tk":[["私たち","","w"],["は","","f"],["科学","","w"],["の","","f"],["発達","","w"],["により","","f"],["、","","f"],["様々","","w"],["な","だ","f"],["恩恵","","w"],["を","","f"],["満喫","","u"],["している","する","w"],["。","","f"]],"z":"应该用「享受」（享受恩惠）"},{"t":"短期間だったが、観光をしたり名物を食べたりして、旅を満喫できた。","tk":[["短期間","","w"],["だっ","だ","f"],["た","","f"],["が","","f"],["、","","f"],["観光","","w"],["を","","f"],["し","する","w"],["たり","","f"],["名物","","w"],["を","","f"],["食べ","食べる","w"],["たり","","f"],["して","する","w"],["、","","f"],["旅","","w"],["を","","f"],["満喫","","u"],["できた","できる","w"],["。","","f"]],"z":"✔ 虽然时间短，但又观光又吃特产，尽情享受了旅行。"},{"t":"就職が決まったからといって、将来を満喫するのはまだ早い。","tk":[["就職","","w"],["が","","f"],["決まった","決まる","w"],["から","","f"],["と","","f"],["いって","いう","w"],["、","","f"],["将来","","w"],["を","","f"],["満喫","","u"],["する","","w"],["の","","w"],["は","","f"],["まだ","","w"],["早い","","w"],["。","","f"]],"z":"应该用「楽観」（乐观）"},{"t":"久しぶりの休暇で、疲れをいやし、心を満喫することができた。","tk":[["久しぶり","","w"],["の","","f"],["休暇","","w"],["で","","f"],["、","","f"],["疲れ","","w"],["を","","f"],["いやし","いやす","w"],["、","","f"],["心","","w"],["を","","f"],["満喫","","u"],["する","","w"],["こと","","w"],["が","","f"],["できた","できる","w"],["。","","f"]],"z":"应该用「満たす」（使心灵充实）"}],"pt":""},{"id":"2026-07-24","p":"2026.07","m":4,"n":24,"ty":"use","word":"所定","rd":"しょてい","wz":"规定的、指定的","stem":[["所定","","w"]],"plain":"所定","zh":"所定（しょてい）：规定的、指定的","ans":4,"opts":[{"t":"正月は家でのんびりテレビを見るのが、私たち家族の所定の過ごし方になっている。","tk":[["正月","","w"],["は","","f"],["家","","w"],["で","","f"],["のんびり","","w"],["テレビ","","w"],["を","","f"],["見る","","w"],["の","","w"],["が","","f"],["、","","f"],["私たち","","w"],["家族","","w"],["の","","f"],["所定","","u"],["の","","f"],["過ごし","過ごす","w"],["方","","w"],["に","","f"],["なっている","なる","w"],["。","","f"]],"z":"应该用「恒例・定番」（惯例）"},{"t":"機械によるエラーは、どんなに点検や整備をしても所定の確率で起こるものだ。","tk":[["機械","","w"],["による","","f"],["エラー","","w"],["は","","f"],["、","","f"],["どんなに","","w"],["点検","","w"],["や","","f"],["整備","","w"],["を","","f"],["して","する","w"],["も","","f"],["所定","","u"],["の","","f"],["確率","","w"],["で","","f"],["起こる","","w"],["もの","","w"],["だ","","f"],["。","","f"]],"z":"应该用「一定」（一定的）"},{"t":"わが社とA社の合併は所定のことで、今から変更できるものではない。","tk":[["わが","","f"],["社","","w"],["と","","f"],["A社","","w"],["の","","f"],["合併","","w"],["は","","f"],["所定","","u"],["の","","f"],["こと","","w"],["で","だ","f"],["、","","f"],["今","","w"],["から","","f"],["変更","","w"],["できる","","w"],["もの","","w"],["で","だ","f"],["は","","f"],["ない","","f"],["。","","f"]],"z":"应该用「既定・決定事項」"},{"t":"証明書が必要な人は、所定の申込書に記入して提出してください。","tk":[["証明書","","w"],["が","","f"],["必要","","w"],["な","だ","f"],["人","","w"],["は","","f"],["、","","f"],["所定","","u"],["の","","f"],["申込書","","w"],["に","","f"],["記入して","記入する","w"],["提出してください","提出する","w"],["。","","f"]],"z":"✔ 需要证明书的人请填写指定的申请表后提交。"}],"pt":""},{"id":"2026-07-25","p":"2026.07","m":4,"n":25,"ty":"use","word":"はつらつ","rd":"","wz":"朝气蓬勃","stem":[["はつらつ","","w"]],"plain":"はつらつ","zh":"はつらつ：朝气蓬勃","ans":1,"opts":[{"t":"体育館に、若者たちのはつらつとしたあいさつの声が響く。","tk":[["体育館","","w"],["に","","f"],["、","","f"],["若者たち","","w"],["の","","f"],["はつらつ","","u"],["と","","f"],["した","する","w"],["あいさつ","","w"],["の","","f"],["声","","w"],["が","","f"],["響く","","w"],["。","","f"]],"z":"✔ 体育馆里回响着年轻人朝气蓬勃的问候声。"},{"t":"外は気持ちよく晴れて、空がはつらつとしている。","tk":[["外","","w"],["は","","f"],["気持ちよく","気持ちよい","w"],["晴れて","晴れる","w"],["、","","f"],["空","","w"],["が","","f"],["はつらつ","","u"],["と","","f"],["している","する","w"],["。","","f"]],"z":"应该用「晴れ晴れ」（晴朗）"},{"t":"今朝とれたばかりの魚で作ったはつらつとした刺身を食べた。","tk":[["今朝","","w"],["とれた","とれる","w"],["ばかり","","f"],["の","","f"],["魚","","w"],["で","","f"],["作った","作る","w"],["はつらつ","","u"],["と","","f"],["した","する","w"],["刺身","","w"],["を","","f"],["食べた","食べる","w"],["。","","f"]],"z":"应该用「新鮮な・ぷりぷり」（新鲜）"},{"t":"小島さんに初めて会った日のことは、今でもはつらつと覚えている。","tk":[["小島さん","","w"],["に","","f"],["初めて","","w"],["会った","会う","w"],["日","","w"],["の","","f"],["こと","","w"],["は","","f"],["、","","f"],["今","","w"],["で","","f"],["も","","f"],["はつらつ","","u"],["と","","f"],["覚えている","覚える","w"],["。","","f"]],"z":"应该用「はっきり・鮮明に」（清楚）"}],"pt":""},{"id":"2026-07-26","p":"2026.07","m":5,"n":26,"ty":"gram","stem":[["（","","f"],["会社","","w"],["で","","f"],["）","","f"],["","","n"],["A","","w"],["「","","f"],["そっち","","w"],["の","","f"],["課","","w"],["の","","f"],["プロジェクト","","w"],["、","","f"],["順調そう","","w"],["だ","","f"],["ね","","f"],["。","","f"],["」","","f"],["","","n"],["B","","w"],["「","","f"],["いや","","w"],["、","","f"],["","","b"],["、","","f"],["そう","","w"],["で","だ","f"],["も","","f"],["なくて","ない","w"],["…","","f"],["…","","f"],["。","","f"],["」","","f"]],"plain":"（会社で） A「そっちの課のプロジェクト、順調そうだね。」 B「いや、（　）、そうでもなくて……。」","zh":"A：你们科的项目看起来挺顺利的嘛。\nB：没有，说起来，其实也不是那样……","ans":2,"opts":[{"t":"ただ","tk":[["ただ","","w"]],"z":"只是"},{"t":"それが","tk":[["それ","","w"],["が","","f"]],"z":"说起来（其实）"},{"t":"なのに","tk":[["なのに","","w"]],"z":"明明…却"},{"t":"あるいは","tk":[["あるいは","","w"]],"z":"或者"}],"pt":"「それが」用在对话里，否定对方的推测，引出和对方想的不一样的实际情况。"},{"id":"2026-07-27","p":"2026.07","m":5,"n":27,"ty":"gram","stem":[["人","","w"],["に","","f"],["は","","f"],["いろいろ","","w"],["アドバイス","","w"],["できる","","w"],["のに","","f"],["、","","f"],["なぜ","","w"],["か","","f"],["自分","","w"],["の","","f"],["こと","","w"],["","","b"],["どう","","w"],["したら","する","w"],["いい","","w"],["の","","w"],["か","","f"],["わからなく","わかる","w"],["なってしまう","なる","w"],["。","","f"]],"plain":"人にはいろいろアドバイスできるのに、なぜか自分のこと（　）どうしたらいいのかわからなくなってしまう。","zh":"明明能给别人各种建议，可一到自己的事，不知为何就不知道该怎么办了。","ans":4,"opts":[{"t":"だけあって","tk":[["だけ","","f"],["あって","ある","w"]],"z":"不愧是"},{"t":"からすると","tk":[["から","","f"],["する","","w"],["と","","f"]],"z":"从…来看"},{"t":"にとって","tk":[["にとって","","f"]],"z":"对…来说"},{"t":"となると","tk":[["と","","f"],["なる","","w"],["と","","f"]],"z":"一说到…、一旦涉及…"}],"pt":"「～となると」一旦涉及到某事（情况就不同了）。"},{"id":"2026-07-28","p":"2026.07","m":5,"n":28,"ty":"gram","stem":[["私","","w"],["が","","f"],["この","","f"],["チーム","","w"],["の","","f"],["次期","","w"],["キャプテン","","w"],["に","","f"],["林さん","","w"],["を","","f"],["推薦する","","w"],["理由","","w"],["は","","f"],["、","","f"],["技術力","","w"],["の","","f"],["高","高い","w"],["さ","","w"],["","","b"],["強い","","w"],["精神力","","w"],["を","","f"],["持っている","持つ","w"],["から","","f"],["だ","","f"],["。","","f"]],"plain":"私がこのチームの次期キャプテンに林さんを推薦する理由は、技術力の高さ（　）強い精神力を持っているからだ。","zh":"我推荐林当这支队伍下一任队长，理由是他技术好自不必说，更因为他有很强的精神力量。","ans":3,"opts":[{"t":"にかけては","tk":[["にかけて","","f"],["は","","f"]],"z":"在…方面（首屈一指）"},{"t":"をはじめ","tk":[["を","","f"],["はじめ","","w"]],"z":"以…为首"},{"t":"もさることながら","tk":[["も","","f"],["さる","","f"],["こと","","w"],["ながら","","f"]],"z":"…自不必说，更…"},{"t":"とあいまって","tk":[["と","","f"],["あいまって","あいまつ","w"]],"z":"与…相结合"}],"pt":"「AもさることながらB」A当然重要，B更是如此。"},{"id":"2026-07-29","p":"2026.07","m":5,"n":29,"ty":"gram","stem":[["（","","f"],["求人","","w"],["広告","","w"],["で","","f"],["）","","f"],["","","n"],["採用","","w"],["にあたって","","f"],["は","","f"],["、","","f"],["書類","","w"],["審査","","w"],["と","","f"],["面接","","w"],["を","","f"],["行います","行う","w"],["。","","f"],["面接","","w"],["は","","f"],["、","","f"],["応募者","","w"],["全員","","w"],["で","","f"],["は","","f"],["なく","ない","f"],["、","","f"],["書類","","w"],["審査","","w"],["を","","f"],["通過した","通過する","w"],["方","","w"],["","","b"],["実施します","実施する","w"],["。","","f"]],"plain":"（求人広告で） 採用にあたっては、書類審査と面接を行います。面接は、応募者全員ではなく、書類審査を通過した方（　）実施します。","zh":"招聘时会进行书面审查和面试。面试不面向全体应聘者，只针对通过书面审查的人进行。","ans":1,"opts":[{"t":"に対してのみ","tk":[["に対して","","f"],["のみ","","f"]],"z":"只对…"},{"t":"に対してさえ","tk":[["に対して","","f"],["さえ","","f"]],"z":"甚至对…"},{"t":"によってのみ","tk":[["によって","","f"],["のみ","","f"]],"z":"只通过／只由…"},{"t":"によってさえ","tk":[["によって","","f"],["さえ","","f"]],"z":"甚至由…"}],"pt":"面试的对象 →「に対して」；只限于 →「のみ」。"},{"id":"2026-07-30","p":"2026.07","m":5,"n":30,"ty":"gram","stem":[["だます","","w"],["","","b"],["、","","f"],["事実","","w"],["を","","f"],["隠していた","隠す","w"],["の","","w"],["なら","だ","f"],["、","","f"],["だました","だます","w"],["の","","w"],["と","","f"],["同じ","","f"],["だ","","f"],["。","","f"]],"plain":"だます（　）、事実を隠していたのなら、だましたのと同じだ。","zh":"就算没有骗人的打算，只要隐瞒了事实，就跟骗了一样。","ans":3,"opts":[{"t":"しかなかったとしても","tk":[["しか","","f"],["なかった","ない","w"],["として","","f"],["も","","f"]],"z":"就算只能…"},{"t":"しかなかったかというと","tk":[["しか","","f"],["なかった","ない","w"],["か","","f"],["と","","f"],["いう","","w"],["と","","f"]],"z":"要说是不是只能…"},{"t":"つもりはなかったとしても","tk":[["つもり","","w"],["は","","f"],["なかった","ない","w"],["として","","f"],["も","","f"]],"z":"就算没有…的打算"},{"t":"つもりはなかったかというと","tk":[["つもり","","w"],["は","","f"],["なかった","ない","w"],["か","","f"],["と","","f"],["いう","","w"],["と","","f"]],"z":"要说是不是没有…的打算"}],"pt":"「～つもりはなかったとしても」即使没有那个意图（结果也一样）。"},{"id":"2026-07-31","p":"2026.07","m":5,"n":31,"ty":"gram","stem":[["今度","","w"],["動物園","","w"],["に","","f"],["パンダ","","w"],["を","","f"],["見","見る","w"],["に","","f"],["行く","","w"],["。","","f"],["今","","w"],["まで","","f"],["写真","","w"],["や","","f"],["テレビ","","w"],["で","","f"],["しか","","f"],["","","b"],["、","","f"],["実物","","w"],["を","","f"],["見る","","w"],["の","","w"],["が","","f"],["非常","","w"],["に","","f"],["楽しみ","","w"],["だ","","f"],["。","","f"]],"plain":"今度動物園にパンダを見に行く。今まで写真やテレビでしか（　）、実物を見るのが非常に楽しみだ。","zh":"这次要去动物园看熊猫。正因为之前只在照片和电视上见过，所以非常期待看到真的。","ans":2,"opts":[{"t":"見たことがないだけで","tk":[["見た","見る","w"],["こと","","w"],["が","","f"],["ない","","w"],["だけ","","f"],["で","だ","f"]],"z":"只不过是没见过"},{"t":"見たことがないだけに","tk":[["見た","見る","w"],["こと","","w"],["が","","f"],["ない","","w"],["だけ","","f"],["に","","f"]],"z":"正因为没见过"},{"t":"見たかっただけで","tk":[["見たかった","見る","w"],["だけ","","f"],["で","だ","f"]],"z":"只不过是想看"},{"t":"見たかっただけに","tk":[["見たかった","見る","w"],["だけ","","f"],["に","","f"]],"z":"正因为想看"}],"pt":"「～だけに」正因为…所以更加…。「しか～ない」= 只…过。"},{"id":"2026-07-32","p":"2026.07","m":5,"n":32,"ty":"gram","stem":[["森","","w"],["「","","f"],["田中さん","","w"],["って","","f"],["、","","f"],["すごく","すごい","w"],["絵","","w"],["が","","f"],["上手","","w"],["だ","","f"],["よ","","f"],["ね","","f"],["。","","f"],["」","","f"],["","","n"],["杉山","","w"],["「","","f"],["美術","","w"],["大学","","w"],["出身","","w"],["らしい","","f"],["よ","","f"],["。","","f"],["」","","f"],["","","n"],["森","","w"],["「","","f"],["そう","","w"],["な","だ","f"],["ん","","w"],["だ","","f"],["。","","f"],["ど","","w"],["うり","","w"],["で","","f"],["上手","","w"],["な","だ","f"],["","","b"],["。","","f"],["」","","f"]],"plain":"森「田中さんって、すごく絵が上手だよね。」 杉山「美術大学出身らしいよ。」 森「そうなんだ。どうりで上手な（　）。」","zh":"森：田中画画真厉害啊。\n杉山：听说是美术大学毕业的。\n森：原来如此，怪不得画得好。","ans":1,"opts":[{"t":"はずだ","tk":[["はず","","w"],["だ","","f"]],"z":"（难怪）应该如此"},{"t":"ようだ","tk":[["よう","","w"],["だ","","f"]],"z":"好像"},{"t":"ほどだ","tk":[["ほど","","f"],["だ","","f"]],"z":"到…的程度"},{"t":"くらいだ","tk":[["くらい","","f"],["だ","","f"]],"z":"大约、到…程度"}],"pt":"「どうりで～はずだ」怪不得、难怪（知道原因后表示理解）。"},{"id":"2026-07-33","p":"2026.07","m":5,"n":33,"ty":"gram","stem":[["地道","","w"],["な","だ","f"],["基礎","","w"],["研究","","w"],["を","","f"],["軽視していて","軽視する","w"],["は","","f"],["、","","f"],["科学","","w"],["技術","","w"],["の","","f"],["発展","","w"],["など","","f"],["","","b"],["。","","f"]],"plain":"地道な基礎研究を軽視していては、科学技術の発展など（　）。","zh":"如果轻视踏实的基础研究，科学技术的发展根本无从指望。","ans":2,"opts":[{"t":"望むがゆえだ","tk":[["望","","w"],["むがゆえだ","","w"]],"z":"正因为期望"},{"t":"望むべくもない","tk":[["望むべく","望む","w"],["も","","f"],["ない","","w"]],"z":"根本无法指望"},{"t":"望むようなものだ","tk":[["望む","","w"],["よう","","w"],["な","だ","f"],["もの","","w"],["だ","","f"]],"z":"就像在期望"},{"t":"望まないでもない","tk":[["望まないで","望む","w"],["も","","f"],["ない","","w"]],"z":"也不是不期望"}],"pt":"「～べくもない」根本不可能…（书面语）。"},{"id":"2026-07-34","p":"2026.07","m":5,"n":34,"ty":"gram","stem":[["今日","","w"],["、","","f"],["友達","","w"],["が","","f"],["約束","","w"],["の","","f"],["時間","","w"],["に","","f"],["1時間","","w"],["も","","f"],["遅れてきた","遅れる","w"],["。","","f"],["5分","","w"],["、","","f"],["10分","","w"],["なら","だ","f"],["まだ","","w"],["許せる","","w"],["が","","f"],["、","","f"],["1時間","","w"],["なんて","","f"],["、","","f"],["","","b"],["。","","f"]],"plain":"今日、友達が約束の時間に1時間も遅れてきた。5分、10分ならまだ許せるが、1時間なんて、（　）。","zh":"今天朋友比约好的时间迟到了整整一小时。五分钟、十分钟还能原谅，一个小时也太离谱了。","ans":3,"opts":[{"t":"遅れる始末だ","tk":[["遅れる","","w"],["始末","","w"],["だ","","f"]],"z":"落得迟到的下场"},{"t":"遅れてはいられない","tk":[["遅れて","遅れる","w"],["は","","f"],["いられない","いる","w"]],"z":"不能再迟到了"},{"t":"遅れるにもほどがある","tk":[["遅れる","","w"],["に","","f"],["も","","f"],["ほど","","f"],["が","","f"],["ある","","w"]],"z":"迟到也要有个限度"},{"t":"遅れても不思議じゃない","tk":[["遅れて","遅れる","w"],["も","","f"],["不思議","","w"],["じゃ","","f"],["ない","","f"]],"z":"迟到也不奇怪"}],"pt":"「～にもほどがある」…也太过分了。"},{"id":"2026-07-35","p":"2026.07","m":5,"n":35,"ty":"gram","stem":[["A","","w"],["「","","f"],["うち","","w"],["の","","f"],["課","","w"],["に","","f"],["新人","","w"],["が","","f"],["入るらしい","入る","w"],["って","","f"],["昨日","","w"],["言っちゃった","言う","w"],["けど","","f"],["、","","f"],["私","","w"],["の","","f"],["勘違い","","w"],["かも","","f"],["しれない","しれる","w"],["から","","f"],["、","","f"],["","","b"],["？","","f"],["」","","f"],["","","n"],["B","","w"],["「","","f"],["うん","","w"],["、","","f"],["わかった","わかる","w"],["。","","f"],["」","","f"]],"plain":"A「うちの課に新人が入るらしいって昨日言っちゃったけど、私の勘違いかもしれないから、（　）？」 B「うん、わかった。」","zh":"A：我昨天说我们科好像要来新人，不过可能是我搞错了，你能当作没听过吗？\nB：嗯，知道了。","ans":4,"opts":[{"t":"聞かないでいてくれたのかな","tk":[["聞かないでいてくれた","聞く","w"],["の","","w"],["か","","f"],["な","","f"]],"z":"你是特意没问我吗"},{"t":"聞かなくてもよかったんじゃない","tk":[["聞かなくて","聞く","w"],["も","","f"],["よかった","よい","w"],["ん","","w"],["じゃ","","f"],["ない","","f"]],"z":"你不听也行吧"},{"t":"聞かなかったらよかったかな","tk":[["聞かなかったら","聞く","w"],["よかった","よい","w"],["か","","f"],["な","","f"]],"z":"要是没听就好了吧"},{"t":"聞かなかったことにしてくれない","tk":[["聞かなかった","聞く","w"],["こと","","w"],["に","","f"],["してくれない","する","w"]],"z":"能当作没听过吗"}],"pt":"「～ことにしてくれない？」能不能当作…（请求）。"},{"id":"2026-07-36","p":"2026.07","m":6,"n":36,"ty":"sort","pre":[["私","","w"],["は","","f"],["、","","f"],["犬","","w"],["が","","f"]],"post":[["の","","w"],["だ","","f"],["が","","f"],["、","","f"],["近寄れない","近寄れる","w"],["。","","f"]],"plain":"私は、犬が＿＿＿★＿のだが、近寄れない。","full":"私は、犬が苦手で離れて見ている分には平気なのだが、近寄れない。","order":[2,4,1,3],"star":3,"ans":1,"zh":"我怕狗，远远看着倒没事，但不敢靠近。","opts":[{"t":"分には","tk":[["分","","w"],["に","","f"],["は","","f"]],"z":""},{"t":"苦手で","tk":[["苦手","","w"],["で","だ","f"]],"z":""},{"t":"平気な","tk":[["平気","","w"],["な","だ","f"]],"z":""},{"t":"離れて見ている","tk":[["離れて","離れる","w"],["見ている","見る","w"]],"z":""}],"pt":"「～分には」只要是…的程度，就（没问题）。"},{"id":"2026-07-37","p":"2026.07","m":6,"n":37,"ty":"sort","pre":[["同僚","","w"],["が","","f"],["会社","","w"],["を","","f"],["辞める","","w"],["と","","f"],["いう","","w"],["。","","f"],["すでに","","w"],["次","","w"],["の","","f"],["仕事","","w"],["も","","f"],["決まっている","決まる","w"],["そう","","w"],["だ","","f"],["。","","f"],["長年","","w"],["一緒","","w"],["に","","f"],["仕事","","w"],["を","","f"],["してきた","する","w"],["ので","","f"],["、","","f"]],"post":[["状況","","w"],["は","","f"],["変わらないだろう","変わる","w"],["。","","f"]],"plain":"同僚が会社を辞めるという。すでに次の仕事も決まっているそうだ。長年一緒に仕事をしてきたので、＿＿＿★＿状況は変わらないだろう。","full":"同僚が会社を辞めるという。すでに次の仕事も決まっているそうだ。長年一緒に仕事をしてきたので、私としては辞めてほしくないが私が引き止めたところで状況は変わらないだろう。","order":[3,2,4,1],"star":3,"ans":4,"zh":"同事说要辞职，下一份工作好像都定好了。我们一起工作了很多年，我个人不希望他辞职，可就算我挽留，情况也不会改变吧。","opts":[{"t":"引き止めたところで","tk":[["引き止めた","引き止める","w"],["ところ","","w"],["で","","f"]],"z":""},{"t":"辞めてほしくないが","tk":[["辞めてほしくない","辞める","w"],["が","","f"]],"z":""},{"t":"私としては","tk":[["私","","w"],["として","","f"],["は","","f"]],"z":""},{"t":"私が","tk":[["私","","w"],["が","","f"]],"z":""}],"pt":"「～たところで」即使…也（没用）。\n回忆版卷子在最后一个空后多录了一个「も」，按正确句子去掉了。"},{"id":"2026-07-38","p":"2026.07","m":6,"n":38,"ty":"sort","pre":[["私","","w"],["が","","f"]],"post":[["子供","","w"],["の","","f"],["うち","","w"],["から","","f"],["身","","w"],["に","","f"],["つけさせたい","つける","w"],["と","","f"],["思う","","w"],["から","","f"],["だ","","f"],["。","","f"]],"plain":"私が＿＿＿★＿子供のうちから身につけさせたいと思うからだ。","full":"私がしつけに厳しいのは社会に出て恥をかかないだけのマナーを子供のうちから身につけさせたいと思うからだ。","order":[1,3,2,4],"star":3,"ans":2,"zh":"我之所以对孩子管教严格，是因为想让孩子从小就掌握走上社会也不会丢脸的礼仪。","opts":[{"t":"しつけに厳しいのは","tk":[["しつけ","しつける","w"],["に","","f"],["厳しい","","w"],["の","","w"],["は","","f"]],"z":""},{"t":"恥をかかないだけの","tk":[["恥","","w"],["を","","f"],["かかない","かく","w"],["だけ","","f"],["の","","f"]],"z":""},{"t":"社会に出て","tk":[["社会","","w"],["に","","f"],["出て","出る","w"]],"z":""},{"t":"マナーを","tk":[["マナー","","w"],["を","","f"]],"z":""}],"pt":"「～だけの」足以…的（程度）。"},{"id":"2026-07-39","p":"2026.07","m":6,"n":39,"ty":"sort","pre":[["ドライヤー","","w"],["なんて","","f"]],"post":[["髪","","w"],["が","","f"],["さら","","w"],["さらに","","w"],["なって","なる","w"],["驚いた","驚く","w"],["。","","f"]],"plain":"ドライヤーなんて＿＿＿★＿髪がさらさらになって驚いた。","full":"ドライヤーなんて髪を乾かせればどれでもいいと思って安いのを使っていたが高性能のドライヤーを使ってみたら髪がさらさらになって驚いた。","order":[2,1,3,4],"star":3,"ans":3,"zh":"我原以为吹风机只要能吹干头发，哪个都行，一直用便宜的；结果试了高性能的吹风机，头发变得很顺滑，吓了一跳。","opts":[{"t":"どれでもいいと思って","tk":[["どれ","","w"],["でも","","f"],["いい","","w"],["と","","f"],["思って","思う","w"]],"z":""},{"t":"髪を乾かせれば","tk":[["髪","","w"],["を","","f"],["乾かせれ","乾く","w"],["ば","","f"]],"z":""},{"t":"安いのを使っていたが","tk":[["安い","","w"],["の","","w"],["を","","f"],["使っていた","使う","w"],["が","","f"]],"z":""},{"t":"高性能のドライヤーを使ってみたら","tk":[["高性能","","w"],["の","","f"],["ドライヤー","","w"],["を","","f"],["使ってみたら","使う","w"]],"z":""}],"pt":"「～ば～でもいい」只要…就行。"},{"id":"2026-07-40","p":"2026.07","m":6,"n":40,"ty":"sort","pre":[["私","","w"],["は","","f"],["食器","","w"],["の","","f"],["収集","","w"],["が","","f"],["趣味","","w"],["な","だ","f"],["の","","w"],["だ","","f"],["が","","f"],["、","","f"],["もう","","w"],["食器","","w"],["棚","","w"],["に","","f"],["空いている","空く","w"],["スペース","","w"],["が","","f"],["なくて","ない","w"],["、","","f"],["最近","","w"],["買った","買う","w"],["新しい","","w"]],"post":[["まま","","w"],["に","","f"],["なっている","なる","w"],["。","","f"]],"plain":"私は食器の収集が趣味なのだが、もう食器棚に空いているスペースがなくて、最近買った新しい＿＿＿★＿ままになっている。","full":"私は食器の収集が趣味なのだが、もう食器棚に空いているスペースがなくて、最近買った新しい食器は箱から出すことなく押し入れにしまい込んだままになっている。","order":[4,1,2,3],"star":3,"ans":2,"zh":"我的爱好是收集餐具，可是餐具柜已经没有空位了，最近买的新餐具连盒子都没拆，就一直塞在壁橱里。","opts":[{"t":"箱から出す","tk":[["箱","","w"],["から","","f"],["出す","","w"]],"z":""},{"t":"ことなく","tk":[["こと","","w"],["なく","ない","w"]],"z":""},{"t":"押し入れにしまい込んだ","tk":[["押し入れ","","w"],["に","","f"],["しまい","しまう","w"],["込んだ","込む","w"]],"z":""},{"t":"食器は","tk":[["食器","","w"],["は","","f"]],"z":""}],"pt":"「～ことなく」不…（就做了后面的事）。"},{"id":"2026-07-41","p":"2026.07","m":7,"n":41,"ty":"text","pid":"2026.07-m7","blank":41,"plain":"文章空格［41］","zh":"针对这种现状，文部科学省设立了关于支援的专家会议。","ans":2,"opts":[{"t":"はともかく","tk":[["は","","f"],["ともかく","","w"]],"z":"姑且不论"},{"t":"を受けて","tk":[["を","","f"],["受けて","受ける","w"]],"z":"针对、根据（某事）而…"},{"t":"にあっても","tk":[["に","","f"],["あって","ある","w"],["も","","f"]],"z":"即使处在…也"},{"t":"に反して","tk":[["に","","f"],["反して","反す","w"]],"z":"与…相反"}],"pt":"「～を受けて」接受某情况、以此为契机采取行动。"},{"id":"2026-07-42","p":"2026.07","m":7,"n":42,"ty":"text","pid":"2026.07-m7","blank":42,"plain":"文章空格［42］","zh":"我想就两点谈谈个人看法。","ans":4,"opts":[{"t":"述べると思う","tk":[["述べる","","w"],["と","","f"],["思う","","w"]],"z":"（我）认为会陈述"},{"t":"述べるようにする","tk":[["述べる","","w"],["よう","","w"],["に","","f"],["する","","w"]],"z":"努力做到陈述"},{"t":"述べていただく","tk":[["述べていただく","述べる","w"]],"z":"请（别人）陈述"},{"t":"述べたい","tk":[["述べたい","述べる","w"]],"z":"想要陈述"}],"pt":"作者自己要发表意见，用「～たい」。"},{"id":"2026-07-43","p":"2026.07","m":7,"n":43,"ty":"text","pid":"2026.07-m7","blank":43,"plain":"文章空格［43］","zh":"在不得不搞“齐头并进主义”的学校里……","ans":3,"opts":[{"t":"なりきれない","tk":[["なりきれない","なる","w"]],"z":"无法完全成为"},{"t":"なりようがない","tk":[["なりよう","","w"],["が","","f"],["ない","","w"]],"z":"不可能变成"},{"t":"ならざるを得ない","tk":[["ならざる","なる","w"],["を","","f"],["得ない","得る","w"]],"z":"不得不变成"},{"t":"なるわけにはいかない","tk":[["なる","","w"],["わけ","","w"],["に","","f"],["は","","f"],["いかない","いく","w"]],"z":"不能变成"}],"pt":"「～ざるを得ない」不得不…。前面的「どうしても」是提示。"},{"id":"2026-07-44","p":"2026.07","m":7,"n":44,"ty":"text","pid":"2026.07-m7","blank":44,"plain":"文章空格［44］","zh":"因为造成孩子跟不上课、不去上学的一大原因，也在于凡事过度要求“大家一起”的学校制度。","ans":1,"opts":[{"t":"あるからだ","tk":[["ある","","w"],["から","","f"],["だ","","f"]],"z":"是因为在于…"},{"t":"あるだけだ","tk":[["ある","","w"],["だけ","","f"],["だ","","f"]],"z":"只是在于…"},{"t":"あるほどだ","tk":[["ある","","w"],["ほど","","f"],["だ","","f"]],"z":"甚至在于…"},{"t":"ある点だ","tk":[["ある","","f"],["点","","w"],["だ","","f"]],"z":"在于…这一点"}],"pt":"前一句说提议要被看作改变整个教育体系的一步，这一句说明理由，所以用「～からだ」。"}],"passages":{"2026.07-m7":{"intro":"以下は、教育学者が書いた文章である。","tk":[["学校","","w"],["に","","f"],["は","","f"],["、","","f"],["言語","","w"],["、","","f"],["数学","","w"],["、","","f"],["音楽","","w"],["、","","f"],["運動","","w"],["といった","","f"],["分野","","w"],["や","","f"],["、","","f"],["記憶力","","w"],["、","","f"],["創造性","","w"],["など","","f"],["に関する","","f"],["突出した","突出する","w"],["才能","","w"],["を","","f"],["持つ","","w"],["子どもたち","","w"],["が","","f"],["いる","","w"],["。","","f"],["その","","f"],["中","","w"],["に","","f"],["は","","f"],["、","","f"],["学校","","w"],["の","","f"],["授業","","w"],["の","","f"],["レベル","","w"],["が","","f"],["合わず","合う","w"],["苦痛","","w"],["だっ","だ","f"],["たり","","f"],["、","","f"],["別","","w"],["の","","f"],["教科","","w"],["で","","f"],["は","","f"],["学習","","w"],["困難","","w"],["を","","f"],["抱えていたり","抱える","w"],["と","","f"],["、","","f"],["つらい","","w"],["思い","","w"],["を","","f"],["抱える","","w"],["子ども","","w"],["も","","f"],["多い","","w"],["。","","f"],["","","n"],["こうした","","f"],["現状","","w"],["41","","b"],["、","","f"],["文部","","w"],["科学省","","w"],["は","","f"],["支援","","w"],["について","","f"],["有識者","","w"],["会議","","w"],["を","","f"],["設けた","設ける","w"],["。","","f"],["7","","w"],["月","","w"],["に","","f"],["発表された","発表する","w"],["審議","","w"],["まとめ","","w"],["に","","f"],["は","","f"],["、","","f"],["理解","","w"],["の","","f"],["ため","","w"],["の","","f"],["周知","","w"],["や","","f"],["研修","","w"],["の","","f"],["促進","","w"],["、","","f"],["多様","","w"],["な","だ","f"],["学習","","w"],["の","","f"],["場","","w"],["の","","f"],["充実","","w"],["など","","f"],["の","","f"],["提言","","w"],["が","","f"],["盛り込まれた","盛り込む","w"],["。","","f"],["","","n"],["2点","","w"],["、","","f"],["私見","","w"],["を","","f"],["42","","b"],["。","","f"],["","","n"],["まず","","w"],["、","","f"],["今回","","w"],["の","","f"],["提言","","w"],["は","","f"],["、","","f"],["英才","","w"],["教育","","w"],["を","","f"],["目的","","w"],["と","","f"],["する","","w"],["もの","","w"],["で","だ","f"],["は","","f"],["なく","ない","f"],["、","","f"],["すべて","","w"],["の","","f"],["子ども","","w"],["の","","f"],["学習権","","w"],["を","","f"],["保障する","","w"],["という","","f"],["文脈","","w"],["で","","f"],["理解されるべき","理解する","w"],["もの","","w"],["で","だ","f"],["ある","","f"],["。","","f"],["教育","","w"],["基本法","","w"],["に","","f"],["は","","f"],["「","","f"],["すべて","","w"],["国民","","w"],["は","","f"],["、","","f"],["ひとしく","ひとしい","w"],["、","","f"],["その","","f"],["能力","","w"],["に","","f"],["応じた","応じる","w"],["教育","","w"],["を","","f"],["受ける","","w"],["機会","","w"],["を","","f"],["与えられなけれ","与える","w"],["ば","","f"],["ならない","なる","w"],["」","","f"],["と","","f"],["ある","","w"],["。","","f"],["「","","f"],["特異","","w"],["な","だ","f"],["才能","","w"],["」","","f"],["を","","f"],["持った","持つ","w"],["子どもたち","","w"],["が","","f"],["、","","f"],["どうしても","","w"],["横並び","","w"],["主義","","w"],["に","","f"],["43","","b"],["学校","","w"],["の","","f"],["中","","w"],["で","","f"],["その","","f"],["機会","","w"],["を","","f"],["十分","","w"],["に","","f"],["得られていない","得る","w"],["の","","w"],["だ","","f"],["と","","f"],["すれ","する","w"],["ば","","f"],["、","","f"],["それ","","w"],["を","","f"],["保障する","","w"],["こと","","w"],["は","","f"],["国","","w"],["の","","f"],["使命","","w"],["な","だ","f"],["の","","w"],["で","だ","f"],["ある","","f"],["。","","f"],["","","n"],["次に","","w"],["、","","f"],["今回","","w"],["の","","f"],["提言","","w"],["は","","f"],["、","","f"],["教育","","w"],["システム","","w"],["全体","","w"],["を","","f"],["長い","","w"],["目","","w"],["で","","f"],["変えていく","変える","w"],["ため","","w"],["の","","f"],["一つ","","w"],["の","","f"],["ステップ","","w"],["として","","f"],["捉えられる","捉える","w"],["必要","","w"],["が","","f"],["ある","","w"],["。","","f"],["「","","f"],["特異","","w"],["な","だ","f"],["才能","","w"],["」","","f"],["を","","f"],["持った","持つ","w"],["子ども","","w"],["に","","f"],["限らず","限る","w"],["、","","f"],["授業","","w"],["に","","f"],["ついていけない","ついていける","w"],["子ども","","w"],["や","","f"],["不","","w"],["登校等","","w"],["を","","f"],["生み出してしまっている","生み出す","w"],["一つ","","w"],["の","","f"],["大きな","","f"],["要因","","w"],["も","","f"],["、","","f"],["何","","w"],["でも","","f"],["「","","f"],["みんな","","w"],["で","","f"],["一緒","","w"],["」","","f"],["を","","f"],["過度","","w"],["に","","f"],["求める","","w"],["学校","","w"],["システム","","w"],["に","","f"],["44","","b"],["。","","f"],["","","n"],["皆","","w"],["で","","f"],["同じ","","f"],["こと","","w"],["を","","f"],["、","","f"],["同じ","","f"],["ペース","","w"],["で","","f"],["、","","f"],["で","だ","f"],["は","","f"],["なく","ない","f"],["、","","f"],["仲間","","w"],["や","","f"],["先生","","w"],["と","","f"],["の","","f"],["協","","w"],["働","","w"],["に","","f"],["支えられ","支える","w"],["ながら","","f"],["、","","f"],["子どもたち","","w"],["が","","f"],["自分","","w"],["の","","f"],["ペース","","w"],["で","","f"],["、","","f"],["自分","","w"],["に","","f"],["あった","ある","w"],["やり方","","w"],["で","","f"],["学び","","w"],["を","","f"],["進められる","進める","w"],["こと","","w"],["。","","f"],["それ","","w"],["を通じて","","f"],["、","","f"],["すべて","","w"],["の","","f"],["子ども","","w"],["の","","f"],["学習権","","w"],["を","","f"],["保障する","","w"],["こと","","w"],["。","","f"],["その","","f"],["よう","","w"],["な","だ","f"],["システム","","w"],["の","","f"],["転換","","w"],["を","","f"],["こそ","","f"],["、","","f"],["私たち","","w"],["は","","f"],["実現させていく","実現する","w"],["必要","","w"],["が","","f"],["ある","","w"],["の","","w"],["だ","","f"],["。","","f"]]}}};
+const PAPERS = [
+  {id:'2026.07', name:'2026年7月'}, {id:'2025.12', name:'2025年12月'}, {id:'2025.07', name:'2025年7月'},
+  {id:'2024.12', name:'2024年12月'}, {id:'2024.07', name:'2024年7月'}, {id:'2023.12', name:'2023年12月'}, {id:'2023.07', name:'2023年7月'}];
+const MT = {1:'读音',2:'填词',3:'近义',4:'用法',5:'语法',6:'排序',7:'文章语法'};
+const Q = {}; DATA.questions.forEach(q => Q[q.id] = q);
+const QS = DATA.questions;
+const BG_COUNT = 8;
+
+const ICON = {
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+  chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
+  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  tap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>',
+  pen:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4l5 5-9 9H6v-5z"/><path d="M4 21h16"/></svg>',
+  gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>',
+  eyeoff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7c1.9 0 3.5-.6 4.9-1.4"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  undo:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5z"/></svg>',
+};
+
+const S = {
+  view:'home', vp:{}, stack:[],
+  prog:{}, words:{}, settings:{skin:'orchard', bg:'random'}, session:null,
+  db:null, cloud:'ld', gotProg:false, gotWords:false,
+  paperTab:'vocab', open:new Set(), mode:'answer', marks:new Set(), unmarks:new Set(), hideMarks:false, peekOpen:false, noteOpen:new Set(), filter:'', del:null, noteDraft:{},
+  setup:{papers:new Set(['2026.07']), cat:'vocab', types:new Set([1,2,3,4,5,6,7]), holdOnly:false, order:'rand', count:10, skip:true},
+};
+
+/* ---------- 工具 ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nl = s => esc(s).replace(/\n/g, '<br>');
+const paperName = id => (PAPERS.find(p => p.id === id) || {name:id}).name;
+const qLabel = q => `${paperName(q.p)} · 第${q.m}题·${MT[q.m]} · 问${q.n}`;
+const shortP = id => id.replace(/^20(\d\d)\.0?(\d+)$/, '$1.$2');
+const isRight = (q, sel) => q.ty === 'sort' ? (Array.isArray(sel) && sel[q.star - 1] === q.ans) : sel === q.ans;
+function hasAns(q, sel){ return q.ty === 'sort' ? Array.isArray(sel) && sel.every(x => x) : !!sel }
+function toast(msg){ const l = document.createElement('div'); l.className = 'toast'; l.textContent = msg; document.body.appendChild(l); setTimeout(() => l.remove(), 2200) }
+function shuffle(a){ a = a.slice(); for (let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]] } return a }
+
+/* ---------- 云端存储 ---------- */
+const queues = {};
+function write(path, fn){
+  if (!S.db) { toast('云端没连上，这次没存进去'); return Promise.resolve() }
+  const prev = queues[path] || Promise.resolve();
+  const next = prev.then(fn).catch(e => { console.error(e); toast('没存进去：' + (e && e.code === 'quota_exceeded' ? '云端空间满了' : '网络有问题，再点一次试试')) });
+  queues[path] = next; return next;
+}
+function setProg(id, patch){
+  const cur = S.prog[id] || {};
+  const doc = Object.assign({sel:null, ok:null, n:0, st:'', note:'', t:0}, cur, patch);
+  S.prog[id] = doc;
+  return write('progress/' + id, () => S.db.doc('progress/' + id).set(doc));
+}
+let sessTimer = null;
+function saveSession(now){
+  clearTimeout(sessTimer);
+  const go = () => { const s = S.session; return write('sessions/current', () => s && !s.done ? S.db.doc('sessions/current').set({qids:s.qids, i:s.i, ans:s.ans, rev:s.rev, t:Date.now()}) : S.db.doc('sessions/current').delete()) };
+  if (now) return go(); sessTimer = setTimeout(go, 700);
+}
+function saveSettings(){ const s = {skin:S.settings.skin, bg:S.settings.bg}; try { localStorage.setItem('n1skin', JSON.stringify(s)) } catch(e){} return write('settings/main', () => S.db.doc('settings/main').set(s)) }
+
+async function initCloud(){
+  let db = null;
+  try { db = await window.claude?.use?.('db') } catch(e) {}
+  if (!db) { S.cloud = 'off'; render(); return }
+  S.db = db;
+  const timer = setTimeout(() => { if (S.cloud === 'ld') { S.cloud = 'slow'; render() } }, 10000);
+  const done = () => { if (S.gotProg && S.gotWords) { clearTimeout(timer); S.cloud = 'ok'; render() } };
+  const fail = e => { clearTimeout(timer); console.error(e); S.cloud = 'off'; render() };
+  db.collection('progress').onSnapshot(snap => {
+    const m = {}; snap.docs.forEach(d => m[d.id] = Object.assign({}, d.data()));
+    S.prog = m; if (!snap.metadata.fromCache) S.gotProg = true; done(); render(true);
+  }, fail);
+  db.collection('words').onSnapshot(snap => {
+    const m = {}; snap.docs.forEach(d => m[d.id] = Object.assign({id:d.id}, d.data()));
+    S.words = m; if (!snap.metadata.fromCache) S.gotWords = true; done(); render(true);
+  }, fail);
+  db.doc('settings/main').onSnapshot(d => {
+    if (d.exists) { const v = d.data(); if (v.skin !== S.settings.skin || v.bg !== S.settings.bg) { S.settings = {skin:v.skin || 'orchard', bg:v.bg || 'random'}; applySkin(); render(true) } }
+  }, () => {});
+  try {
+    const d = await db.doc('sessions/current').get();
+    if (d.exists && !S.session) { const v = d.data(); if (Array.isArray(v.qids) && v.qids.every(id => Q[id])) { S.session = {qids:v.qids, i:v.i || 0, ans:Object.assign({}, v.ans), rev:Object.assign({}, v.rev), done:false}; render(true) } }
+  } catch(e) {}
+}
+
+/* ---------- 皮肤 ---------- */
+let bgPick = 1 + Math.floor(Math.random() * BG_COUNT);
+function applySkin(){
+  document.body.dataset.skin = S.settings.skin;
+  const n = S.settings.bg === 'random' ? bgPick : +S.settings.bg;
+  document.getElementById('bgimg').style.backgroundImage = S.settings.skin === 'orchard' ? `url("bg/bg${n}.jpg")` : 'none';
+}
+try { const s = JSON.parse(localStorage.getItem('n1skin') || 'null'); if (s && s.skin) S.settings = s } catch(e) {}
+applySkin();
+
+/* ---------- 导航 ---------- */
+function go(view, vp, push = true){ if (push) S.stack.push({view:S.view, vp:S.vp}); S.view = view; S.vp = vp || {}; S.del = null; render(); window.scrollTo(0, 0) }
+function back(){ const p = S.stack.pop(); if (!p) { go('home', {}, false); return } S.view = p.view; S.vp = p.vp; S.del = null; render(); window.scrollTo(0, 0) }
+
+
+/* ---------- 生词标记 ----------
+   已存的词：words 集合里 q=题号、k=位置键（题号|范围|序号，整项为 题号|oN|all）
+   S.marks   = 待新增的位置键
+   S.unmarks = 待删除的已存词 id
+   点「保存」才按最后的状态写进云端 */
+function savedMap(qid){ const m = new Map(); Object.values(S.words).forEach(w => { if (w.q === qid && w.k) m.set(w.k, w.id) }); return m }
+function isOn(key, saved){ return saved.has(key) ? !S.unmarks.has(saved.get(key)) : S.marks.has(key) }
+function toggleMark(key){
+  const qid = key.split('|')[0]; const saved = savedMap(qid);
+  if (saved.has(key)) { const id = saved.get(key); S.unmarks.has(id) ? S.unmarks.delete(id) : S.unmarks.add(id) }
+  else S.marks.has(key) ? S.marks.delete(key) : S.marks.add(key);
+}
+function pendingCount(){ return S.marks.size + S.unmarks.size }
+function onCount(qid){ const saved = savedMap(qid); let n = 0; saved.forEach((id, k) => { if (!S.unmarks.has(id)) n++ }); S.marks.forEach(k => { if (k.startsWith(qid + '|')) n++ }); return n }
+
+/* ---------- 题目渲染 ---------- */
+function scopeTokens(q, sc){
+  if (sc === 's') return q.stem; if (sc === 'pre') return q.pre; if (sc === 'post') return q.post;
+  if (sc === 'p') return DATA.passages[q.pid].tk;
+  if (sc[0] === 'o') return q.opts[+sc.slice(1) - 1].tk; return [];
+}
+function toks(q, sc, tokens, mk){ return tokens.map((t, i) => toksAt(q, sc, tokens, i, mk)).join('') }
+/* mk: null = 普通显示；{saved} = 标生词模式 */
+function toksAt(q, sc, tokens, i, mk){
+  const t = tokens[i];
+  if (t[2] === 'n') return '<br>';
+  if (t[2] === 'b') {
+    if (q.ty === 'text') return `<span class="blank${+t[0] === q.blank ? ' cur' : ''}">${esc(t[0])}</span>`;
+    return '<span class="blank">（　　）</span>';
+  }
+  const w = t[2] === 'w' || t[2] === 'u';
+  const u = t[2] === 'u' ? ' u' : '';
+  if (mk && w) {
+    const k = `${q.id}|${sc}|${i}`;
+    return `<span class="tk${u}${isOn(k, mk.saved) ? ' on' : ''}" role="button" tabindex="0" data-act="mark" data-k="${k}">${esc(t[0])}</span>`;
+  }
+  return u ? `<span class="u">${esc(t[0])}</span>` : esc(t[0]);
+}
+function passageHTML(q, mk){
+  const P = DATA.passages[q.pid];
+  const parts = [[]]; P.tk.forEach((t, i) => { if (t[2] === 'n') parts.push([]); else parts[parts.length - 1].push(i) });
+  const html = parts.map(idx => '<p lang="ja">' + idx.map(i => toksAt(q, 'p', P.tk, i, mk)).join('') + '</p>').join('');
+  return `<div class="psg-intro">${esc(P.intro)}</div><div class="psg">${html}</div>`;
+}
+/* ctx: {mark:bool, sel, show, locked}
+   标生词模式下页面保持干净：不显示选中、对错、解析 */
+function questionHTML(q, ctx){
+  const mk = ctx.mark && !S.hideMarks ? {saved:savedMap(q.id)} : null;
+  const clean = ctx.mark;
+  const show = ctx.show && !clean, sel = clean ? null : ctx.sel;
+  let h = '';
+  if (q.ty === 'text') h += passageHTML(q, mk) + `<div class="stem stem-sm" lang="ja">［${q.blank}］に入るもの</div>`;
+  else if (q.ty === 'use') h += `<div class="stem stem-word" lang="ja">${toks(q, 's', q.stem, mk)}</div>`;
+  else if (q.ty === 'sort') {
+    const a = Array.isArray(sel) ? sel : [0, 0, 0, 0];
+    const slots = a.map((v, j) => `<span class="slot${j === q.star - 1 ? ' star' : ''}${v ? ' f' : ''}" ${!ctx.locked && !clean ? `role="button" tabindex="0" data-act="unslot" data-j="${j}"` : ''}>${v ? esc(q.opts[v - 1].t) : (j === q.star - 1 ? '★' : '')}</span>`).join('');
+    h += `<div class="sortline" lang="ja">${toks(q, 'pre', q.pre, mk)}${slots}${toks(q, 'post', q.post, mk)}</div>`;
+    h += `<div class="chips">` + q.opts.map((o, i) => {
+      const n = i + 1, used = a.includes(n);
+      if (mk) { const k = `${q.id}|o${n}|all`; return `<div class="chip mk${isOn(k, mk.saved) ? ' whole' : ''}" role="button" tabindex="0" data-act="mark" data-k="${k}" lang="ja"><span class="no">${n}</span>${toks(q, 'o' + n, o.tk, mk)}</div>` }
+      return `<button class="chip${used ? ' used' : ''}" lang="ja" ${!ctx.locked && !clean && !used ? `data-act="slot" data-i="${n}"` : 'tabindex="-1"'}><span class="no">${n}</span>${esc(o.t)}</button>`;
+    }).join('') + '</div>';
+  } else h += `<div class="stem" lang="ja">${toks(q, 's', q.stem, mk)}</div>`;
+
+  if (q.ty !== 'sort') {
+    const long = q.ty === 'use' || q.opts.some(o => o.t.length > 9);
+    h += `<div class="opts${long ? '' : ' two'}${clean ? '' : ' ans'}">` + q.opts.map((o, i) => {
+      const n = i + 1; let cls = 'op';
+      if (mk) {
+        const k = `${q.id}|o${n}|all`;
+        return `<div class="op mk${isOn(k, mk.saved) ? ' whole' : ''}" role="button" tabindex="0" data-act="mark" data-k="${k}" aria-label="整项标记 ${n}"><span class="no">${n}</span><span class="tx"><span class="main" lang="ja">${toks(q, 'o' + n, o.tk, mk)}</span></span></div>`;
+      }
+      if (sel === n) cls += ' pick';
+      if (show && n === q.ans) cls += ' right';
+      if (show && sel === n && n !== q.ans) cls += ' wrong';
+      if (show && o.x) cls += ' x';
+      let sub = '';
+      if (show) {
+        if (q.ty === 'read' || q.ty === 'fill' || q.ty === 'syn') sub = o.x ? '' : [o.k, o.z].filter(Boolean).map(esc).join(' · ');
+        else sub = esc(o.z || '');
+      }
+      const tag = show && n === q.ans ? '<span class="tag ok">正解</span>' : (show && sel === n ? '<span class="tag ng">你选</span>' : '');
+      const act = !clean && !ctx.locked ? `data-act="pick" data-n="${n}"` : 'tabindex="-1"';
+      return `<button class="${cls}" ${act}><span class="no">${n}</span><span class="tx"><span class="main" lang="ja">${esc(o.t)}</span>${sub ? `<span class="sub">${sub}</span>` : ''}</span>${tag}</button>`;
+    }).join('') + '</div>';
+  }
+  if (show) h += expHTML(q, sel);
+  return `<div class="q${mk ? ' marking' : ''}">${h}</div>`;
+}
+function expHTML(q, sel){
+  let v;
+  if (hasAns(q, sel)) v = isRight(q, sel) ? '<div class="verdict ok">✓ 答对了</div>' : '<div class="verdict ng">✗ 答错了</div>';
+  else v = '<div class="verdict na">没作答</div>';
+  let h = `<div class="exp">${v}`;
+  if (q.ty === 'sort') {
+    const star = q.opts[q.ans - 1].t;
+    h += `<div class="full" lang="ja">${esc(q.full).replace(esc(star), `<b class="starw">${esc(star)}</b>`)}</div>`;
+    h += `<div class="ord">正确顺序 ${q.order.join(' → ')}　★ = ${q.ans}</div>`;
+  }
+  if (q.ty === 'use') h += `<div class="pt"><b>${esc(q.word)}</b>${q.rd ? '（' + esc(q.rd) + '）' : ''}：${esc(q.wz)}</div>`;
+  else h += `<div class="zh">${nl(q.zh)}</div>`;
+  if (q.pt) h += `<div class="pt">${nl(q.pt)}</div>`;
+  return h + '</div>';
+}
+function statusActs(qid){
+  const p = S.prog[qid] || {};
+  return `<div class="acts"><button class="act hold${p.st === 'hold' ? ' on' : ''}" data-act="st" data-st="hold" data-q="${qid}">${p.st === 'hold' ? '已在备用' : '暂时备用'}</button><button class="act pass${p.st === 'pass' ? ' on' : ''}" data-act="st" data-st="pass" data-q="${qid}">${p.st === 'pass' ? '已过 ✓' : '过'}</button></div>`;
+}
+/* 备注：默认收起，有内容时显示一行预览；展开后右下角圆形 ✓ 保存（离开输入框也会自动存） */
+function noteHTML(qid){
+  const p = S.prog[qid] || {};
+  const saved = p.note || '';
+  const v = S.noteDraft[qid] ?? saved;
+  const open = S.noteOpen.has(qid);
+  const dirty = S.noteDraft[qid] !== undefined && S.noteDraft[qid] !== saved;
+  let h = `<div class="note${open ? ' open' : ''}"><button class="note-h" data-act="note" data-q="${qid}" aria-expanded="${open}"><span class="note-t">备注</span><span class="note-pv">${open ? '' : esc(saved.split('\n')[0] || '点开写备注')}</span>${ICON.chev}</button>`;
+  if (open) h += `<div class="note-b"><textarea id="note-${qid}" data-note="${qid}" placeholder="写给这道题的备注">${esc(v)}</textarea><button class="note-ok${dirty ? ' dirty' : ''}" data-act="savenote" data-q="${qid}" aria-label="保存备注">${ICON.check}</button></div>`;
+  return h + '</div>';
+}
+function modeHTML(){
+  return `<div class="mode" role="group" aria-label="模式"><button class="a${S.mode === 'answer' ? ' on' : ''}" data-act="mode" data-m="answer" aria-label="选答案">${ICON.tap}<span>选答案</span></button><button class="k${S.mode === 'mark' ? ' on' : ''}" data-act="mode" data-m="mark" aria-label="标生词">${ICON.pen}<span>标生词</span></button></div>`;
+}
+function cloudHTML(){
+  const m = {ok:['ok','已同步'], ld:['ld','连接中'], slow:['ld','云端还没回应'], off:['off','云端没连上']}[S.cloud];
+  return `<span class="cloud ${m[0]}"><i></i>${m[1]}</span>`;
+}
+/* 标生词工具条：隐藏/显示 · 本题已标数 · 撤销改动 · 保存 */
+function markBar(qid){
+  if (S.mode !== 'mark') return '';
+  const pend = pendingCount();
+  return `<div class="markbar" role="toolbar" aria-label="生词"><button class="mb-i" data-act="hidemarks" aria-label="${S.hideMarks ? '显示标记' : '隐藏标记'}">${S.hideMarks ? ICON.eyeoff : ICON.eye}</button><span class="mb-n">本题 ${onCount(qid)} 个${pend ? `<em>· ${pend} 处没保存</em>` : ''}</span><button class="mb-i" data-act="clearmarks" ${pend ? '' : 'disabled'} aria-label="撤销没保存的改动">${ICON.undo}</button><button class="mb-ok" data-act="savemarks" ${pend ? '' : 'disabled'} aria-label="保存到暂存本">${ICON.check}</button></div>`;
+}
+
+/* ---------- 页面 ---------- */
+function statsFor(qs){ let pass = 0, hold = 0, done = 0, wrong = 0; qs.forEach(q => { const p = S.prog[q.id]; if (!p) return; if (p.st === 'pass') pass++; if (p.st === 'hold') hold++; if (p.n) done++; if (p.n && p.ok === false) wrong++ }); return {pass, hold, done, wrong} }
+
+function vHome(){
+  const st = statsFor(QS);
+  const staged = Object.values(S.words).filter(w => w.st !== 'book').length;
+  const book = Object.values(S.words).filter(w => w.st === 'book').length;
+  let h = `<header class="top"><div class="ttl"></div>${cloudHTML()}<button class="ibtn" data-act="settings" aria-label="外观">${ICON.gear}</button></header>`;
+  h += `<section class="hero"><h1>橘园 N1</h1><p>真题 ${QS.length} 道 · 做过 ${st.done} · 过 ${st.pass}</p></section><div class="stack">`;
+  if (S.cloud === 'off') h += `<div class="warn">云端没连上，现在做的题不会被记下来。关掉页面重新打开试试。</div>`;
+  if (S.cloud === 'slow') h += `<div class="warn">云端还没回应，记录可能还没加载出来，稍等一下。</div>`;
+  if (S.session && !S.session.done) {
+    const s = S.session; const n = s.qids.filter(id => hasAns(Q[id], s.ans[id])).length;
+    h += `<button class="resume" data-act="resume"><span class="rs-t">继续上次</span><span class="rs-s">共 ${s.qids.length} 题 · 做了 ${n} 题</span>${ICON.play}</button>`;
+  }
+  h += `<button class="btn pri full" data-act="setup">开始做题</button>`;
+  h += `<div class="tiles"><button class="tile hold" data-act="setup" data-hold="1"><b>${st.hold}</b><span>暂时备用</span></button><button class="tile word" data-act="words"><b>${staged}</b><span>暂存生词</span></button><button class="tile" data-act="words" data-tab="book"><b>${book}</b><span>单词本</span></button></div>`;
+  h += `<div class="label">题库 · 按套卷</div><div class="papers">`;
+  PAPERS.forEach(p => {
+    const qs = QS.filter(q => q.p === p.id);
+    if (!qs.length) { h += `<div class="paper off"><span class="pp"><span class="yr">${p.name}</span><span class="ps">题目还没录入</span></span></div>`; return }
+    const s = statsFor(qs); const pct = Math.round(s.pass / qs.length * 100);
+    h += `<button class="paper" data-act="paper" data-p="${p.id}"><span class="pp"><span class="yr">${p.name}</span><span class="ps">单词 ${qs.length} 道 · 过 ${s.pass} · 备用 ${s.hold}</span><span class="bar"><i data-w="${pct}"></i></span></span><span class="pct">${pct}%</span></button>`;
+  });
+  return h + '</div></div>';
+}
+
+function vPaper(){
+  const pid = S.vp.p; const qs = QS.filter(q => q.p === pid); const f = S.filter;
+  const st = statsFor(qs);
+  const match = q => { const p = S.prog[q.id] || {}; return !f || (f === 'hold' && p.st === 'hold') || (f === 'pass' && p.st === 'pass') || (f === 'wrong' && p.n && p.ok === false) };
+  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">${paperName(pid)}</div>${cloudHTML()}</header><div class="stack">`;
+  h += `<div class="tabs"><button class="on">单词</button><button disabled>阅读 · 未做</button><button disabled>听力 · 未做</button></div>`;
+  h += `<div class="filters" role="group" aria-label="筛选"><button class="flt${!f ? ' on' : ''}" data-act="filter" data-f="">全部 ${qs.length}</button><button class="flt hold${f === 'hold' ? ' on' : ''}" data-act="filter" data-f="hold"><i></i>暂时备用 ${st.hold}</button><button class="flt pass${f === 'pass' ? ' on' : ''}" data-act="filter" data-f="pass"><i></i>过了 ${st.pass}</button><button class="flt wrong${f === 'wrong' ? ' on' : ''}" data-act="filter" data-f="wrong"><i></i>上次错 ${st.wrong}</button></div>`;
+  let any = false;
+  for (let m = 1; m <= 7; m++) {
+    const all = qs.filter(q => q.m === m); if (!all.length) continue;
+    const g = all.filter(match); if (f && !g.length) continue; any = true;
+    const s = statsFor(all); const key = pid + m; const open = f ? true : S.open.has(key);
+    h += `<div class="grp${open ? ' open' : ''}"><button class="grp-h" data-act="grp" data-k="${key}" aria-expanded="${open}"><b>第${m}题·${MT[m]}</b><span class="gs">问${all[0].n}–${all[all.length - 1].n} · 过 ${s.pass}/${all.length}</span>${ICON.chev}</button>`;
+    if (open) h += '<div class="qlist">' + g.map(q => {
+      const p = S.prog[q.id] || {};
+      const wrong = p.n && p.ok === false;
+      const cls = 'qc' + (p.st === 'hold' ? ' hold' : '') + (p.st === 'pass' ? ' pass' : '');
+      return `<button class="${cls}" data-act="detail" data-q="${q.id}"><span class="qn">问${q.n}</span><span class="s" lang="ja">${esc(q.plain)}</span>${wrong ? '<span class="dot" aria-label="上次错"></span>' : ''}</button>`;
+    }).join('') + '</div>';
+    h += '</div>';
+  }
+  if (!any) h += `<div class="empty">没有符合的题</div>`;
+  return h + '</div>';
+}
+
+/* 题库里的单题：小眼睛开 = 显示做过的痕迹（上次选的、正解、解析），关 = 原始题面 */
+function vDetail(){
+  const q = Q[S.vp.q]; const p = S.prog[q.id] || {};
+  const open = S.peekOpen;
+  const mark = S.mode === 'mark';
+  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">问${q.n}</div>${modeHTML()}</header><div class="stack">`;
+  h += `<article class="card qcard"><div class="qhead"><span class="tag-l">${esc(qLabel(q))}</span>${!mark ? `<button class="peek${open ? ' on' : ''}" data-act="peekd" aria-pressed="${open}" aria-label="${open ? '收起答案' : '查看答案'}">${open ? ICON.eye : ICON.eyeoff}</button>` : ''}</div>`;
+  h += questionHTML(q, {mark, sel:open && p.n ? p.sel : null, show:open, locked:true});
+  if (!mark && open && p.n) h += `<div class="times">做过 ${p.n} 次</div>`;
+  if (!mark) h += statusActs(q.id);
+  h += '</article>';
+  if (!mark) h += noteHTML(q.id) + `<button class="btn pri full" data-act="drillone" data-q="${q.id}">做这道题</button>`;
+  h += '</div>';
+  h += `<div class="foot">${markBar(q.id)}</div>`;
+  return h;
+}
+
+function availFor(su){
+  return QS.filter(q => su.papers.has(q.p) && su.types.has(q.m) && (!su.holdOnly || (S.prog[q.id] || {}).st === 'hold') && (!su.skip || su.holdOnly || (S.prog[q.id] || {}).st !== 'pass'));
+}
+function vSetup(){
+  const su = S.setup; const av = availFor(su);
+  if (su.count > av.length) su.count = av.length; if (su.count < 1 && av.length) su.count = Math.min(10, av.length);
+  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">选一组</div></header><div class="stack">`;
+  h += `<section class="fs"><div class="label">卷子范围</div><div class="chs">` + PAPERS.map(p => {
+    const ok = QS.some(q => q.p === p.id);
+    return `<button class="ch${su.papers.has(p.id) ? ' on' : ''}" ${ok ? `data-act="su-p" data-p="${p.id}"` : 'disabled'}>${shortP(p.id)}</button>`;
+  }).join('') + '</div></section>';
+  h += `<section class="fs"><div class="label">题范围</div><div class="chs"><button class="ch on">单词</button><button class="ch" disabled>阅读</button><button class="ch" disabled>听力</button></div>`;
+  h += `<div class="chs"><button class="ch${su.types.size === 7 ? ' on' : ''}" data-act="su-tall">全部题型</button>` + [1,2,3,4,5,6,7].map(m => `<button class="ch${su.types.has(m) && su.types.size < 7 ? ' on' : ''}" data-act="su-t" data-m="${m}">第${m}题·${MT[m]}</button>`).join('') + '</div>';
+  h += `<label class="chk"><input type="checkbox" id="su-hold" data-act="su-hold" ${su.holdOnly ? 'checked' : ''}>只抽暂时备用的题</label>`;
+  h += `<label class="chk"><input type="checkbox" id="su-skip" data-act="su-skip" ${su.skip ? 'checked' : ''} ${su.holdOnly ? 'disabled' : ''}>跳过已经过的</label></section>`;
+  h += `<section class="fs"><div class="label">排题顺序</div><div class="chs"><button class="ch${su.order === 'rand' ? ' on' : ''}" data-act="su-o" data-o="rand">随机</button><button class="ch${su.order === 'seq' ? ' on' : ''}" data-act="su-o" data-o="seq">按问号顺序</button></div></section>`;
+  h += `<section class="fs"><div class="label">题数 · 现在能抽 ${av.length} 道</div><div class="stepper"><button class="stp" data-act="su-c" data-d="-5" aria-label="减五">−</button><output>${su.count}</output><button class="stp" data-act="su-c" data-d="5" aria-label="加五">+</button><button class="ch" data-act="su-all">全部</button></div></section>`;
+  h += `<button class="btn pri full" data-act="start" ${av.length && su.count ? '' : 'disabled'}>开始 ${su.count} 道</button>`;
+  if (S.session && !S.session.done) h += `<div class="hint">开始新的一组会替换掉没做完的那组</div>`;
+  return h + '</div>';
+}
+
+function vDrill(){
+  const s = S.session; if (!s) { S.view = 'home'; return vHome() }
+  const qid = s.qids[s.i]; const q = Q[qid];
+  const review = s.done; const show = review || !!s.rev[qid];
+  const mark = S.mode === 'mark';
+  let h = `<header class="top"><button class="ibtn" data-act="${review ? 'toresult' : 'exitdrill'}" aria-label="返回">${ICON.back}</button><div class="ttl prog">${s.i + 1}<small> / ${s.qids.length}</small></div>${modeHTML()}</header><div class="stack">`;
+  h += `<article class="card qcard"><div class="qhead"><span class="tag-l">${esc(qLabel(q))}</span>${!show && !mark ? `<button class="peek" data-act="peek" aria-label="当场查看答案">${ICON.eyeoff}</button>` : ''}</div>`;
+  h += questionHTML(q, {mark, sel:s.ans[qid] ?? null, show, locked:show});
+  if (show && !mark) h += statusActs(qid);
+  h += '</article>';
+  if (show && !mark) h += noteHTML(qid);
+  h += `<nav class="dots" aria-label="题号">` + s.qids.map((id, i) => {
+    let c = ''; const a = s.ans[id];
+    if (review || s.rev[id]) c = hasAns(Q[id], a) ? (isRight(Q[id], a) ? 'ok' : 'ng') : '';
+    else if (hasAns(Q[id], a)) c = 'done';
+    return `<button class="${c}${i === s.i ? ' cur' : ''}" data-act="jump" data-i="${i}" aria-label="第${i + 1}题">${i + 1}</button>`;
+  }).join('') + '</nav></div>';
+  const last = s.i === s.qids.length - 1;
+  h += `<div class="foot">${markBar(qid)}<div class="in"><button class="btn sec" data-act="prev" ${s.i ? '' : 'disabled'}>上一题</button>${review ? `<button class="btn pri" data-act="${last ? 'toresult' : 'next'}">${last ? '看结果' : '下一题'}</button>` : `<button class="btn pri" data-act="${last ? 'submit' : 'next'}">${last ? '交卷' : '下一题'}</button>`}</div></div>`;
+  return h;
+}
+
+function vResult(){
+  const s = S.session;
+  const rows = s.qids.map((id, i) => ({q:Q[id], a:s.ans[id], i}));
+  const ok = rows.filter(r => hasAns(r.q, r.a) && isRight(r.q, r.a)).length;
+  let h = `<header class="top"><button class="ibtn" data-act="home" aria-label="回首页">${ICON.back}</button><div class="ttl">这组的结果</div>${cloudHTML()}</header><div class="stack">`;
+  h += `<section class="score"><b>${ok}</b><span> / ${rows.length}</span><p>点一题回去看解析，再决定“过”还是“暂时备用”</p></section><div class="rlist">`;
+  h += rows.map(r => {
+    const has = hasAns(r.q, r.a); const right = has && isRight(r.q, r.a);
+    const p = S.prog[r.q.id] || {};
+    const my = has ? (r.q.ty === 'sort' ? r.a[r.q.star - 1] : r.a) : '—';
+    return `<button class="rrow${p.st === 'hold' ? ' hold' : ''}${p.st === 'pass' ? ' pass' : ''}" data-act="review" data-i="${r.i}"><span class="ic ${has ? (right ? 'ok' : 'ng') : 'na'}">${has ? (right ? '✓' : '✗') : '·'}</span><span class="t"><b>问${r.q.n}</b> <small>第${r.q.m}题·${MT[r.q.m]}</small><span class="s" lang="ja">${esc(r.q.plain)}</span></span><span class="r">选 ${my} · 答 ${r.q.ans}</span></button>`;
+  }).join('');
+  h += `</div><button class="btn pri full" data-act="home">回到首页</button></div>`;
+  return h;
+}
+
+function vWords(){
+  const tab = S.vp.tab || 'staged';
+  const all = Object.values(S.words).sort((a, b) => (b.t || 0) - (a.t || 0));
+  const list = all.filter(w => tab === 'book' ? w.st === 'book' : w.st !== 'book');
+  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">单词</div>${cloudHTML()}</header><div class="stack">`;
+  h += `<div class="tabs"><button class="${tab === 'staged' ? 'on' : ''}" data-act="wtab" data-t="staged">暂存 ${all.filter(w => w.st !== 'book').length}</button><button class="${tab === 'book' ? 'on' : ''}" data-act="wtab" data-t="book">单词本 ${all.filter(w => w.st === 'book').length}</button></div>`;
+  if (tab === 'staged') h += `<div class="hint">做题时标绿、存进来的词都在这里，会了的直接删掉。整理的时候跟我说一声，我从这里读出来，补上读音和意思，放进单词本。</div>`;
+  if (!list.length) h += `<div class="empty">${tab === 'book' ? '单词本还是空的。暂存的词整理好以后会出现在这里。' : '还没有暂存的生词。做题时切到「标生词」，把不会的词点绿，再点 ✓ 保存。'}</div>`;
+  h += list.map(w => {
+    const ctx = w.s && w.s !== w.w ? esc(w.s).replace(esc(w.w), `<em>${esc(w.w)}</em>`) : '';
+    const sure = S.del === w.id;
+    return `<div class="wd"><div class="main"><div><span class="w" lang="ja">${esc(w.b || w.w)}</span>${w.rd ? `<span class="rd" lang="ja">${esc(w.rd)}</span>` : ''}</div>${w.z ? `<div class="z">${esc(w.z)}</div>` : ''}${ctx ? `<div class="ctx" lang="ja">${ctx}</div>` : ''}<div class="src">${esc(w.src || '')}</div></div><button class="del${sure ? ' sure' : ''}" data-act="${sure ? 'delw' : 'askdel'}" data-id="${w.id}">${sure ? '确定删除' : '删除'}</button></div>`;
+  }).join('');
+  return h + '</div>';
+}
+
+/* ---------- 主渲染 ---------- */
+let lastHTML = '';
+function render(fromData){
+  if (fromData && document.activeElement && document.activeElement.tagName === 'TEXTAREA') return;
+  const v = {home:vHome, paper:vPaper, detail:vDetail, setup:vSetup, drill:vDrill, result:vResult, words:vWords}[S.view] || vHome;
+  const html = v();
+  if (html !== lastHTML) { const app = document.getElementById('app'); app.innerHTML = html; lastHTML = html; paint(app) }
+}
+/* 宽度、背景图用脚本设置，不写在 style 属性里（页面不允许内联 style 属性） */
+function paint(root){
+  root.querySelectorAll('[data-w]').forEach(el => el.style.width = el.dataset.w + '%');
+  root.querySelectorAll('[data-bgi]').forEach(el => el.style.backgroundImage = `url("bg/bg${el.dataset.bgi}.jpg")`);
+}
+
+/* ---------- 交互 ---------- */
+function startDrill(qids){
+  S.session = {qids, i:0, ans:{}, rev:{}, done:false}; S.mode = 'answer';
+  saveSession(true); S.stack = [{view:'home', vp:{}}]; S.view = 'drill'; S.vp = {}; render(); window.scrollTo(0, 0);
+}
+async function finish(){
+  const s = S.session; s.done = true;
+  for (const id of s.qids) {
+    const a = s.ans[id]; if (!hasAns(Q[id], a)) continue;
+    const cur = S.prog[id] || {};
+    await setProg(id, {sel:a, ok:isRight(Q[id], a), n:(cur.n || 0) + 1, t:Date.now()});
+  }
+  saveSession(true);
+  S.view = 'result'; S.vp = {}; render(); window.scrollTo(0, 0);
+}
+function sentenceAround(tokens, i){
+  let a = i, b = i;
+  while (a > 0 && tokens[a - 1][2] !== 'n' && !/[。！？]$/.test(tokens[a - 1][0])) a--;
+  while (b < tokens.length - 1 && tokens[b][2] !== 'n' && !/[。！？]$/.test(tokens[b][0])) b++;
+  return tokens.slice(a, b + 1).map(t => t[2] === 'b' ? '（　）' : t[2] === 'n' ? '' : t[0]).join('');
+}
+async function saveMarks(){
+  if (!S.db) { toast('云端没连上，这次没存进去'); return }
+  const adds = [];
+  S.marks.forEach(k => {
+    const [qid, sc, idx] = k.split('|'); const q = Q[qid];
+    const src = `${paperName(q.p)} 第${q.m}题·${MT[q.m]} 问${q.n}`;
+    if (idx === 'all') { const o = q.opts[+sc.slice(1) - 1]; adds.push({w:o.t, b:'', s:o.t, q:qid, k, src, st:'staged', rd:'', z:'', t:Date.now()}); return }
+    const tk = scopeTokens(q, sc); const t = tk[+idx]; if (!t) return;
+    adds.push({w:t[0], b:t[1] || '', s:sentenceAround(tk, +idx), q:qid, k, src, st:'staged', rd:'', z:'', t:Date.now()});
+  });
+  const dels = [...S.unmarks];
+  try {
+    for (const it of adds) await S.db.collection('words').add(it);
+    for (const id of dels) { await S.db.doc('words/' + id).delete(); delete S.words[id] }
+    S.marks.clear(); S.unmarks.clear(); render();
+    toast([adds.length ? `存了 ${adds.length} 个` : '', dels.length ? `去掉 ${dels.length} 个` : ''].filter(Boolean).join('，'));
+  } catch(e) { console.error(e); toast('没存进去，再点一次试试') }
+}
+function nextAfterStatus(){
+  const s = S.session; if (S.view !== 'drill' || !s) return;
+  if (s.i < s.qids.length - 1) { s.i++; saveSession(); render(); window.scrollTo(0, 0) }
+  else if (s.done) { S.view = 'result'; render(); window.scrollTo(0, 0) }
+}
+
+const A = {
+  back:() => back(), home:() => { S.stack = []; go('home', {}, false) },
+  settings:() => openSettings(),
+  paper:d => { S.filter = ''; go('paper', {p:d.p}) },
+  filter:d => { S.filter = S.filter === d.f ? '' : d.f; render() },
+  grp:d => { if (S.filter) return; S.open.has(d.k) ? S.open.delete(d.k) : S.open.add(d.k); render() },
+  detail:d => go('detail', {q:d.q}),
+  peekd:() => { S.peekOpen = !S.peekOpen; render() },
+  drillone:d => startDrill([d.q]),
+  words:d => go('words', {tab:d.tab || 'staged'}),
+  wtab:d => { S.vp.tab = d.t; S.del = null; render() },
+  askdel:d => { S.del = d.id; render() },
+  delw:d => { S.del = null; write('words/' + d.id, () => S.db.doc('words/' + d.id).delete()); delete S.words[d.id]; render() },
+  setup:d => { S.setup.holdOnly = !!d.hold; go('setup') },
+  'su-p':d => { const s = S.setup.papers; s.has(d.p) ? (s.size > 1 && s.delete(d.p)) : s.add(d.p); render() },
+  'su-tall':() => { S.setup.types = new Set([1,2,3,4,5,6,7]); render() },
+  'su-t':d => { const m = +d.m; let s = S.setup.types; if (s.size === 7) s = S.setup.types = new Set(); s.has(m) ? s.delete(m) : s.add(m); if (!s.size) S.setup.types = new Set([1,2,3,4,5,6,7]); render() },
+  'su-hold':(d, el) => { S.setup.holdOnly = el.checked; render() },
+  'su-skip':(d, el) => { S.setup.skip = el.checked; render() },
+  'su-o':d => { S.setup.order = d.o; render() },
+  'su-c':d => { const av = availFor(S.setup).length; S.setup.count = Math.max(1, Math.min(av, S.setup.count + +d.d)); render() },
+  'su-all':() => { S.setup.count = availFor(S.setup).length; render() },
+  start:() => {
+    let av = availFor(S.setup);
+    av = S.setup.order === 'seq' ? av.slice().sort((a, b) => a.p < b.p ? 1 : a.p > b.p ? -1 : a.n - b.n) : shuffle(av);
+    startDrill(av.slice(0, S.setup.count).map(q => q.id));
+  },
+  resume:() => { S.stack = [{view:'home', vp:{}}]; S.view = 'drill'; S.vp = {}; S.mode = 'answer'; render(); window.scrollTo(0, 0) },
+  exitdrill:() => { saveSession(true); S.stack = []; go('home', {}, false); toast('这组先存着，首页可以继续') },
+  mode:d => { S.mode = d.m; render() },
+  mark:d => { toggleMark(d.k); render() },
+  hidemarks:() => { S.hideMarks = !S.hideMarks; render() },
+  clearmarks:() => { S.marks.clear(); S.unmarks.clear(); render() },
+  savemarks:() => saveMarks(),
+  pick:d => { const s = S.session; if (S.view !== 'drill' || !s || s.done) return; const id = s.qids[s.i]; if (s.rev[id]) return; s.ans[id] = +d.n; saveSession(); render() },
+  slot:d => { const s = S.session; if (!s || s.done) return; const id = s.qids[s.i]; if (s.rev[id]) return; const a = (s.ans[id] || [0,0,0,0]).slice(); const j = a.indexOf(0); if (j < 0) return; a[j] = +d.i; s.ans[id] = a; saveSession(); render() },
+  unslot:d => { const s = S.session; if (!s || s.done) return; const id = s.qids[s.i]; if (s.rev[id]) return; const a = (s.ans[id] || [0,0,0,0]).slice(); a[+d.j] = 0; s.ans[id] = a; saveSession(); render() },
+  peek:() => { const s = S.session; s.rev[s.qids[s.i]] = true; saveSession(); render() },
+  next:() => { const s = S.session; if (s.i < s.qids.length - 1) { s.i++; saveSession(); render(); window.scrollTo(0, 0) } },
+  prev:() => { const s = S.session; if (s.i > 0) { s.i--; saveSession(); render(); window.scrollTo(0, 0) } },
+  jump:d => { S.session.i = +d.i; saveSession(); render(); window.scrollTo(0, 0) },
+  submit:() => {
+    const s = S.session; const left = s.qids.filter(id => !hasAns(Q[id], s.ans[id])).length;
+    if (!left) { finish(); return }
+    document.getElementById('layer').innerHTML = `<div class="modal"><div class="pn"><b>还有 ${left} 题没做</b><p>现在交卷，没做的题不会记录。</p><div class="row"><button class="btn sec" data-act="closelayer">接着做</button><button class="btn pri" data-act="forcesubmit">交卷</button></div></div></div>`;
+  },
+  forcesubmit:() => { closeLayer(); finish() },
+  closelayer:() => closeLayer(),
+  toresult:() => { S.view = 'result'; render(); window.scrollTo(0, 0) },
+  review:d => { S.session.i = +d.i; S.view = 'drill'; S.mode = 'answer'; render(); window.scrollTo(0, 0) },
+  st:d => {
+    const cur = (S.prog[d.q] || {}).st; const off = cur === d.st;
+    setProg(d.q, {st: off ? '' : d.st});
+    toast(off ? '取消了' : d.st === 'pass' ? '这题过了' : '放进暂时备用了');
+    if (!off) nextAfterStatus(); else render();
+  },
+  note:d => { S.noteOpen.has(d.q) ? S.noteOpen.delete(d.q) : S.noteOpen.add(d.q); render() },
+  savenote:d => { const v = (document.getElementById('note-' + d.q) || {}).value || ''; setProg(d.q, {note:v}).then(() => { delete S.noteDraft[d.q]; render(); toast('备注存好了') }) },
+  skin:d => { S.settings.skin = d.s; applySkin(); saveSettings(); openSettings(); render() },
+  bg:d => { S.settings.bg = d.b; if (d.b !== 'random') bgPick = +d.b; applySkin(); saveSettings(); openSettings() },
+};
+function closeLayer(){ document.getElementById('layer').innerHTML = '' }
+function openSettings(){
+  const st = S.settings;
+  let h = `<div class="sheet" data-act="closesheet"><div class="pn" data-stop="1"><div class="sh-h"><b>外观</b><button class="ibtn" data-act="closelayer">完成</button></div>`;
+  h += `<div class="label">主题</div><div class="tabs"><button class="${st.skin === 'orchard' ? 'on' : ''}" data-act="skin" data-s="orchard">橘园</button><button class="${st.skin === 'plain' ? 'on' : ''}" data-act="skin" data-s="plain">简洁</button></div>`;
+  if (st.skin === 'orchard') {
+    h += `<div class="label">背景图</div><div class="bgs"><button class="rnd${st.bg === 'random' ? ' on' : ''}" data-act="bg" data-b="random">每次<br>随机</button>`;
+    for (let i = 1; i <= BG_COUNT; i++) h += `<button class="${st.bg === String(i) ? 'on' : ''}" data-bgi="${i}" data-act="bg" data-b="${i}" aria-label="背景${i}"></button>`;
+    h += '</div>';
+  } else h += `<div class="hint">简洁主题用淡色纯底，跟着手机的深色 / 浅色模式变。</div>`;
+  h += `<div class="hint">做题记录、备用、过、备注、生词都自动存在云端，换手机也在。</div></div></div>`;
+  const layer = document.getElementById('layer'); layer.innerHTML = h; paint(layer);
+}
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (!el) return;
+  const act = el.dataset.act;
+  if (act === 'closesheet') { if (!e.target.closest('[data-stop]')) closeLayer(); return }
+  if (A[act]) { if (el.tagName !== 'INPUT') e.preventDefault(); A[act](el.dataset, el) }
+});
+document.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role=button][data-act]')) { e.preventDefault(); e.target.click() }
+});
+document.addEventListener('input', e => {
+  const q = e.target.dataset && e.target.dataset.note;
+  if (q) { S.noteDraft[q] = e.target.value; const b = e.target.parentNode.querySelector('.note-ok'); if (b) b.classList.toggle('dirty', e.target.value !== ((S.prog[q] || {}).note || '')) }
+});
+document.addEventListener('focusout', e => {
+  const q = e.target.dataset && e.target.dataset.note;
+  if (q && S.noteDraft[q] !== undefined && S.noteDraft[q] !== ((S.prog[q] || {}).note || '')) { setProg(q, {note:S.noteDraft[q]}).then(() => { delete S.noteDraft[q]; render() }) }
+});
+
+render();
+initCloud();
+</script>
