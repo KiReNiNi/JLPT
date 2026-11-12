@@ -1,0 +1,90 @@
+{
+  "passed": true,
+  "productionTouched": false,
+  "isolatedArtifactDB": true,
+  "viewportProvidedByTestHost": true,
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 390,
+      "before": {
+        "topFilter": "blur(10px)",
+        "topPosition": "sticky",
+        "topBackground": "rgba(255, 246, 242, 0.35)",
+        "veil": "\"\"",
+        "glass": "blur(14px) saturate(1.15)",
+        "backgroundEvents": "none",
+        "overflow": false
+      },
+      "after": {
+        "scene": "2",
+        "topFilter": "none",
+        "topPosition": "relative",
+        "topBackground": "rgba(0, 0, 0, 0)",
+        "veil": "none",
+        "glass": "none",
+        "backgroundEvents": "none",
+        "overflow": false
+      },
+      "randomScenes": {
+        "home": "4",
+        "paper": "5",
+        "detail": "1",
+        "setup": "8",
+        "drill": "3",
+        "result": "6",
+        "words": "2"
+      },
+      "sevenDistinctScenes": true,
+      "stableOnBackAndRender": true,
+      "allEightEmbeddedImagesLoaded": true,
+      "manualSelectionAndReload": true,
+      "plainThemeWorks": true,
+      "oldRecordsRetained": true,
+      "realAnswerNoteAndWordButtonsPassed": true,
+      "isolatedWrites": 11,
+      "errors": []
+    },
+    {
+      "engine": "chromium",
+      "width": 430,
+      "before": {
+        "topFilter": "blur(10px)",
+        "topPosition": "sticky",
+        "topBackground": "rgba(255, 246, 242, 0.35)",
+        "veil": "\"\"",
+        "glass": "blur(14px) saturate(1.15)",
+        "backgroundEvents": "none",
+        "overflow": false
+      },
+      "after": {
+        "scene": "2",
+        "topFilter": "none",
+        "topPosition": "relative",
+        "topBackground": "rgba(0, 0, 0, 0)",
+        "veil": "none",
+        "glass": "none",
+        "backgroundEvents": "none",
+        "overflow": false
+      },
+      "randomScenes": {
+        "home": "8",
+        "paper": "1",
+        "detail": "3",
+        "setup": "5",
+        "drill": "7",
+        "result": "6",
+        "words": "2"
+      },
+      "sevenDistinctScenes": true,
+      "stableOnBackAndRender": true,
+      "allEightEmbeddedImagesLoaded": true,
+      "manualSelectionAndReload": true,
+      "plainThemeWorks": true,
+      "oldRecordsRetained": true,
+      "realAnswerNoteAndWordButtonsPassed": true,
+      "isolatedWrites": 11,
+      "errors": []
+    }
+  ]
+}

@@ -25,7 +25,7 @@ python3 build/assemble.py
 
 页面发布成 claude.ai 的 Artifact。做题记录存在 Artifact 自带的云端数据库里（`window.claude.use("db")`），所以：
 
-1. **只改 `build/template.html` 的 `<style>` 部分和图片**。JS 里的数据读写、`data-act` 属性、`data-k` / `data-q` / `data-n` 等属性都不要动，改了会坏功能或丢记录。
+1. **只改 `build/template.html` 的 `<style>` 部分和图片**。本轮按用户要求，只给皮肤背景选择增加了按页面稳定分配及 `render()` 的背景刷新调用，不属于学习逻辑重构。其他 JS 里的数据读写、`data-act` 属性、`data-k` / `data-q` / `data-n` 等属性都不要动，改了会坏功能或丢记录。
 2. 颜色都写成 `:root` 里的变量（`--accent`、`--card` 等），橘园主题的变量在 `body[data-skin="orchard"]` 里。改配色优先改变量。
 3. **不能用内联 `style="..."` 属性**，页面运行环境会拦掉。宽度和背景图需要动态设置的，用 `data-w` / `data-bgi`，由 JS 的 `paint()` 设置。换背景图就替换 `site/bg/` 里的文件（保持 bg1.jpg…的命名），不要在 CSS 里写 `url("bg/...")`，那样在网站上显示不出来。
 4. 外部资源只能来自：cdnjs.cloudflare.com、cdn.jsdelivr.net、unpkg.com（脚本），fonts.googleapis.com（字体）。图标直接写成内联 SVG；新加的图片要像背景图一样在 `assemble.py` 里转成 data URI，不能按文件路径引用。
@@ -42,3 +42,12 @@ python3 build/assemble.py
 - 备注 `.note`：可收起，`.note-ok` 是保存按钮
 - 底栏 `.foot`：上一题 / 下一题 `.btn`，题号格子 `.dots`
 - 选题 `.fs`/`.ch`/`.stepper`、结果 `.score`/`.rrow`、单词 `.wd`、外观弹层 `.sheet`/`.bgs`
+
+## 2026-11-12：背景遮挡修复（交回 Claude 发布）
+
+- 橘园皮肤去掉顶部吸顶毛玻璃、卡片背景模糊以及整张插画上的白粉渐变；保留原按钮、卡片底色、圆角、题库和交互。
+- “每页随机”在本次打开期间给首页、套卷、单题、选题、做题、结果、生词本分配互不相同的原背景，返回与数据刷新保持稳定。使用独立的图片随机数，不干扰出题随机数。
+- 手动选择某张背景仍表示全站固定使用它；原来固定选图的偏好不会被强制改掉。想按页面换图，在外观中选择“每页随机”。
+- 八张JPEG和 data URI 嵌入方式不变；不恢复失效的相对图片路径。题库、数据库路径/字段、答案判分、备注、生词读写和全部事件属性不变。
+- `site/index.html` 已重新生成并提交，可交回 Claude 在原 Artifact 更新；本轮没有另外创建网址或自行发布。
+- 边界检查：`node tests/orchard-boundary.cjs`。浏览器检查：`JLPT_ENGINE=chromium node tests/orchard-browser.cjs`，WebKit用`JLPT_ENGINE=webkit`。所有数据库操作均为隔离模拟，详见 [交接与截图](docs/ORCHARD-BACKGROUND-FIX.md)。

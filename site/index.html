@@ -36,7 +36,7 @@ body[data-skin="orchard"]{
   --accent:#E8803C; --accent2:#C8652B; --accent-soft:rgba(250,214,186,.75); --lav:#8B76C2; --lav-soft:rgba(234,226,248,.85);
   --sel:#4A72D6; --sel-bg:#DCE6FB; --mark:#2F6B28; --mark-bg:#CDEAC0;
   --hold:#D9A21C; --hold-bg:#FFF0BF; --good:#2E8B57; --good-bg:#DAF0E2; --bad:#C9443E; --bad-bg:#FADCDA;
-  --on-accent:#FFFFFF; --sheet:#FBF2EE; --glass:blur(14px) saturate(1.15);
+  --on-accent:#FFFFFF; --sheet:#FBF2EE; --glass:none;
   --shadow:0 2px 6px rgba(120,70,90,.10),0 10px 30px rgba(120,70,90,.10);
   color-scheme:light;
 }
@@ -46,7 +46,6 @@ body[data-skin="orchard"]{
 html,body{min-height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;-webkit-tap-highlight-color:transparent}
 #bgimg{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;pointer-events:none}
-#bgimg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,244,238,.15),rgba(255,240,236,.35) 40%,rgba(250,236,240,.55))}
 body:not([data-skin="orchard"]) #bgimg{display:none}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
 body[data-skin="orchard"]::before{background:transparent}
@@ -65,7 +64,7 @@ svg{width:18px;height:18px;flex:none}
 
 /* ===== 顶栏 ===== */
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:10px;padding-block:12px;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
-body[data-skin="orchard"] .top{backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);background:rgba(255,246,242,.35)}
+body[data-skin="orchard"] .top{position:relative;top:auto;background:transparent}
 body:not([data-skin="orchard"]) .top{background:var(--bg)}
 .top .ttl{flex:1;min-width:0;font-family:var(--f-display);font-weight:700;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .top .ttl.prog small{font-size:14px;color:var(--mute);font-weight:500}
@@ -390,11 +389,32 @@ async function initCloud(){
 }
 
 /* ---------- 皮肤 ---------- */
-let bgPick = 1 + Math.floor(Math.random() * BG_COUNT);
+/* Presentation only: assign distinct scenes once, without consuming quiz randomness. */
+const sceneOrder = Array.from({length:BG_COUNT}, (_, i) => i + 1);
+if (globalThis.crypto?.getRandomValues) {
+  const random = crypto.getRandomValues(new Uint32Array(BG_COUNT));
+  for (let i = sceneOrder.length - 1; i > 0; i--) {
+    const j = random[i] % (i + 1);
+    [sceneOrder[i], sceneOrder[j]] = [sceneOrder[j], sceneOrder[i]];
+  }
+} else {
+  const offset = Date.now() % Math.max(1, BG_COUNT);
+  sceneOrder.push(...sceneOrder.splice(0, offset));
+}
+const sceneViews = ['home', 'paper', 'detail', 'setup', 'drill', 'result', 'words'];
+const sceneByView = Object.fromEntries(sceneViews.map((view, i) => [view, sceneOrder[i % BG_COUNT]]));
+let bgPick = sceneOrder[0];
 function applySkin(){
   document.body.dataset.skin = S.settings.skin;
-  const n = S.settings.bg === 'random' ? bgPick : +S.settings.bg;
-  document.getElementById('bgimg').style.backgroundImage = S.settings.skin === 'orchard' ? `url("${BG[n - 1]}")` : 'none';
+  const choice = +S.settings.bg;
+  const n = S.settings.bg === 'random' ? (sceneByView[S.view] || bgPick) :
+    (Number.isInteger(choice) && choice >= 1 && choice <= BG_COUNT ? choice : bgPick);
+  const layer = document.getElementById('bgimg');
+  const scene = S.settings.skin === 'orchard' ? String(n) : 'none';
+  if (layer.dataset.scene !== scene) {
+    layer.style.backgroundImage = scene === 'none' ? 'none' : `url("${BG[n - 1]}")`;
+    layer.dataset.scene = scene;
+  }
 }
 try { const s = JSON.parse(localStorage.getItem('n1skin') || 'null'); if (s && s.skin) S.settings = s } catch(e) {}
 applySkin();
@@ -686,6 +706,7 @@ function vWords(){
 let lastHTML = '';
 function render(fromData){
   if (fromData && document.activeElement && document.activeElement.tagName === 'TEXTAREA') return;
+  applySkin();
   const v = {home:vHome, paper:vPaper, detail:vDetail, setup:vSetup, drill:vDrill, result:vResult, words:vWords}[S.view] || vHome;
   const html = v();
   if (html !== lastHTML) { const app = document.getElementById('app'); app.innerHTML = html; lastHTML = html; paint(app) }
@@ -808,7 +829,7 @@ function openSettings(){
   let h = `<div class="sheet" data-act="closesheet"><div class="pn" data-stop="1"><div class="sh-h"><b>外观</b><button class="ibtn" data-act="closelayer">完成</button></div>`;
   h += `<div class="label">主题</div><div class="tabs"><button class="${st.skin === 'orchard' ? 'on' : ''}" data-act="skin" data-s="orchard">橘园</button><button class="${st.skin === 'plain' ? 'on' : ''}" data-act="skin" data-s="plain">简洁</button></div>`;
   if (st.skin === 'orchard') {
-    h += `<div class="label">背景图</div><div class="bgs"><button class="rnd${st.bg === 'random' ? ' on' : ''}" data-act="bg" data-b="random">每次<br>随机</button>`;
+    h += `<div class="label">背景图</div><div class="bgs"><button class="rnd${st.bg === 'random' ? ' on' : ''}" data-act="bg" data-b="random">每页<br>随机</button>`;
     for (let i = 1; i <= BG_COUNT; i++) h += `<button class="${st.bg === String(i) ? 'on' : ''}" data-bgi="${i}" data-act="bg" data-b="${i}" aria-label="背景${i}"></button>`;
     h += '</div>';
   } else h += `<div class="hint">简洁主题用淡色纯底，跟着手机的深色 / 浅色模式变。</div>`;

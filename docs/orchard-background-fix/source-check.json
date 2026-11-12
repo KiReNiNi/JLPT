@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "base": "dcf3f44be4f41b73a225a908e47492a35da6dd95",
+  "onlyPresentationJSChanged": true,
+  "storageAndAnswerHandlersByteUnchanged": true,
+  "all44QuestionsUnchanged": true,
+  "imagesEmbeddedAndUnchanged": true,
+  "hashes": {
+    "build/data.json": "c80ed4d36aeaba7ea8b7866c82b220cb48fb9600f337b6ecdb0e222ba57f69e5",
+    "site/bg/bg1.jpg": "3b939b235fbb865ac4347f88cf735f42fb1b416dc42bf4171d7375a6edf0380b",
+    "site/bg/bg2.jpg": "665f6c83110efc07d06ec728ffc252dc35db5b7bd694a44d68b2300e195fe911",
+    "site/bg/bg3.jpg": "6566f27c1066cbd5c22e7b102777746f8dd9d5aba227ad9eb929d21d6ae84732",
+    "site/bg/bg4.jpg": "565f100d9a3d948f297cc5c4613df6afd1b4662f3c6ddc55c965c037eaec9061",
+    "site/bg/bg5.jpg": "88a7fcc253c88b9c1ed01bd6e9207cdfeebf0687a8561b049a5218de8578d7d9",
+    "site/bg/bg6.jpg": "2d28df922ea20e563955a9f204def5bfdaae20245aeb8e84d1f28850ed107749",
+    "site/bg/bg7.jpg": "33d0cfc6ce4f9cf5f12cc81907738a51c8d7a9c8af7e7f7e32a18592daf3a93c",
+    "site/bg/bg8.jpg": "fcad632562eb57fa8261aa7c39d255517306cc372fc26c4e38b13eb65998f2a6"
+  }
+}
