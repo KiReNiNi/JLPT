@@ -73,7 +73,7 @@ def tok(text):
 import importlib
 qs = []
 passages = {}
-for modname in ('q2026', 'q2512'):
+for modname in ('q2026', 'q2512', 'q2507'):
     Q = importlib.import_module(modname)
     P = Q.PAPER
     n = 0
