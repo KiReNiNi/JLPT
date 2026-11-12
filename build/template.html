@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Noto+Serif+SC:wght@500;600&display=swap">
 <style>
 /* ===== 设计变量（美化时主要改这里） =====
    页面结构：顶栏 .top → 内容 .stack → 固定底栏 .foot
@@ -291,6 +291,61 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .modal .row .btn{flex:1}
 @media (max-width:420px){.stem{font-size:18px}.opts.two .op{font-size:15px;padding:11px 12px}.hero h1{font-size:26px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== 首页面板（两种主题共用的结构） ===== */
+.panel{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow);padding:6px 18px}
+.entry{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:64px;margin:12px 0;padding:0 20px;border-radius:18px;background:var(--accent);color:var(--on-accent);font-size:17px}
+.entry b{font-weight:600}
+.entry .chev{color:currentColor}
+.start{padding-block:0}
+.start .resume{width:100%;background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:14px 2px}
+.panel-h{padding:14px 2px 4px;font-size:12px;letter-spacing:.06em;color:var(--mute)}
+.papers.panel{gap:0}
+.papers .paper{background:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:0;padding:16px 2px;border-bottom:1px solid var(--line)}
+.papers .paper:last-child{border-bottom:0}
+
+/* ===== 橘园主题：磨砂质感（只作用于橘园） ===== */
+body[data-skin="orchard"]{
+  --card:rgba(255,250,246,.80); --card2:rgba(255,246,240,.62); --line:rgba(190,130,110,.20);
+  --accent:#D9824B; --accent2:#B5683D; --accent-soft:rgba(251,222,200,.78);
+  --glass:blur(9px) saturate(1.1);
+  --shadow:inset 0 1px 0 rgba(255,255,255,.75),0 2px 6px rgba(140,80,70,.06),0 12px 30px rgba(140,80,70,.08);
+  --r-card:24px; --r-ctl:15px;
+  --f-display:"Noto Serif SC","Songti SC","Hiragino Mincho ProN",serif;
+}
+body[data-skin="orchard"] :is(.card,.panel,.tiles,.grp,.fs,.note,.score,.wd,.ibtn,.mode,.tabs,.flt){border:1px solid rgba(255,255,255,.65)}
+body[data-skin="orchard"] .hero{margin:10px 0 2px;padding:18px 20px;border-radius:var(--r-card);background:rgba(255,250,246,.62);border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+body[data-skin="orchard"] .hero h1{font-size:34px;font-weight:600;letter-spacing:.06em;text-shadow:0 1px 14px rgba(255,255,255,.7)}
+body[data-skin="orchard"] .hero p{font-size:13px;color:var(--ink);text-shadow:0 1px 8px rgba(255,255,255,.8)}
+body[data-skin="orchard"] .panel{backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
+body[data-skin="orchard"] .entry{background:linear-gradient(125deg,rgba(255,252,248,.95),rgba(252,220,196,.9));color:var(--accent2);border:1px solid rgba(255,255,255,.8);box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 6px 16px rgba(190,110,60,.12)}
+body[data-skin="orchard"] .entry b{font-family:var(--f-display);font-size:19px;letter-spacing:.04em}
+body[data-skin="orchard"] .resume{background:none}
+body[data-skin="orchard"] .resume .rs-t{font-family:var(--f-display);font-weight:600;font-size:16px}
+body[data-skin="orchard"] .tiles{gap:0;padding:16px 6px;border-radius:var(--r-card);background:var(--card);box-shadow:var(--shadow);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
+body[data-skin="orchard"] .tile{align-items:center;background:none;box-shadow:none;border-radius:0;padding:2px 8px;backdrop-filter:none;-webkit-backdrop-filter:none}
+body[data-skin="orchard"] .tile+.tile{border-left:1px solid var(--line)}
+body[data-skin="orchard"] .tile b{font-weight:600;font-size:26px}
+body[data-skin="orchard"] .panel-h{font-family:var(--f-display);font-size:19px;font-weight:600;letter-spacing:.04em;color:var(--ink);padding-top:18px}
+body[data-skin="orchard"] .paper .yr{font-weight:600;font-size:18px}
+body[data-skin="orchard"] .paper .bar{height:4px}
+body[data-skin="orchard"] .paper .bar i{background:linear-gradient(90deg,#E9A271,var(--accent))}
+body[data-skin="orchard"] .btn.pri{background:linear-gradient(125deg,rgba(255,252,248,.95),rgba(252,220,196,.92));color:var(--accent2);border:1px solid rgba(255,255,255,.8);box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 6px 16px rgba(190,110,60,.14);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
+body[data-skin="orchard"] .btn{border-radius:18px}
+body[data-skin="orchard"] .btn.sec{border:1px solid rgba(255,255,255,.7)}
+body[data-skin="orchard"] .card{backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
+body[data-skin="orchard"] .op .no{width:26px;height:26px;border-radius:50%;background:var(--card2);display:inline-flex;align-items:center;justify-content:center;font-size:13px;margin-top:1px}
+body[data-skin="orchard"] .ans .op.pick .no{background:#fff}
+body[data-skin="orchard"] .op{box-shadow:inset 0 0 0 1px var(--line),0 1px 2px rgba(140,80,70,.04)}
+body[data-skin="orchard"] .act{background:rgba(255,250,246,.85);box-shadow:inset 0 0 0 1px var(--line)}
+body[data-skin="orchard"] .ch{background:rgba(255,250,246,.7);box-shadow:inset 0 0 0 1px var(--line)}
+body[data-skin="orchard"] .ch.on{background:var(--accent-soft);box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent2)}
+body[data-skin="orchard"] .grp-h b,body[data-skin="orchard"] .sh-h b{font-family:var(--f-display);font-weight:600}
+body[data-skin="orchard"] .score b{font-weight:600}
+body[data-skin="orchard"] .cloud{height:30px;padding:0 10px;border-radius:999px;background:rgba(255,250,246,.72);color:var(--ink)}
+body[data-skin="orchard"] .top .ttl{flex:none;padding:4px 12px;border-radius:999px;background:rgba(255,250,246,.72);font-size:16px}
+body[data-skin="orchard"] .top .ttl:empty{display:none}
+body[data-skin="orchard"] .top .ttl+*{margin-left:auto}
 </style>
 
 <div id="bgimg"></div>
@@ -568,20 +623,22 @@ function vHome(){
   h += `<section class="hero"><h1>橘园 N1</h1><p>真题 ${QS.length} 道 · 做过 ${st.done} · 过 ${st.pass}</p></section><div class="stack">`;
   if (S.cloud === 'off') h += `<div class="warn">云端没连上，现在做的题不会被记下来。关掉页面重新打开试试。</div>`;
   if (S.cloud === 'slow') h += `<div class="warn">云端还没回应，记录可能还没加载出来，稍等一下。</div>`;
+  h += `<section class="panel start"><button class="entry" data-act="setup"><b>开始做题</b>${ICON.chev}</button>`;
   if (S.session && !S.session.done) {
     const s = S.session; const n = s.qids.filter(id => hasAns(Q[id], s.ans[id])).length;
     h += `<button class="resume" data-act="resume"><span class="rs-t">继续上次</span><span class="rs-s">共 ${s.qids.length} 题 · 做了 ${n} 题</span>${ICON.play}</button>`;
   }
-  h += `<button class="btn pri full" data-act="setup">开始做题</button>`;
+  h += `</section>`;
   h += `<div class="tiles"><button class="tile hold" data-act="setup" data-hold="1"><b>${st.hold}</b><span>暂时备用</span></button><button class="tile word" data-act="words"><b>${staged}</b><span>暂存生词</span></button><button class="tile" data-act="words" data-tab="book"><b>${book}</b><span>单词本</span></button></div>`;
-  h += `<div class="label">题库 · 按套卷</div><div class="papers">`;
+  h += `<section class="panel papers"><div class="panel-h">题库 · 按套卷</div>`;
   PAPERS.forEach(p => {
     const qs = QS.filter(q => q.p === p.id);
     if (!qs.length) { h += `<div class="paper off"><span class="pp"><span class="yr">${p.name}</span><span class="ps">题目还没录入</span></span></div>`; return }
     const s = statsFor(qs); const pct = Math.round(s.pass / qs.length * 100);
     h += `<button class="paper" data-act="paper" data-p="${p.id}"><span class="pp"><span class="yr">${p.name}</span><span class="ps">单词 ${qs.length} 道 · 过 ${s.pass} · 备用 ${s.hold}</span><span class="bar"><i data-w="${pct}"></i></span></span><span class="pct">${pct}%</span></button>`;
   });
-  return h + '</div></div>';
+  h += `</section>`;
+  return h + '</div>';
 }
 
 function vPaper(){
