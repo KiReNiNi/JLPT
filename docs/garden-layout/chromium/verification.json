@@ -1,0 +1,392 @@
+{
+  "passed": true,
+  "productionTouched": false,
+  "isolatedArtifactDB": true,
+  "viewportProvidedByTestHost": true,
+  "results": [
+    {
+      "engine": "chromium",
+      "width": 390,
+      "themes": [
+        {
+          "skin": "orchard",
+          "home": {
+            "view": "home",
+            "skin": "orchard",
+            "scene": "2",
+            "sceneSkin": "orchard",
+            "sha256": "1c7307a45b8f79d9afd1b8a0f7b12a15245b15c6dab6a0a0c31ca7985f6d3d57"
+          },
+          "setup": {
+            "view": "setup",
+            "skin": "orchard",
+            "scene": "1",
+            "sceneSkin": "orchard",
+            "sha256": "0636211934014471f7f0955433d10562a527f3aca2af6562bcf000501b8322c1"
+          },
+          "drill": {
+            "view": "drill",
+            "skin": "orchard",
+            "scene": "7",
+            "sceneSkin": "orchard",
+            "sha256": "b349a8929888abfedc20b10465e86cd15a99e8815f9373bc93a746724657a2fa"
+          },
+          "secondRound": {
+            "view": "drill",
+            "skin": "orchard",
+            "scene": "6",
+            "sceneSkin": "orchard",
+            "sha256": "ffae10a74caaf35ff664cec381b928faefa56741a10179e8bf309cb825bd8fb4"
+          },
+          "button": {
+            "background": "linear-gradient(125deg, rgba(255, 250, 247, 0.9), rgba(237, 214, 223, 0.72))",
+            "color": "rgb(128, 86, 102)",
+            "filter": "blur(7px)"
+          },
+          "imageSizes": [
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ]
+          ],
+          "all44QuestionLayoutsPassed": true,
+          "actualStartButtonChangesWallpaper": true,
+          "newRoundChangesWallpaper": true,
+          "syncStable": true,
+          "noteAnswerAndWordSavePassed": true
+        },
+        {
+          "skin": "forest",
+          "home": {
+            "view": "home",
+            "skin": "forest",
+            "scene": "2",
+            "sceneSkin": "forest",
+            "sha256": "fb806cfcd1a8aae6568733b84c79929946fa618981b596a559e5016652cb59bd"
+          },
+          "setup": {
+            "view": "setup",
+            "skin": "forest",
+            "scene": "3",
+            "sceneSkin": "forest",
+            "sha256": "8b75da651efc8537acc5cca5337f28bfc10d05391838aec5856fa5f6976da243"
+          },
+          "drill": {
+            "view": "drill",
+            "skin": "forest",
+            "scene": "4",
+            "sceneSkin": "forest",
+            "sha256": "3292e4128ccd59d788b96187afae12d66828a0ba260d8fffde43836d4f3b5062"
+          },
+          "secondRound": {
+            "view": "drill",
+            "skin": "forest",
+            "scene": "1",
+            "sceneSkin": "forest",
+            "sha256": "79e4efc6395ad4766fd74846165b2523b9c0815f7c2c602d4484f07cc3e1576c"
+          },
+          "button": {
+            "background": "linear-gradient(125deg, rgba(248, 250, 239, 0.91), rgba(212, 230, 201, 0.78))",
+            "color": "rgb(72, 107, 80)",
+            "filter": "blur(7px)"
+          },
+          "imageSizes": [
+            [
+              707,
+              1262
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ]
+          ],
+          "all44QuestionLayoutsPassed": true,
+          "actualStartButtonChangesWallpaper": true,
+          "newRoundChangesWallpaper": true,
+          "syncStable": true,
+          "noteAnswerAndWordSavePassed": true
+        }
+      ],
+      "oldRecordsRetained": true,
+      "reloadPersistsLearningAndTheme": true,
+      "plainThemeWorks": true,
+      "isolatedWrites": 30,
+      "fontFaces": [
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        }
+      ],
+      "errors": []
+    },
+    {
+      "engine": "chromium",
+      "width": 430,
+      "themes": [
+        {
+          "skin": "orchard",
+          "home": {
+            "view": "home",
+            "skin": "orchard",
+            "scene": "2",
+            "sceneSkin": "orchard",
+            "sha256": "1c7307a45b8f79d9afd1b8a0f7b12a15245b15c6dab6a0a0c31ca7985f6d3d57"
+          },
+          "setup": {
+            "view": "setup",
+            "skin": "orchard",
+            "scene": "7",
+            "sceneSkin": "orchard",
+            "sha256": "b349a8929888abfedc20b10465e86cd15a99e8815f9373bc93a746724657a2fa"
+          },
+          "drill": {
+            "view": "drill",
+            "skin": "orchard",
+            "scene": "5",
+            "sceneSkin": "orchard",
+            "sha256": "92a1896f534ae51d4ce6b58715aeb35b39cb810a91eaf32867663ebe5fe703d2"
+          },
+          "secondRound": {
+            "view": "drill",
+            "skin": "orchard",
+            "scene": "3",
+            "sceneSkin": "orchard",
+            "sha256": "6a49e1735faba4742905ee0be3e0da36059312bed91b2bc75b407d714b25d4dd"
+          },
+          "button": {
+            "background": "linear-gradient(125deg, rgba(255, 250, 247, 0.9), rgba(237, 214, 223, 0.72))",
+            "color": "rgb(128, 86, 102)",
+            "filter": "blur(7px)"
+          },
+          "imageSizes": [
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ]
+          ],
+          "all44QuestionLayoutsPassed": true,
+          "actualStartButtonChangesWallpaper": true,
+          "newRoundChangesWallpaper": true,
+          "syncStable": true,
+          "noteAnswerAndWordSavePassed": true
+        },
+        {
+          "skin": "forest",
+          "home": {
+            "view": "home",
+            "skin": "forest",
+            "scene": "2",
+            "sceneSkin": "forest",
+            "sha256": "fb806cfcd1a8aae6568733b84c79929946fa618981b596a559e5016652cb59bd"
+          },
+          "setup": {
+            "view": "setup",
+            "skin": "forest",
+            "scene": "3",
+            "sceneSkin": "forest",
+            "sha256": "8b75da651efc8537acc5cca5337f28bfc10d05391838aec5856fa5f6976da243"
+          },
+          "drill": {
+            "view": "drill",
+            "skin": "forest",
+            "scene": "1",
+            "sceneSkin": "forest",
+            "sha256": "79e4efc6395ad4766fd74846165b2523b9c0815f7c2c602d4484f07cc3e1576c"
+          },
+          "secondRound": {
+            "view": "drill",
+            "skin": "forest",
+            "scene": "4",
+            "sceneSkin": "forest",
+            "sha256": "3292e4128ccd59d788b96187afae12d66828a0ba260d8fffde43836d4f3b5062"
+          },
+          "button": {
+            "background": "linear-gradient(125deg, rgba(248, 250, 239, 0.91), rgba(212, 230, 201, 0.78))",
+            "color": "rgb(72, 107, 80)",
+            "filter": "blur(7px)"
+          },
+          "imageSizes": [
+            [
+              707,
+              1262
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ],
+            [
+              720,
+              1280
+            ]
+          ],
+          "all44QuestionLayoutsPassed": true,
+          "actualStartButtonChangesWallpaper": true,
+          "newRoundChangesWallpaper": true,
+          "syncStable": true,
+          "noteAnswerAndWordSavePassed": true
+        }
+      ],
+      "oldRecordsRetained": true,
+      "reloadPersistsLearningAndTheme": true,
+      "plainThemeWorks": true,
+      "isolatedWrites": 30,
+      "fontFaces": [
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        },
+        {
+          "family": "Noto Serif SC",
+          "weight": "500",
+          "status": "loaded"
+        }
+      ],
+      "errors": []
+    }
+  ]
+}
