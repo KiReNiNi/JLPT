@@ -145,9 +145,10 @@ body:not([data-skin="orchard"]) .top{background:var(--bg)}
 .peek{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--card2);color:var(--mute)}
 .peek.on{background:var(--lav-soft);color:var(--lav)}
 .peek svg{width:17px;height:17px}
-.stem{font-size:19px;line-height:2.05;margin:6px 0 2px}
+.stem{font-size:17px;line-height:2;margin:6px 0 2px}
 .stem-sm{font-size:16px;margin-top:12px}
 .stem-word{font-size:24px;font-weight:700}
+.ph{white-space:nowrap}
 .u{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
 .blank{display:inline-block;min-width:3.2em;text-align:center;color:var(--mute)}
 .psg-intro{font-size:13px;color:var(--mute);margin:4px 0 6px}
@@ -172,7 +173,7 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .ans .op.wrong{background:var(--bad-bg);box-shadow:inset 0 0 0 2px var(--bad)}
 .ans .op.wrong .no{color:var(--bad)}
 /* 排序题 */
-.sortline{font-size:18px;line-height:2.4}
+.sortline{font-size:16px;line-height:2.3}
 .slot{display:inline-flex;align-items:center;justify-content:center;min-width:4.2em;min-height:1.8em;margin:0 3px;padding:0 6px;border-bottom:2px solid var(--mute);vertical-align:middle;font-size:15px;line-height:1.4;cursor:pointer}
 .slot.star{border-bottom-color:var(--accent);color:var(--accent2)}
 .slot.f{background:var(--sel-bg);border-radius:8px 8px 0 0;color:var(--ink)}
@@ -289,7 +290,7 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .modal .pn p{margin:0 0 6px;font-size:13px;color:var(--mute)}
 .modal .row{display:flex;gap:10px}
 .modal .row .btn{flex:1}
-@media (max-width:420px){.stem{font-size:18px}.opts.two .op{font-size:15px;padding:11px 12px}.hero h1{font-size:26px}}
+@media (max-width:420px){.stem{font-size:16px}.opts.two .op{font-size:15px;padding:11px 12px}.hero h1{font-size:26px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
 /* ===== 首页面板（两种主题共用的结构） ===== */
@@ -500,7 +501,21 @@ function scopeTokens(q, sc){
   if (sc === 'p') return DATA.passages[q.pid].tk;
   if (sc[0] === 'o') return q.opts[+sc.slice(1) - 1].tk; return [];
 }
-function toks(q, sc, tokens, mk){ return tokens.map((t, i) => toksAt(q, sc, tokens, i, mk)).join('') }
+function toks(q, sc, tokens, mk){ return phrases(q, sc, tokens, tokens.map((t, i) => i), mk) }
+/* 选答案模式下按“词＋后面的助词”成组，组内不折行，换行只落在词组之间 */
+function phrases(q, sc, tokens, idxs, mk){
+  if (mk) return idxs.map(i => toksAt(q, sc, tokens, i, mk)).join('');
+  let out = '', cur = '', hasWord = false;
+  const flush = () => { if (cur) out += `<span class="ph">${cur}</span>`; cur = ''; hasWord = false };
+  idxs.forEach(i => {
+    const t = tokens[i];
+    if (t[2] === 'n' || t[2] === 'b') { flush(); out += toksAt(q, sc, tokens, i, mk); return }
+    const w = t[2] === 'w' || t[2] === 'u';
+    if (w && hasWord) flush();
+    cur += toksAt(q, sc, tokens, i, mk); if (w) hasWord = true;
+  });
+  flush(); return out;
+}
 /* mk: null = 普通显示；{saved} = 标生词模式 */
 function toksAt(q, sc, tokens, i, mk){
   const t = tokens[i];
@@ -520,7 +535,7 @@ function toksAt(q, sc, tokens, i, mk){
 function passageHTML(q, mk){
   const P = DATA.passages[q.pid];
   const parts = [[]]; P.tk.forEach((t, i) => { if (t[2] === 'n') parts.push([]); else parts[parts.length - 1].push(i) });
-  const html = parts.map(idx => '<p lang="ja">' + idx.map(i => toksAt(q, 'p', P.tk, i, mk)).join('') + '</p>').join('');
+  const html = parts.map(idx => '<p lang="ja">' + phrases(q, 'p', P.tk, idx, mk) + '</p>').join('');
   return `<div class="psg-intro">${esc(P.intro)}</div><div class="psg">${html}</div>`;
 }
 /* ctx: {mark:bool, sel, show, locked}
