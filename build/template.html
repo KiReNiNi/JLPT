@@ -242,6 +242,8 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .stepper{display:flex;align-items:center;gap:10px}
 .stp{width:44px;height:44px;border-radius:50%;background:var(--card2);box-shadow:inset 0 0 0 1.5px var(--line);font-size:20px}
 .stepper output{min-width:56px;text-align:center;font-family:var(--f-display);font-size:22px;font-variant-numeric:tabular-nums}
+.stepper .num{width:72px;height:44px;text-align:center;font-family:var(--f-display);font-size:22px;font-variant-numeric:tabular-nums;color:var(--ink);background:var(--card2);border:0;border-radius:12px;box-shadow:inset 0 0 0 1.5px var(--line);-moz-appearance:textfield}
+.stepper .num::-webkit-inner-spin-button,.stepper .num::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .stepper .ch{margin-left:auto}
 .chk{display:flex;align-items:center;gap:10px;font-size:15px}
 .chk input{width:20px;height:20px;accent-color:var(--accent)}
@@ -714,7 +716,7 @@ function vSetup(){
   h += `<label class="chk"><input type="checkbox" id="su-hold" data-act="su-hold" ${su.holdOnly ? 'checked' : ''}>只抽暂时备用的题</label>`;
   h += `<label class="chk"><input type="checkbox" id="su-skip" data-act="su-skip" ${su.skip ? 'checked' : ''} ${su.holdOnly ? 'disabled' : ''}>跳过已经过的</label></section>`;
   h += `<section class="fs"><div class="label">排题顺序</div><div class="chs"><button class="ch${su.order === 'rand' ? ' on' : ''}" data-act="su-o" data-o="rand">随机</button><button class="ch${su.order === 'seq' ? ' on' : ''}" data-act="su-o" data-o="seq">按问号顺序</button></div></section>`;
-  h += `<section class="fs"><div class="label">题数 · 现在能抽 ${av.length} 道</div><div class="stepper"><button class="stp" data-act="su-c" data-d="-5" aria-label="减五">−</button><output>${su.count}</output><button class="stp" data-act="su-c" data-d="5" aria-label="加五">+</button><button class="ch" data-act="su-all">全部</button></div></section>`;
+  h += `<section class="fs"><div class="label">题数 · 现在能抽 ${av.length} 道</div><div class="stepper"><button class="stp" data-act="su-c" data-d="-1" aria-label="减一">−</button><input id="su-n" class="num" type="number" inputmode="numeric" min="1" max="${av.length}" value="${su.count}" aria-label="题数"><button class="stp" data-act="su-c" data-d="1" aria-label="加一">+</button><button class="ch" data-act="su-all">全部</button></div></section>`;
   h += `<button class="btn pri full" data-act="start" ${av.length && su.count ? '' : 'disabled'}>开始 ${su.count} 道</button>`;
   if (S.session && !S.session.done) h += `<div class="hint">开始新的一组会替换掉没做完的那组</div>`;
   return h + '</div>';
@@ -777,7 +779,7 @@ function vWords(){
 /* ---------- 主渲染 ---------- */
 let lastHTML = '';
 function render(fromData){
-  if (fromData && document.activeElement && document.activeElement.tagName === 'TEXTAREA') return;
+  if (fromData && document.activeElement && /^(TEXTAREA|INPUT)$/.test(document.activeElement.tagName)) return;
   applySkin();
   const v = {home:vHome, paper:vPaper, detail:vDetail, setup:vSetup, drill:vDrill, result:vResult, words:vWords}[S.view] || vHome;
   const html = v();
@@ -802,7 +804,7 @@ async function finish(){
     await setProg(id, {sel:a, ok:isRight(Q[id], a), n:(cur.n || 0) + 1, t:Date.now()});
   }
   saveSession(true);
-  S.view = 'result'; S.vp = {}; render(); window.scrollTo(0, 0);
+  render(); window.scrollTo(0, 0); toast('已交卷，看完解析点「看结果」');
 }
 function sentenceAround(tokens, i){
   let a = i, b = i;
@@ -831,7 +833,7 @@ async function saveMarks(){
 function nextAfterStatus(){
   const s = S.session; if (S.view !== 'drill' || !s) return;
   if (s.i < s.qids.length - 1) { s.i++; saveSession(); render(); window.scrollTo(0, 0) }
-  else if (s.done) { S.view = 'result'; render(); window.scrollTo(0, 0) }
+  else render();
 }
 
 const A = {
@@ -858,6 +860,7 @@ const A = {
   'su-all':() => { S.setup.count = availFor(S.setup).length; render() },
   start:() => {
     let av = availFor(S.setup);
+    const n = parseInt((document.getElementById('su-n') || {}).value, 10); if (!isNaN(n)) S.setup.count = Math.max(1, Math.min(av.length, n));
     av = S.setup.order === 'seq' ? av.slice().sort((a, b) => a.p < b.p ? 1 : a.p > b.p ? -1 : a.n - b.n) : shuffle(av);
     startDrill(av.slice(0, S.setup.count).map(q => q.id));
   },
@@ -919,8 +922,17 @@ document.addEventListener('keydown', e => {
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role=button][data-act]')) { e.preventDefault(); e.target.click() }
 });
 document.addEventListener('input', e => {
+  if (e.target.id === 'su-n') {
+    const av = availFor(S.setup).length; const v = parseInt(e.target.value, 10);
+    if (!isNaN(v)) S.setup.count = Math.max(1, Math.min(av, v));
+    const b = document.querySelector('[data-act=start]'); if (b) b.textContent = `开始 ${S.setup.count} 道`;
+    return;
+  }
   const q = e.target.dataset && e.target.dataset.note;
   if (q) { S.noteDraft[q] = e.target.value; const b = e.target.parentNode.querySelector('.note-ok'); if (b) b.classList.toggle('dirty', e.target.value !== ((S.prog[q] || {}).note || '')) }
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'su-n') e.target.value = S.setup.count;
 });
 document.addEventListener('focusout', e => {
   const q = e.target.dataset && e.target.dataset.note;
