@@ -152,7 +152,7 @@ body:not([data-skin="orchard"]) .top{background:var(--bg)}
 .u{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
 .blank{display:inline-block;min-width:3.2em;text-align:center;color:var(--mute)}
 .psg-intro{font-size:13px;color:var(--mute);margin:4px 0 6px}
-.psg{font-size:16px;line-height:2;max-height:46vh;overflow:auto;padding:12px 14px;border-radius:var(--r-ctl);background:var(--card2)}
+.psg{position:relative;font-size:16px;line-height:2;max-height:46vh;overflow:auto;padding:12px 14px;border-radius:var(--r-ctl);background:var(--card2)}
 .psg p{margin:0 0 .6em;text-indent:1em}
 .psg .blank{min-width:2.4em;box-shadow:inset 0 0 0 1.5px var(--line);border-radius:6px;font-size:13px;line-height:1.5;padding:0 4px}
 .psg .blank.cur{box-shadow:inset 0 0 0 1.5px var(--accent);background:var(--accent-soft);color:var(--accent2);font-weight:700}
@@ -592,7 +592,8 @@ function expHTML(q, sel){
   let h = `<div class="exp">${v}`;
   if (q.ty === 'sort') {
     const star = q.opts[q.ans - 1].t;
-    h += `<div class="full" lang="ja">${esc(q.full).replace(esc(star), `<b class="starw">${esc(star)}</b>`)}</div>`;
+    const at = q.starAt ?? q.full.indexOf(star);
+    h += `<div class="full" lang="ja">${nl(q.full.slice(0, at))}<b class="starw">${esc(star)}</b>${nl(q.full.slice(at + star.length))}</div>`;
     h += `<div class="ord">正确顺序 ${q.order.join(' → ')}　★ = ${q.ans}</div>`;
   }
   if (q.ty === 'use') h += `<div class="pt"><b>${esc(q.word)}</b>${q.rd ? '（' + esc(q.rd) + '）' : ''}：${esc(q.wz)}</div>`;
@@ -788,6 +789,7 @@ function render(fromData){
 /* 宽度、背景图用脚本设置，不写在 style 属性里（页面不允许内联 style 属性） */
 function paint(root){
   root.querySelectorAll('[data-w]').forEach(el => el.style.width = el.dataset.w + '%');
+  root.querySelectorAll('.psg').forEach(p => { const c = p.querySelector('.blank.cur'); if (c) p.scrollTop = Math.max(0, c.offsetTop - p.clientHeight / 3) });
   root.querySelectorAll('[data-bgi]').forEach(el => el.style.backgroundImage = `url("${BG[+el.dataset.bgi - 1]}")`);
 }
 

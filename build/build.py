@@ -70,51 +70,54 @@ def tok(text):
         res += tok_plain(text[pos:])
     return res
 
-P = Q.PAPER
+import importlib
 qs = []
-n = 0
-def qid(n): return f"{P.replace('.', '-')}-{n:02d}"
+passages = {}
+for modname in ('q2026', 'q2512'):
+    Q = importlib.import_module(modname)
+    P = Q.PAPER
+    n = 0
+    def qid(n, P=P): return f"{P.replace('.', '-')}-{n:02d}"
 
-for m, typ, arr in ((1, 'read', Q.M1), (2, 'fill', Q.M2), (3, 'syn', Q.M3)):
-    for (stem, zh, ans, opts, note) in arr:
+    for m, typ, arr in ((1, 'read', Q.M1), (2, 'fill', Q.M2), (3, 'syn', Q.M3)):
+        for (stem, zh, ans, opts, note) in arr:
+            n += 1
+            o = []
+            for (t, k, z) in opts:
+                o.append({'t': t, 'k': k or '', 'z': z or '', 'x': 1 if (k is None and z is None) else 0, 'tk': tok(t)})
+            qs.append({'id': qid(n), 'p': P, 'm': m, 'n': n, 'ty': typ, 'stem': tok(stem), 'plain': stem.replace('【', '').replace('】', ''),
+                       'zh': zh, 'ans': ans, 'opts': o, 'pt': note})
+
+    for (w, rd, z, ans, sents, zhs) in Q.M4:
         n += 1
-        o = []
-        for (t, k, z) in opts:
-            o.append({'t': t, 'k': k or '', 'z': z or '', 'x': 1 if (k is None and z is None) else 0, 'tk': tok(t)})
-        qs.append({'id': qid(n), 'p': P, 'm': m, 'n': n, 'ty': typ, 'stem': tok(stem), 'plain': stem.replace('【', '').replace('】', ''),
-                   'zh': zh, 'ans': ans, 'opts': o, 'pt': note})
+        o = [{'t': s.replace('【', '').replace('】', ''), 'tk': tok(s), 'z': zz} for s, zz in zip(sents, zhs)]
+        qs.append({'id': qid(n), 'p': P, 'm': 4, 'n': n, 'ty': 'use', 'word': w, 'rd': rd, 'wz': z, 'stem': tok(w), 'plain': w,
+                   'zh': f"{w}{'（'+rd+'）' if rd else ''}：{z}", 'ans': ans, 'opts': o, 'pt': ''})
 
-for (w, rd, z, ans, sents, zhs) in Q.M4:
-    n += 1
-    o = [{'t': s.replace('【', '').replace('】', ''), 'tk': tok(s), 'z': zz} for s, zz in zip(sents, zhs)]
-    qs.append({'id': qid(n), 'p': P, 'm': 4, 'n': n, 'ty': 'use', 'word': w, 'rd': rd, 'wz': z, 'stem': tok(w), 'plain': w,
-               'zh': f"{w}{'（'+rd+'）' if rd else ''}：{z}", 'ans': ans, 'opts': o, 'pt': ''})
+    for (stem, zh, ans, opts, zs, pt) in Q.M5:
+        n += 1
+        o = [{'t': t, 'tk': tok(t), 'z': z} for t, z in zip(opts, zs)]
+        qs.append({'id': qid(n), 'p': P, 'm': 5, 'n': n, 'ty': 'gram', 'stem': tok(stem), 'plain': stem.replace('\n', ' '),
+                   'zh': zh, 'ans': ans, 'opts': o, 'pt': pt})
 
-for (stem, zh, ans, opts, zs, pt) in Q.M5:
-    n += 1
-    o = [{'t': t, 'tk': tok(t), 'z': z} for t, z in zip(opts, zs)]
-    qs.append({'id': qid(n), 'p': P, 'm': 5, 'n': n, 'ty': 'gram', 'stem': tok(stem), 'plain': stem.replace('\n', ' '),
-               'zh': zh, 'ans': ans, 'opts': o, 'pt': pt})
+    for row in Q.M6:
+        pre, post, pieces, order, zh, pt, nb = row[:7]; star = row[7] if len(row) > 7 else 3
+        n += 1
+        o = [{'t': t, 'tk': tok(t), 'z': ''} for t in pieces]
+        full = pre + ''.join(pieces[i - 1] for i in order) + post
+        qs.append({'id': qid(n), 'p': P, 'm': 6, 'n': n, 'ty': 'sort', 'pre': tok(pre), 'post': tok(post),
+                   'plain': (pre + ''.join('★' if j == star - 1 else '＿' for j in range(4)) + post).replace('\n', ' '), 'full': full, 'starAt': len(pre) + sum(len(pieces[i - 1]) for i in order[:star - 1]), 'order': order, 'star': star, 'ans': order[star - 1],
+                   'zh': zh, 'opts': o, 'pt': pt + (('\n' + nb) if nb else '')})
 
-for (pre, post, pieces, order, zh, pt, nb) in Q.M6:
-    n += 1
-    o = [{'t': t, 'tk': tok(t), 'z': ''} for t in pieces]
-    full = pre + ''.join(pieces[i - 1] for i in order) + post
-    qs.append({'id': qid(n), 'p': P, 'm': 6, 'n': n, 'ty': 'sort', 'pre': tok(pre), 'post': tok(post),
-               'plain': pre + '＿＿＿★＿' + post, 'full': full, 'order': order, 'star': 3, 'ans': order[2],
-               'zh': zh, 'opts': o, 'pt': pt + (('\n' + nb) if nb else '')})
-
-pid = P + '-m7'
-passages = {pid: {'intro': Q.M7_INTRO, 'tk': tok(Q.M7_PASSAGE)}}
-for (blank, ans, opts, zs, zh, pt) in Q.M7:
-    n += 1
-    o = [{'t': t, 'tk': tok(t), 'z': z} for t, z in zip(opts, zs)]
-    qs.append({'id': qid(n), 'p': P, 'm': 7, 'n': n, 'ty': 'text', 'pid': pid, 'blank': blank,
-               'plain': f'文章空格［{blank}］', 'zh': zh, 'ans': ans, 'opts': o, 'pt': pt})
+    pid = P + '-m7'
+    passages[pid] = {'intro': Q.M7_INTRO, 'tk': tok(Q.M7_PASSAGE)}
+    for (blank, ans, opts, zs, zh, pt) in Q.M7:
+        n += 1
+        o = [{'t': t, 'tk': tok(t), 'z': z} for t, z in zip(opts, zs)]
+        qs.append({'id': qid(n), 'p': P, 'm': 7, 'n': n, 'ty': 'text', 'pid': pid, 'blank': blank,
+                   'plain': f'文章空格［{blank}］', 'zh': zh, 'ans': ans, 'opts': o, 'pt': pt})
 
 data = {'questions': qs, 'passages': passages}
 out = os.path.join(os.path.dirname(__file__), 'data.json')
 json.dump(data, open(out, 'w'), ensure_ascii=False, separators=(',', ':'))
 print(len(qs), os.path.getsize(out))
-print(qs[1]['stem'])
-print(qs[27]['stem'][:12])
