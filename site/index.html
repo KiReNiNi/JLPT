@@ -294,7 +294,7 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 
 /* ===== 首页面板（两种主题共用的结构） ===== */
 .panel{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow);padding:6px 18px}
-.entry{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:64px;margin:12px 0;padding:0 20px;border-radius:18px;background:var(--accent);color:var(--on-accent);font-size:17px}
+.entry{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:56px;margin:12px 0;padding:0 20px;border-radius:18px;background:var(--accent);color:var(--on-accent);font-size:15px}
 .entry b{font-weight:600}
 .entry .chev{color:currentColor}
 .start{padding-block:0}
@@ -315,26 +315,27 @@ body[data-skin="orchard"]{
 }
 body[data-skin="orchard"] :is(.card,.panel,.tiles,.grp,.fs,.note,.score,.wd,.ibtn,.mode,.tabs,.flt){border:1px solid rgba(255,255,255,.65)}
 body[data-skin="orchard"] .hero{margin:10px 0 2px;padding:18px 20px;border-radius:var(--r-card);background:rgba(255,250,246,.62);border:1px solid rgba(255,255,255,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-body[data-skin="orchard"] .hero h1{font-size:34px;font-weight:600;letter-spacing:.06em;text-shadow:0 1px 14px rgba(255,255,255,.7)}
-body[data-skin="orchard"] .hero p{font-size:13px;color:var(--ink);text-shadow:0 1px 8px rgba(255,255,255,.8)}
+body[data-skin="orchard"] .hero h1{font-weight:600;letter-spacing:.06em;text-shadow:0 1px 14px rgba(255,255,255,.7)}
+body[data-skin="orchard"] .hero p{color:var(--ink);text-shadow:0 1px 8px rgba(255,255,255,.8)}
 body[data-skin="orchard"] .panel{backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
 body[data-skin="orchard"] .entry{background:linear-gradient(125deg,rgba(255,252,248,.95),rgba(252,220,196,.9));color:var(--accent2);border:1px solid rgba(255,255,255,.8);box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 6px 16px rgba(190,110,60,.12)}
-body[data-skin="orchard"] .entry b{font-family:var(--f-display);font-size:19px;letter-spacing:.04em}
+body[data-skin="orchard"] .entry b{font-family:var(--f-display);letter-spacing:.04em}
 body[data-skin="orchard"] .resume{background:none}
-body[data-skin="orchard"] .resume .rs-t{font-family:var(--f-display);font-weight:600;font-size:16px}
+body[data-skin="orchard"] .resume .rs-t{font-family:var(--f-display);font-weight:600}
 body[data-skin="orchard"] .tiles{gap:0;padding:16px 6px;border-radius:var(--r-card);background:var(--card);box-shadow:var(--shadow);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
 body[data-skin="orchard"] .tile{align-items:center;background:none;box-shadow:none;border-radius:0;padding:2px 8px;backdrop-filter:none;-webkit-backdrop-filter:none}
 body[data-skin="orchard"] .tile+.tile{border-left:1px solid var(--line)}
-body[data-skin="orchard"] .tile b{font-weight:600;font-size:26px}
-body[data-skin="orchard"] .panel-h{font-family:var(--f-display);font-size:19px;font-weight:600;letter-spacing:.04em;color:var(--ink);padding-top:18px}
-body[data-skin="orchard"] .paper .yr{font-weight:600;font-size:18px}
+body[data-skin="orchard"] .tile b{font-weight:600}
+body[data-skin="orchard"] .panel-h{padding-top:16px}
+body[data-skin="orchard"] .paper .yr{font-weight:600}
 body[data-skin="orchard"] .paper .bar{height:4px}
 body[data-skin="orchard"] .paper .bar i{background:linear-gradient(90deg,#E9A271,var(--accent))}
 body[data-skin="orchard"] .btn.pri{background:linear-gradient(125deg,rgba(255,252,248,.95),rgba(252,220,196,.92));color:var(--accent2);border:1px solid rgba(255,255,255,.8);box-shadow:inset 0 1px 1px rgba(255,255,255,.9),0 6px 16px rgba(190,110,60,.14);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
 body[data-skin="orchard"] .btn{border-radius:18px}
 body[data-skin="orchard"] .btn.sec{border:1px solid rgba(255,255,255,.7)}
 body[data-skin="orchard"] .card{backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
-body[data-skin="orchard"] .op .no{width:26px;height:26px;border-radius:50%;background:var(--card2);display:inline-flex;align-items:center;justify-content:center;font-size:13px;margin-top:1px}
+body[data-skin="orchard"] .op{gap:8px;padding-inline:12px}
+body[data-skin="orchard"] .op .no{width:1.25em;height:1.25em;border-radius:50%;background:var(--card2);display:inline-flex;align-items:center;justify-content:center;margin-top:.22em;font-size:inherit;line-height:1}
 body[data-skin="orchard"] .ans .op.pick .no{background:#fff}
 body[data-skin="orchard"] .op{box-shadow:inset 0 0 0 1px var(--line),0 1px 2px rgba(140,80,70,.04)}
 body[data-skin="orchard"] .act{background:rgba(255,250,246,.85);box-shadow:inset 0 0 0 1px var(--line)}
@@ -343,7 +344,7 @@ body[data-skin="orchard"] .ch.on{background:var(--accent-soft);box-shadow:inset 
 body[data-skin="orchard"] .grp-h b,body[data-skin="orchard"] .sh-h b{font-family:var(--f-display);font-weight:600}
 body[data-skin="orchard"] .score b{font-weight:600}
 body[data-skin="orchard"] .cloud{height:30px;padding:0 10px;border-radius:999px;background:rgba(255,250,246,.72);color:var(--ink)}
-body[data-skin="orchard"] .top .ttl{flex:none;padding:4px 12px;border-radius:999px;background:rgba(255,250,246,.72);font-size:16px}
+body[data-skin="orchard"] .top .ttl{flex:none;padding:4px 12px;border-radius:999px;background:rgba(255,250,246,.72)}
 body[data-skin="orchard"] .top .ttl:empty{display:none}
 body[data-skin="orchard"] .top .ttl+*{margin-left:auto}
 </style>
@@ -544,7 +545,7 @@ function questionHTML(q, ctx){
   } else h += `<div class="stem" lang="ja">${toks(q, 's', q.stem, mk)}</div>`;
 
   if (q.ty !== 'sort') {
-    const long = q.ty === 'use' || q.opts.some(o => o.t.length > 9);
+    const long = q.ty === 'use' || q.opts.some(o => o.t.length > 6);
     h += `<div class="opts${long ? '' : ' two'}${clean ? '' : ' ans'}">` + q.opts.map((o, i) => {
       const n = i + 1; let cls = 'op';
       if (mk) {
