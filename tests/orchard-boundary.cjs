@@ -1,2 +1,16 @@
-// Compatibility entry point: the current user-authorized layout supersedes cd1a971.
-require('./garden-layout-boundary.cjs');
+const fs=require('fs'),cp=require('child_process'),assert=require('assert/strict'),crypto=require('crypto'),vm=require('vm');
+const base='dcf3f44be4f41b73a225a908e47492a35da6dd95';
+const original=p=>cp.execFileSync('git',['show',base+':'+p],{maxBuffer:8*1024*1024});
+const current=fs.readFileSync('build/template.html','utf8'),old=original('build/template.html').toString();
+const skin=s=>s.slice(s.indexOf('/* ---------- 皮肤 ---------- */'),s.indexOf('/* ---------- 导航 ---------- */'));
+const normalize=s=>s.replace(/<style>[\s\S]*?<\/style>/,'<style>VISUAL</style>').replace(skin(s),skin(old)).replace('  applySkin();\n  const v =','  const v =').replace('data-b="random">每页<br>随机','data-b="random">每次<br>随机');
+assert.equal(normalize(current),normalize(old),'Outside the stylesheet, only skin presentation, render hook and background label may change');
+for(const p of ['build/data.json','build/q2026.py','build/build.py','build/assemble.py',...Array.from({length:8},(_,i)=>'site/bg/bg'+(i+1)+'.jpg')])assert.deepEqual(fs.readFileSync(p),original(p),'Original data/build/assets changed: '+p);
+const main=fs.readFileSync('site/index.html','utf8');
+const embedded=main.match(/const BG = (\[.*?\]);/s)[1];
+assert.equal(main.replace(fs.readFileSync('build/data.json','utf8'),'__DATA__').replace(embedded,'__BG__'),current,'Generated page matches template and data');
+const bgs=JSON.parse(main.match(/const BG = (\[.*?\]);/s)[1]);assert.equal(bgs.length,8);bgs.forEach((s,i)=>assert.deepEqual(Buffer.from(s.split(',')[1],'base64'),fs.readFileSync('site/bg/bg'+(i+1)+'.jpg')));
+new vm.Script(main.match(/<script>([\s\S]*?)<\/script>/)[1]);
+const sourceHashes={};for(const p of ['build/data.json',...Array.from({length:8},(_,i)=>'site/bg/bg'+(i+1)+'.jpg')])sourceHashes[p]=crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+fs.writeFileSync('docs/orchard-background-fix/source-check.json',JSON.stringify({passed:true,base,onlyPresentationJSChanged:true,storageAndAnswerHandlersByteUnchanged:true,all44QuestionsUnchanged:true,imagesEmbeddedAndUnchanged:true,hashes:sourceHashes},null,2)+'\n');
+console.log('PASS: original question data, storage, answer/mark/note handlers, data attributes, build pipeline and eight embedded JPEGs unchanged; only approved visual changes.');

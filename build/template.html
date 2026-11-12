@@ -1,22 +1,21 @@
 <title>橘园 N1</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="garden-ui-version" content="2026-11-12-garden-layout">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600&family=Noto+Serif+JP:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap">
 <style>
 /* ===== 设计变量（美化时主要改这里） =====
    页面结构：顶栏 .top → 内容 .stack → 固定底栏 .foot
    橘园皮肤 body[data-skin="orchard"]：#bgimg 插画背景 + 磨砂卡片；简洁皮肤：淡色纯底，跟随深浅模式 */
 :root{
   --bg:#F3F1F6; --card:#FFFFFF; --card2:#F7F5FA; --ink:#2C2733; --mute:#7B7387; --line:#E3DEE9;
-  --accent:#A77888; --accent2:#805B6B; --accent-soft:#F3E6EB; --lav:#8F7EC6; --lav-soft:#ECE7F7;
+  --accent:#E07A38; --accent2:#C9652A; --accent-soft:#FBE7D8; --lav:#8F7EC6; --lav-soft:#ECE7F7;
   --sel:#4A72D6; --sel-bg:#E2EAFB; --mark:#2F6B28; --mark-bg:#D3EBC8;
   --hold:#E2B32E; --hold-bg:#FFF4CC; --good:#2E8B57; --good-bg:#DDF1E5; --bad:#CC4B45; --bad-bg:#FBE3E1;
   --on-accent:#FFFFFF; --sheet:#FBF8FC; --glass:none;
   --shadow:0 1px 2px rgba(60,40,80,.06),0 4px 14px rgba(60,40,80,.05);
-  --r-card:23px; --r-ctl:13px;
-  --f-display:"Noto Serif SC","Noto Serif JP","Songti SC","Hiragino Mincho ProN",serif;
+  --r-card:20px; --r-ctl:14px;
+  --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","PingFang SC",sans-serif;
   --f-body:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans","Noto Sans SC","Microsoft YaHei",sans-serif;
   --f-ja:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",-apple-system,sans-serif;
 }
@@ -33,49 +32,41 @@
   --hold:#E9C552; --hold-bg:#43391A; --good:#6FCB95; --good-bg:#1F3A2A; --bad:#F08B85; --bad-bg:#4A2422;
   --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
 body[data-skin="orchard"]{
-  --bg:#EFE3E7; --card:rgba(255,250,247,.90); --card2:rgba(249,238,239,.76); --ink:#634C52; --mute:#927B83; --line:rgba(177,133,145,.25);
-  --accent:#B38390; --accent2:#805666; --accent-soft:rgba(237,214,223,.72); --lav:#8B76C2; --lav-soft:rgba(234,226,248,.85);
-  --sel:#967585; --sel-bg:#F1E4EA; --mark:#5E7C51; --mark-bg:#DEEAD5;
+  --bg:#EAD8E4; --card:rgba(255,250,246,.82); --card2:rgba(255,247,242,.66); --ink:#3B2B3A; --mute:#7D6979; --line:rgba(150,110,150,.22);
+  --accent:#E8803C; --accent2:#C8652B; --accent-soft:rgba(250,214,186,.75); --lav:#8B76C2; --lav-soft:rgba(234,226,248,.85);
+  --sel:#4A72D6; --sel-bg:#DCE6FB; --mark:#2F6B28; --mark-bg:#CDEAC0;
   --hold:#D9A21C; --hold-bg:#FFF0BF; --good:#2E8B57; --good-bg:#DAF0E2; --bad:#C9443E; --bad-bg:#FADCDA;
-  --on-accent:#FFFFFF; --sheet:#FCF4F1; --glass:blur(7px);
+  --on-accent:#FFFFFF; --sheet:#FBF2EE; --glass:none;
   --shadow:0 2px 6px rgba(120,70,90,.10),0 10px 30px rgba(120,70,90,.10);
   color-scheme:light;
 }
 
-
-body[data-skin="forest"]{
-  --bg:#DCE8DD;--card:rgba(248,250,239,.91);--card2:rgba(232,240,224,.78);--ink:#405C4B;--mute:#7D8F7C;--line:rgba(119,150,113,.28);
-  --sel:#63836B;--sel-bg:#E1EBDD;--accent:#7F9C7B;--accent2:#486B50;--accent-soft:rgba(212,230,201,.78);--lav:#6D8E82;--lav-soft:#E5EEE6;
-  --sheet:#F4F7EB;--glass:blur(7px);--shadow:0 3px 9px #405c4b0a,0 12px 28px #405c4b0c;--on-accent:#FFFFFF;
-  --hold:#A39357;--hold-bg:#F2EACD;--mark:#527B47;--mark-bg:#DCEACD;color-scheme:light
-}
-
 /* ===== 基础 ===== */
 *{box-sizing:border-box}
-html,body{min-height:100%;margin:0}
+html,body{min-height:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6;-webkit-tap-highlight-color:transparent}
 #bgimg{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;pointer-events:none}
-body[data-skin="plain"] #bgimg{display:none}
+body:not([data-skin="orchard"]) #bgimg{display:none}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
-body:is([data-skin="orchard"],[data-skin="forest"])::before{background:transparent}
-.wrap{position:relative;z-index:1;max-width:740px;margin:0 auto;padding-left:max(22px,env(safe-area-inset-left,0px));padding-right:max(22px,env(safe-area-inset-right,0px));padding-block:8px 140px;min-width:0}
+body[data-skin="orchard"]::before{background:transparent}
+.wrap{position:relative;z-index:1;max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 140px}
 :lang(ja){font-family:var(--f-ja)}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
 button:disabled{cursor:default}
 :focus-visible{outline:2px solid var(--sel);outline-offset:2px}
 h1{font-family:var(--f-display);font-weight:700;text-wrap:balance;margin:0}
 svg{width:18px;height:18px;flex:none}
-.stack{display:flex;flex-direction:column;gap:16px;min-width:0}
+.stack{display:flex;flex-direction:column;gap:14px}
 .label{font-size:12px;letter-spacing:.06em;color:var(--mute)}
 .hint{font-size:13px;color:var(--mute)}
 .empty{text-align:center;padding:28px 12px;color:var(--mute);background:var(--card);border-radius:var(--r-card)}
 .warn{background:var(--bad-bg);color:var(--bad);border-radius:var(--r-ctl);padding:10px 14px;font-size:14px}
 
 /* ===== 顶栏 ===== */
-.top{position:relative;top:auto;z-index:20;display:flex;align-items:center;gap:10px;padding:14px 0 20px;min-height:70px}
-body:is([data-skin="orchard"],[data-skin="forest"]) .top{position:relative;top:auto;background:transparent}
-body[data-skin="plain"] .top{background:var(--bg)}
-.top .ttl{flex:1;min-width:0;font-family:var(--f-display);font-weight:600;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;display:flex;align-items:center;gap:10px;padding-block:12px;margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+body[data-skin="orchard"] .top{position:relative;top:auto;background:transparent}
+body:not([data-skin="orchard"]) .top{background:var(--bg)}
+.top .ttl{flex:1;min-width:0;font-family:var(--f-display);font-weight:700;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .top .ttl.prog small{font-size:14px;color:var(--mute);font-weight:500}
 .ibtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:40px;min-width:40px;padding:0 12px;border-radius:999px;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--shadow)}
 .cloud{font-size:12px;color:var(--mute);display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
@@ -90,53 +81,53 @@ body[data-skin="plain"] .top{background:var(--bg)}
 @media (max-width:380px){.mode button span{display:none}}
 
 /* ===== 按钮 ===== */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:49px;padding:0 20px;border-radius:16px;font-weight:500;font-size:14px;white-space:nowrap}
-.btn.pri{background:linear-gradient(125deg,var(--card),var(--accent-soft));color:var(--accent2);border:1px solid var(--line);box-shadow:inset 0 1px 1px #fff9,0 6px 16px #5641430a;backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 20px;border-radius:999px;font-weight:600;font-size:15px;white-space:nowrap}
+.btn.pri{background:var(--accent);color:var(--on-accent);box-shadow:0 6px 18px rgba(232,128,60,.28)}
 .btn.sec{background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--shadow)}
 .btn.full{width:100%}
 .btn:disabled{opacity:.45}
 
 /* ===== 首页 ===== */
-.hero{position:relative;padding:24px 5px 30px;min-height:156px;display:flex;flex-direction:column;justify-content:center}
-.hero h1{font-size:34px;letter-spacing:.06em;font-weight:500;text-shadow:0 1px 14px #fff9;text-wrap:nowrap}
-.hero p{margin:10px 0 0;color:var(--ink);font-size:12px;letter-spacing:.03em;text-shadow:0 1px 8px #fffb}
-.resume{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 12px;width:100%;text-align:left;padding:14px 0 0;margin-top:14px;border-top:1px solid var(--line);background:none}
-.resume .rs-t{font-weight:500;font-size:13px}
-.resume .rs-s{grid-column:1;font-size:11px;color:var(--mute)}
+.hero{padding:18px 4px 4px}
+.hero h1{font-size:30px;letter-spacing:.02em}
+.hero p{margin:4px 0 0;color:var(--mute)}
+.resume{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 12px;text-align:left;padding:14px 18px;border-radius:var(--r-card);background:var(--accent-soft);border:1.5px dashed var(--accent)}
+.resume .rs-t{font-family:var(--f-display);font-weight:700;font-size:17px}
+.resume .rs-s{grid-column:1;font-size:13px;color:var(--mute)}
 .resume svg{grid-row:1/3;grid-column:2;color:var(--accent);width:24px;height:24px}
-.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;background:var(--card);border:1px solid var(--line);border-radius:var(--r-card);padding:17px 8px;backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--shadow)}
-.tile{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;padding:2px 8px;min-width:0}.tile+.tile{border-left:1px solid var(--line)}
-.tile b{font-family:var(--f-display);font-weight:500;font-size:23px;line-height:1.2;font-variant-numeric:tabular-nums}
-.tile span{font-size:11px;color:var(--mute)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{display:flex;flex-direction:column;align-items:flex-start;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-ctl);box-shadow:var(--shadow);padding:12px 14px}
+.tile b{font-family:var(--f-display);font-size:24px;line-height:1.2;font-variant-numeric:tabular-nums}
+.tile span{font-size:12px;color:var(--mute)}
 .tile.hold b{color:var(--hold)} .tile.word b{color:var(--mark)}
-.papers{display:flex;flex-direction:column;gap:0}
-.paper{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:18px 2px;background:none;border-bottom:1px solid var(--line)}.paper:last-child{border-bottom:0}
+.papers{display:flex;flex-direction:column;gap:10px}
+.paper{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 18px;border-radius:var(--r-card);background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);box-shadow:var(--shadow)}
 .paper .pp{flex:1;min-width:0;display:flex;flex-direction:column}
-.paper .yr{font-family:var(--f-display);font-weight:500;font-size:16px}
-.paper .ps{font-size:11px;color:var(--mute);margin-top:5px}
-.paper .bar{display:block;height:4px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:8px}
+.paper .yr{font-family:var(--f-display);font-weight:700;font-size:17px}
+.paper .ps{font-size:13px;color:var(--mute)}
+.paper .bar{display:block;height:6px;border-radius:6px;background:var(--line);overflow:hidden;margin-top:8px}
 .paper .bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:6px}
-.paper .pct{font-family:var(--f-display);font-size:15px;color:var(--accent2);font-variant-numeric:tabular-nums}
+.paper .pct{font-family:var(--f-display);font-size:18px;color:var(--accent2);font-variant-numeric:tabular-nums}
 .paper.off{opacity:.55;box-shadow:none}
 
 /* ===== 套卷题库 ===== */
 .tabs{display:flex;gap:4px;background:var(--card2);border-radius:999px;padding:4px;backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
 .tabs button{flex:1;height:36px;border-radius:999px;font-size:14px;color:var(--mute)}
-.tabs button.on{background:var(--card);color:var(--accent2);font-weight:500;box-shadow:0 2px 7px #5f454710}
+.tabs button.on{background:var(--card);color:var(--ink);font-weight:600;box-shadow:var(--shadow)}
 .tabs button:disabled{opacity:.5}
-.filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding-bottom:2px}
+.filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
 .filters::-webkit-scrollbar{display:none}
-.flt{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:0;height:37px;padding:0 9px;border:1px solid var(--line);border-radius:14px;font-size:12px;background:var(--card);color:var(--ink)}
+.flt{display:inline-flex;align-items:center;gap:6px;flex:none;height:34px;padding:0 12px;border-radius:999px;font-size:13px;background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
 .flt i{width:12px;height:12px;border-radius:4px}
 .flt.hold i{background:var(--hold-bg);box-shadow:inset 0 0 0 1.5px var(--hold)}
 .flt.pass i{box-shadow:inset 0 0 0 2.5px var(--ink)}
 .flt.wrong i{background:var(--bad);border-radius:50%;width:8px;height:8px}
-.flt.on{background:var(--accent-soft);color:var(--accent2);border-color:var(--accent)}
+.flt.on{background:var(--ink);color:var(--bg)}
 .flt.on.pass i{box-shadow:inset 0 0 0 2.5px var(--bg)}
 .grp{background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);overflow:hidden}
 .grp-h{display:flex;width:100%;align-items:center;gap:10px;padding:15px 18px;text-align:left}
-.grp-h b{flex:1;font-family:var(--f-display);font-weight:500;font-size:16px}
-.grp-h .gs{font-size:11px;color:var(--mute)}
+.grp-h b{flex:1;font-size:16px}
+.grp-h .gs{font-size:13px;color:var(--mute)}
 .chev{width:18px;height:18px;color:var(--mute);transition:transform .2s}
 .open>button>.chev,.grp.open .grp-h .chev{transform:rotate(90deg)}
 .qlist{display:flex;flex-direction:column;gap:8px;padding:0 12px 12px}
@@ -148,7 +139,7 @@ body[data-skin="plain"] .top{background:var(--bg)}
 .dot{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--bad)}
 
 /* ===== 题目卡 ===== */
-.card{border:1px solid var(--line);background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);padding:18px}
+.card{background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);padding:18px}
 .qhead{display:flex;align-items:center;gap:8px;min-height:32px}
 .qhead .tag-l{flex:1;min-width:0;font-size:13px;color:var(--mute)}
 .peek{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--card2);color:var(--mute)}
@@ -166,9 +157,9 @@ body[data-skin="plain"] .top{background:var(--bg)}
 .psg .blank.cur{box-shadow:inset 0 0 0 1.5px var(--accent);background:var(--accent-soft);color:var(--accent2);font-weight:700}
 .opts{display:grid;gap:10px;margin-top:14px}
 .opts.two{grid-template-columns:1fr 1fr}
-.op{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px 15px;border-radius:var(--r-ctl);background:var(--card);box-shadow:inset 0 0 0 1.5px var(--line);min-width:0;font-size:16px;line-height:1.7}
-body:is([data-skin="orchard"],[data-skin="forest"]) .op{background:rgba(255,253,250,.86)}
-.op .no{font-family:var(--f-display);font-weight:500;color:var(--mute);flex:none;width:24px;height:24px;border-radius:50%;background:var(--card2);display:inline-flex;align-items:center;justify-content:center;font-size:13px;margin-top:2px}
+.op{display:flex;gap:10px;align-items:flex-start;text-align:left;padding:12px 14px;border-radius:var(--r-ctl);background:var(--card);box-shadow:inset 0 0 0 1.5px var(--line);min-width:0;font-size:16px;line-height:1.7}
+body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
+.op .no{font-family:var(--f-display);font-weight:700;color:var(--mute);flex:none;width:1.1em}
 .op .tx{min-width:0;flex:1}
 .op .sub{display:block;font-size:13px;color:var(--mute);line-height:1.5;margin-top:2px}
 .op .tag{flex:none;font-size:12px;font-weight:700}
@@ -190,7 +181,7 @@ body:is([data-skin="orchard"],[data-skin="forest"]) .op{background:rgba(255,253,
 .chip .no{font-weight:700;color:var(--mute)}
 .chip.used{opacity:.35}
 /* 解析 */
-.exp{margin-top:18px;padding:17px 16px;border-radius:var(--r-ctl);background:var(--lav-soft);font-size:14px;line-height:1.75}
+.exp{margin-top:14px;padding:14px 16px;border-radius:var(--r-ctl);background:var(--lav-soft);font-size:14px;line-height:1.75}
 .exp .zh{font-size:15px}
 .exp .pt{margin-top:8px}
 .exp .pt b{color:var(--lav)}
@@ -232,7 +223,7 @@ body:is([data-skin="orchard"],[data-skin="forest"]) .op{background:rgba(255,253,
 /* ===== 底栏 ===== */
 .foot{position:fixed;left:0;right:0;bottom:0;z-index:25;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));pointer-events:none}
 .foot>*{pointer-events:auto}
-.foot .in{max-width:696px;margin:0 auto;display:flex;gap:9px;padding:7px;border:1px solid var(--line);border-radius:22px;background:var(--card);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);box-shadow:0 7px 24px #54473718}
+.foot .in{max-width:680px;margin:0 auto;display:flex;gap:10px}
 .foot .in .btn{flex:1}
 .dots{display:flex;flex-wrap:wrap;gap:6px}
 .dots button{width:28px;height:28px;border-radius:8px;font-size:11px;background:var(--card2);color:var(--mute);font-variant-numeric:tabular-nums}
@@ -242,10 +233,10 @@ body:is([data-skin="orchard"],[data-skin="forest"]) .op{background:rgba(255,253,
 .dots button.cur{box-shadow:0 0 0 2px var(--accent)}
 
 /* ===== 选题 ===== */
-.fs{display:flex;flex-direction:column;gap:13px;border:1px solid var(--line);background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);padding:16px 18px}
+.fs{display:flex;flex-direction:column;gap:10px;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);padding:16px 18px}
 .chs{display:flex;flex-wrap:wrap;gap:8px}
 .ch{height:38px;padding:0 14px;border-radius:999px;background:var(--card2);box-shadow:inset 0 0 0 1.5px var(--line);font-size:14px;white-space:nowrap}
-.ch.on{background:var(--accent-soft);box-shadow:inset 0 0 0 1px var(--accent);color:var(--accent2)}
+.ch.on{background:var(--accent);box-shadow:none;color:var(--on-accent)}
 .ch:disabled{opacity:.4}
 .stepper{display:flex;align-items:center;gap:10px}
 .stp{width:44px;height:44px;border-radius:50%;background:var(--card2);box-shadow:inset 0 0 0 1.5px var(--line);font-size:20px}
@@ -255,8 +246,8 @@ body:is([data-skin="orchard"],[data-skin="forest"]) .op{background:rgba(255,253,
 .chk input{width:20px;height:20px;accent-color:var(--accent)}
 
 /* ===== 结果 ===== */
-.score{border:1px solid var(--line);text-align:center;padding:26px 16px;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow)}
-.score b{font-family:var(--f-display);font-weight:500;font-size:58px;color:var(--accent2);font-variant-numeric:tabular-nums}
+.score{text-align:center;padding:26px 16px;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow)}
+.score b{font-family:var(--f-display);font-size:48px;color:var(--accent2);font-variant-numeric:tabular-nums}
 .score span{color:var(--mute)}
 .score p{margin:4px 0 0;font-size:13px;color:var(--mute)}
 .rlist{display:flex;flex-direction:column;gap:8px}
@@ -271,9 +262,9 @@ body:is([data-skin="orchard"],[data-skin="forest"]) .op{background:rgba(255,253,
 .rrow .r{font-size:12px;color:var(--mute);white-space:nowrap}
 
 /* ===== 单词 ===== */
-.wd{border:1px solid var(--line);display:flex;gap:12px;align-items:flex-start;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);padding:14px 16px}
+.wd{display:flex;gap:12px;align-items:flex-start;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);padding:14px 16px}
 .wd .main{flex:1;min-width:0}
-.wd .w{font-family:var(--f-display);font-size:21px;font-weight:500}
+.wd .w{font-size:19px;font-weight:600}
 .wd .rd{font-size:13px;color:var(--mute);margin-left:6px}
 .wd .z{font-size:14px;margin-top:2px}
 .wd .ctx{font-size:13px;color:var(--mute);margin-top:4px;line-height:1.6}
@@ -284,12 +275,12 @@ body:is([data-skin="orchard"],[data-skin="forest"]) .op{background:rgba(255,253,
 
 /* ===== 弹层 ===== */
 .sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:rgba(40,25,45,.35)}
-.sheet .pn{border:1px solid var(--line);display:flex;flex-direction:column;gap:12px;width:100%;max-width:680px;background:var(--sheet);border-radius:24px 24px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));max-height:86vh;overflow:auto}
+.sheet .pn{display:flex;flex-direction:column;gap:12px;width:100%;max-width:680px;background:var(--sheet);border-radius:24px 24px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));max-height:86vh;overflow:auto}
 .sh-h{display:flex;align-items:center;justify-content:space-between}
 .sh-h b{font-family:var(--f-display);font-size:18px}
-.bgs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.bgs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .bgs button{aspect-ratio:9/16;width:100%;border-radius:12px;background-color:var(--card2);background-size:cover;background-position:center;box-shadow:inset 0 0 0 1px var(--line)}
-.bgs button.on{box-shadow:0 0 0 2px var(--accent),0 0 0 4px var(--card)}
+.bgs button.on{box-shadow:0 0 0 3px var(--accent)}
 .bgs .rnd{display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--mute);line-height:1.5}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(140px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:14px;box-shadow:var(--shadow);white-space:nowrap}
 .modal{position:fixed;inset:0;z-index:45;display:flex;align-items:center;justify-content:center;background:rgba(40,25,45,.35);padding:16px}
@@ -298,36 +289,7 @@ body:is([data-skin="orchard"],[data-skin="forest"]) .op{background:rgba(255,253,
 .modal .pn p{margin:0 0 6px;font-size:13px;color:var(--mute)}
 .modal .row{display:flex;gap:10px}
 .modal .row .btn{flex:1}
-@media (max-width:420px){.stem{font-size:18px}.opts.two .op{font-size:15px;padding:11px 12px}.hero h1{font-size:31px}}
-
-/* ===== Garden page composition ===== */
-.home-top .wordmark{flex:1;font-size:9px;letter-spacing:.22em;color:var(--ink);text-shadow:0 1px 7px #fffa}
-.home-top .cloud{font-size:10px}.home-top .ibtn{width:38px;height:38px;min-width:38px;padding:0}
-.eyebrow{font-size:10px;letter-spacing:.22em;color:var(--ink);opacity:.8;margin-bottom:12px}
-.home-layout{display:flex;flex-direction:column;gap:18px}
-.practice-card,.paper-shelf{position:relative;border:1px solid var(--line);border-radius:var(--r-card);background:var(--card);padding:22px;box-shadow:var(--shadow);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
-.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
-.section-title h2{font:500 19px/1.5 var(--f-display);margin:0}.section-title small{font-size:10px;color:var(--mute)}
-.practice-card .label{font-size:10px}.practice-card h2{font:500 23px/1.6 var(--f-display);margin:8px 0 18px}
-.journey-entry{width:100%;display:flex;align-items:center;justify-content:space-between;padding:14px 16px!important;min-height:57px!important;border-radius:17px!important;text-align:left}
-.journey-entry .entry-text{display:flex;flex-direction:column;gap:4px}.journey-entry .entry-text b{font:500 17px/1.4 var(--f-display)}
-.journey-entry svg{width:27px;height:27px}.journey-entry .entry-text small{font-size:10px;color:var(--mute)}
-.paper-shelf{padding:20px}.paper-shelf .section-title{margin-bottom:0}
-.section-index{display:flex;align-items:center;justify-content:center;flex:none;width:31px;height:35px;border-radius:11px;background:var(--accent-soft);font:500 13px var(--f-display);color:var(--accent2)}
-.grp{border:1px solid var(--line)}.grp-h{padding:16px 14px;gap:11px}.qcard{padding:21px 18px;background:color-mix(in srgb,var(--card) 97%,white)}
-.qhead{padding-bottom:10px}.qhead .tag-l{font-size:11px;letter-spacing:.02em}.qcard .stem{margin:6px 0 12px}
-.setup-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.setup-grid>.fs:nth-child(-n+2),.setup-grid>.btn,.setup-grid>.hint{grid-column:1/-1}
-.setup-grid .fs{padding:18px 16px}.setup-grid .label{font-size:11px}.setup-grid .ch{font-size:12px;height:34px;padding:0 11px}
-.setup-grid .stepper{display:grid;grid-template-columns:32px minmax(24px,1fr) 32px;gap:6px}.setup-grid .stp{width:32px;height:34px;font-size:18px}.setup-grid output{min-width:0;font-size:24px}
-.setup-grid .stepper .ch{grid-column:1/-1;margin-left:0}.setup-grid .chk{font-size:13px}.setup-grid .chk input{width:17px;height:17px}
-.page-intro{padding:6px 3px 8px}.page-intro h1{font:500 25px/1.5 var(--f-display)}.page-intro p{font-size:11px;color:var(--mute);margin:8px 0 0}
-.wd .src{font-size:10px;margin-top:9px}.wd .del{background:transparent;box-shadow:inset 0 0 0 1px var(--line);font-size:10px}
-.score{padding:31px 20px}.score p{max-width:250px;margin:10px auto 0;line-height:1.8}.rrow{border:1px solid var(--line);padding:15px}
-.rrow.pass{box-shadow:inset 0 0 0 1px var(--good)}.rrow .t>b{font-weight:500}.rrow .t small{font-size:10px}.rrow .r{font-size:10px}.rrow .t .s{font-size:13px;margin-top:4px}
-.appearance-themes button{font-size:12px}.sh-h b{font-weight:500}.skin-hint{font-size:11px;line-height:1.7;color:var(--mute)}
-@media(min-width:700px){.home-layout{display:grid;grid-template-columns:1.1fr 1fr;align-items:start}.home-layout>.practice-card{grid-column:1}.home-layout>.tiles{grid-column:2;align-self:stretch;min-height:160px;align-items:center}.home-layout>.paper-shelf,.home-layout>.warn{grid-column:1/-1}.filters{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:359px){.wrap{padding-inline:16px}.setup-grid{grid-template-columns:1fr}.setup-grid>.fs{grid-column:1/-1}.mode button{padding-inline:8px}.mode button span{display:none}}
-
+@media (max-width:420px){.stem{font-size:18px}.opts.two .op{font-size:15px;padding:11px 12px}.hero h1{font-size:26px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
@@ -345,7 +307,6 @@ const Q = {}; DATA.questions.forEach(q => Q[q.id] = q);
 const QS = DATA.questions;
 const BG = __BG__;  /* 背景图以 data URI 内嵌：Artifact 页面里相对路径的图片加载不出来 */
 const BG_COUNT = BG.length;
-const FOREST_BG = __FOREST_BG__;
 
 const ICON = {
   back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
@@ -428,57 +389,31 @@ async function initCloud(){
 }
 
 /* ---------- 皮肤 ---------- */
-/* Backgrounds are presentation state, independent of study RNG and persisted progress. */
-function sceneShuffle(length){
-  const order = Array.from({length}, (_, i) => i + 1);
-  const random = new Uint32Array(length);
-  if (globalThis.crypto?.getRandomValues) crypto.getRandomValues(random);
-  else for (let i = 0; i < length; i++) random[i] = (Date.now() + i * 2654435761) >>> 0;
-  for (let i = length - 1; i > 0; i--) { const j = random[i] % (i + 1); [order[i], order[j]] = [order[j], order[i]] }
-  return order;
+/* Presentation only: assign distinct scenes once, without consuming quiz randomness. */
+const sceneOrder = Array.from({length:BG_COUNT}, (_, i) => i + 1);
+if (globalThis.crypto?.getRandomValues) {
+  const random = crypto.getRandomValues(new Uint32Array(BG_COUNT));
+  for (let i = sceneOrder.length - 1; i > 0; i--) {
+    const j = random[i] % (i + 1);
+    [sceneOrder[i], sceneOrder[j]] = [sceneOrder[j], sceneOrder[i]];
+  }
+} else {
+  const offset = Date.now() % Math.max(1, BG_COUNT);
+  sceneOrder.push(...sceneOrder.splice(0, offset));
 }
-const sceneOrder = sceneShuffle(BG_COUNT), forestSceneOrder = sceneShuffle(FOREST_BG.length);
 const sceneViews = ['home', 'paper', 'detail', 'setup', 'drill', 'result', 'words'];
-const practiceScenes = new WeakMap(), lastPracticeScene = {};
+const sceneByView = Object.fromEntries(sceneViews.map((view, i) => [view, sceneOrder[i % BG_COUNT]]));
 let bgPick = sceneOrder[0];
-function skinImages(){ return S.settings.skin === 'forest' ? FOREST_BG : BG }
-function homeScene(order){
-  const choice = +S.settings.bg;
-  return Number.isInteger(choice) && choice > 0 ? ((choice - 1) % order.length) + 1 : order[0];
-}
-function viewScene(){
-  const forest = S.settings.skin === 'forest', theme = forest ? 'forest' : 'orchard';
-  const original = forest ? forestSceneOrder : sceneOrder, home = homeScene(original);
-  const order = [home, ...original.filter(n => n !== home)];
-  const role = forest ? {home:0,paper:1,detail:2,setup:1,drill:2,result:3,words:3}[S.view] : sceneViews.indexOf(S.view);
-  if (S.view === 'drill' && S.session) {
-    const signature = order.join(','), saved = practiceScenes.get(S.session) || {};
-    if (!saved[theme] || saved[theme].signature !== signature) {
-      const available = forest ? order.slice(2) : [order[4], order[7]];
-      const choices = available.filter(n => n !== lastPracticeScene[theme]);
-      const pick = choices.length ? choices : available;
-      const random = new Uint32Array(1);
-      if (globalThis.crypto?.getRandomValues) crypto.getRandomValues(random); else random[0] = Date.now() >>> 0;
-      const n = pick[random[0] % pick.length];
-      saved[theme] = {signature,n}; practiceScenes.set(S.session,saved); lastPracticeScene[theme] = n;
-    }
-    return saved[theme].n;
-  }
-  if (forest && S.view === 'result' && S.session) {
-    const practice = practiceScenes.get(S.session)?.forest?.n;
-    return order.slice(2).find(n => n !== practice) || order[3];
-  }
-  return order[Math.max(0, role || 0) % order.length];
-}
 function applySkin(){
-  const theme = S.settings.skin;
-  document.body.dataset.skin = theme;
-  document.body.dataset.page = S.view;
-  const layer = document.getElementById('bgimg'), images = skinImages();
-  const scene = theme === 'plain' ? 'none' : String(viewScene());
-  if (layer.dataset.scene !== scene || layer.dataset.sceneSkin !== theme) {
-    layer.style.backgroundImage = scene === 'none' ? 'none' : `url("${images[+scene - 1]}")`;
-    layer.dataset.scene = scene; layer.dataset.sceneSkin = theme;
+  document.body.dataset.skin = S.settings.skin;
+  const choice = +S.settings.bg;
+  const n = S.settings.bg === 'random' ? (sceneByView[S.view] || bgPick) :
+    (Number.isInteger(choice) && choice >= 1 && choice <= BG_COUNT ? choice : bgPick);
+  const layer = document.getElementById('bgimg');
+  const scene = S.settings.skin === 'orchard' ? String(n) : 'none';
+  if (layer.dataset.scene !== scene) {
+    layer.style.backgroundImage = scene === 'none' ? 'none' : `url("${BG[n - 1]}")`;
+    layer.dataset.scene = scene;
   }
 }
 try { const s = JSON.parse(localStorage.getItem('n1skin') || 'null'); if (s && s.skin) S.settings = s } catch(e) {}
@@ -629,24 +564,24 @@ function vHome(){
   const st = statsFor(QS);
   const staged = Object.values(S.words).filter(w => w.st !== 'book').length;
   const book = Object.values(S.words).filter(w => w.st === 'book').length;
-  let h = `<header class="top home-top"><span class="wordmark">KOTOBA GARDEN</span>${cloudHTML()}<button class="ibtn" data-act="settings" aria-label="外观">${ICON.gear}</button></header>`;
-  h += `<section class="hero home-hero"><span class="eyebrow">ひとつずつ、ゆっくり。</span><h1>橘园 N1</h1><p>真题 ${QS.length} 道 · 做过 ${st.done} · 过 ${st.pass}</p></section><div class="home-layout">`;
+  let h = `<header class="top"><div class="ttl"></div>${cloudHTML()}<button class="ibtn" data-act="settings" aria-label="外观">${ICON.gear}</button></header>`;
+  h += `<section class="hero"><h1>橘园 N1</h1><p>真题 ${QS.length} 道 · 做过 ${st.done} · 过 ${st.pass}</p></section><div class="stack">`;
   if (S.cloud === 'off') h += `<div class="warn">云端没连上，现在做的题不会被记下来。关掉页面重新打开试试。</div>`;
   if (S.cloud === 'slow') h += `<div class="warn">云端还没回应，记录可能还没加载出来，稍等一下。</div>`;
-  h += `<section class="practice-card"><span class="label">今日练习</span><h2>准备好这一轮了吗？</h2><button class="btn pri journey-entry" data-act="setup"><span class="entry-text"><b>开始做题</b><small>选一组，按自己的节奏练习</small></span>${ICON.chev}</button>`;
   if (S.session && !S.session.done) {
     const s = S.session; const n = s.qids.filter(id => hasAns(Q[id], s.ans[id])).length;
     h += `<button class="resume" data-act="resume"><span class="rs-t">继续上次</span><span class="rs-s">共 ${s.qids.length} 题 · 做了 ${n} 题</span>${ICON.play}</button>`;
   }
-  h += `</section><nav class="tiles" aria-label="我的学习记录"><button class="tile hold" data-act="setup" data-hold="1"><b>${st.hold}</b><span>暂时备用</span></button><button class="tile word" data-act="words"><b>${staged}</b><span>暂存生词</span></button><button class="tile" data-act="words" data-tab="book"><b>${book}</b><span>单词本</span></button></nav>`;
-  h += `<section class="paper-shelf"><div class="section-title"><h2>套卷目录</h2><small>按套卷继续学习</small></div><div class="papers">`;
+  h += `<button class="btn pri full" data-act="setup">开始做题</button>`;
+  h += `<div class="tiles"><button class="tile hold" data-act="setup" data-hold="1"><b>${st.hold}</b><span>暂时备用</span></button><button class="tile word" data-act="words"><b>${staged}</b><span>暂存生词</span></button><button class="tile" data-act="words" data-tab="book"><b>${book}</b><span>单词本</span></button></div>`;
+  h += `<div class="label">题库 · 按套卷</div><div class="papers">`;
   PAPERS.forEach(p => {
     const qs = QS.filter(q => q.p === p.id);
     if (!qs.length) { h += `<div class="paper off"><span class="pp"><span class="yr">${p.name}</span><span class="ps">题目还没录入</span></span></div>`; return }
     const s = statsFor(qs); const pct = Math.round(s.pass / qs.length * 100);
     h += `<button class="paper" data-act="paper" data-p="${p.id}"><span class="pp"><span class="yr">${p.name}</span><span class="ps">单词 ${qs.length} 道 · 过 ${s.pass} · 备用 ${s.hold}</span><span class="bar"><i data-w="${pct}"></i></span></span><span class="pct">${pct}%</span></button>`;
   });
-  return h + '</div></section></div>';
+  return h + '</div></div>';
 }
 
 function vPaper(){
@@ -661,7 +596,7 @@ function vPaper(){
     const all = qs.filter(q => q.m === m); if (!all.length) continue;
     const g = all.filter(match); if (f && !g.length) continue; any = true;
     const s = statsFor(all); const key = pid + m; const open = f ? true : S.open.has(key);
-    h += `<div class="grp${open ? ' open' : ''}"><button class="grp-h" data-act="grp" data-k="${key}" aria-expanded="${open}"><span class="section-index">${String(m).padStart(2,'0')}</span><b>${MT[m]}</b><span class="gs">问${all[0].n}–${all[all.length - 1].n} · 过 ${s.pass}/${all.length}</span>${ICON.chev}</button>`;
+    h += `<div class="grp${open ? ' open' : ''}"><button class="grp-h" data-act="grp" data-k="${key}" aria-expanded="${open}"><b>第${m}题·${MT[m]}</b><span class="gs">问${all[0].n}–${all[all.length - 1].n} · 过 ${s.pass}/${all.length}</span>${ICON.chev}</button>`;
     if (open) h += '<div class="qlist">' + g.map(q => {
       const p = S.prog[q.id] || {};
       const wrong = p.n && p.ok === false;
@@ -697,7 +632,7 @@ function availFor(su){
 function vSetup(){
   const su = S.setup; const av = availFor(su);
   if (su.count > av.length) su.count = av.length; if (su.count < 1 && av.length) su.count = Math.min(10, av.length);
-  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">选一组</div></header><div class="stack setup-grid">`;
+  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">选一组</div></header><div class="stack">`;
   h += `<section class="fs"><div class="label">卷子范围</div><div class="chs">` + PAPERS.map(p => {
     const ok = QS.some(q => q.p === p.id);
     return `<button class="ch${su.papers.has(p.id) ? ' on' : ''}" ${ok ? `data-act="su-p" data-p="${p.id}"` : 'disabled'}>${shortP(p.id)}</button>`;
@@ -755,9 +690,9 @@ function vWords(){
   const tab = S.vp.tab || 'staged';
   const all = Object.values(S.words).sort((a, b) => (b.t || 0) - (a.t || 0));
   const list = all.filter(w => tab === 'book' ? w.st === 'book' : w.st !== 'book');
-  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">我的单词</div>${cloudHTML()}</header><div class="stack">`;
+  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">单词</div>${cloudHTML()}</header><div class="stack">`;
   h += `<div class="tabs"><button class="${tab === 'staged' ? 'on' : ''}" data-act="wtab" data-t="staged">暂存 ${all.filter(w => w.st !== 'book').length}</button><button class="${tab === 'book' ? 'on' : ''}" data-act="wtab" data-t="book">单词本 ${all.filter(w => w.st === 'book').length}</button></div>`;
-  if (tab === 'staged') h += `<div class="hint">做题时标记的生词会保存在这里，整理后可移入单词本。</div>`;
+  if (tab === 'staged') h += `<div class="hint">做题时标绿、存进来的词都在这里，会了的直接删掉。整理的时候跟我说一声，我从这里读出来，补上读音和意思，放进单词本。</div>`;
   if (!list.length) h += `<div class="empty">${tab === 'book' ? '单词本还是空的。暂存的词整理好以后会出现在这里。' : '还没有暂存的生词。做题时切到「标生词」，把不会的词点绿，再点 ✓ 保存。'}</div>`;
   h += list.map(w => {
     const ctx = w.s && w.s !== w.w ? esc(w.s).replace(esc(w.w), `<em>${esc(w.w)}</em>`) : '';
@@ -779,7 +714,7 @@ function render(fromData){
 /* 宽度、背景图用脚本设置，不写在 style 属性里（页面不允许内联 style 属性） */
 function paint(root){
   root.querySelectorAll('[data-w]').forEach(el => el.style.width = el.dataset.w + '%');
-  root.querySelectorAll('[data-bgi]').forEach(el => el.style.backgroundImage = `url("${skinImages()[+el.dataset.bgi - 1]}")`);
+  root.querySelectorAll('[data-bgi]').forEach(el => el.style.backgroundImage = `url("${BG[+el.dataset.bgi - 1]}")`);
 }
 
 /* ---------- 交互 ---------- */
@@ -890,16 +825,15 @@ const A = {
 };
 function closeLayer(){ document.getElementById('layer').innerHTML = '' }
 function openSettings(){
-  const st = S.settings, images = skinImages();
+  const st = S.settings;
   let h = `<div class="sheet" data-act="closesheet"><div class="pn" data-stop="1"><div class="sh-h"><b>外观</b><button class="ibtn" data-act="closelayer">完成</button></div>`;
-  h += `<div class="label">主题</div><div class="tabs appearance-themes"><button class="${st.skin === 'orchard' ? 'on' : ''}" data-act="skin" data-s="orchard">粉樱花园</button><button class="${st.skin === 'forest' ? 'on' : ''}" data-act="skin" data-s="forest">森林水晶</button><button class="${st.skin === 'plain' ? 'on' : ''}" data-act="skin" data-s="plain">简洁</button></div>`;
-  if (st.skin !== 'plain') {
-    const selected = homeScene(st.skin === 'forest' ? forestSceneOrder : sceneOrder);
-    h += `<div class="label">首页风景</div><div class="bgs"><button class="rnd${st.bg === 'random' ? ' on' : ''}" data-act="bg" data-b="random">随心<br>换景</button>`;
-    for (let i = 1; i <= images.length; i++) h += `<button class="${st.bg !== 'random' && selected === i ? 'on' : ''}" data-bgi="${i}" data-act="bg" data-b="${i}" aria-label="背景${i}"></button>`;
-    h += '</div><div class="skin-hint">首页保留你选的风景，进入练习会自动换景；做题过程中保持稳定。</div>';
-  } else h += `<div class="hint">淡色纯底，跟随手机的深色或浅色模式。</div>`;
-  h += `<div class="skin-hint">学习记录按原方式保存到云端。</div></div></div>`;
+  h += `<div class="label">主题</div><div class="tabs"><button class="${st.skin === 'orchard' ? 'on' : ''}" data-act="skin" data-s="orchard">橘园</button><button class="${st.skin === 'plain' ? 'on' : ''}" data-act="skin" data-s="plain">简洁</button></div>`;
+  if (st.skin === 'orchard') {
+    h += `<div class="label">背景图</div><div class="bgs"><button class="rnd${st.bg === 'random' ? ' on' : ''}" data-act="bg" data-b="random">每页<br>随机</button>`;
+    for (let i = 1; i <= BG_COUNT; i++) h += `<button class="${st.bg === String(i) ? 'on' : ''}" data-bgi="${i}" data-act="bg" data-b="${i}" aria-label="背景${i}"></button>`;
+    h += '</div>';
+  } else h += `<div class="hint">简洁主题用淡色纯底，跟着手机的深色 / 浅色模式变。</div>`;
+  h += `<div class="hint">做题记录、备用、过、备注、生词都自动存在云端，换手机也在。</div></div></div>`;
   const layer = document.getElementById('layer'); layer.innerHTML = h; paint(layer);
 }
 document.addEventListener('click', e => {
