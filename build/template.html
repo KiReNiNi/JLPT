@@ -112,7 +112,7 @@ body:not([data-skin="orchard"]) .top{background:var(--bg)}
 
 /* ===== 套卷题库 ===== */
 .tabs{display:flex;gap:4px;background:var(--card2);border-radius:999px;padding:4px;backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
-.tabs button{flex:1;height:36px;border-radius:999px;font-size:14px;color:var(--mute)}
+.tabs button{flex:1;min-width:0;white-space:nowrap;height:36px;border-radius:999px;font-size:14px;color:var(--mute)}
 .tabs button.on{background:var(--card);color:var(--ink);font-weight:600;box-shadow:var(--shadow)}
 .tabs button:disabled{opacity:.5}
 .filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
@@ -227,6 +227,8 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .ni.add{border:1.5px dashed var(--line);box-shadow:none}
 .ni.add svg{width:22px;height:22px}
 .ni.wait{cursor:default}
+.ni-bad{font-size:12px;color:var(--mute);text-align:center;line-height:1.5}
+.lb .ni-bad{color:#fff}
 .lb{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;background:rgba(20,14,20,.92);padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
 .lb .lb-bar{display:flex;justify-content:space-between;gap:10px}
 .lb .lb-bar button{height:38px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.14);color:#fff;font-size:14px}
@@ -288,6 +290,27 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .wd .src{font-size:12px;color:var(--mute);margin-top:2px}
 .wd .del{flex:none;height:32px;padding:0 12px;border-radius:999px;font-size:12px;color:var(--mute);background:var(--card2)}
 .wd .del.sure{background:var(--bad);color:var(--on-accent)}
+
+/* ===== 背单词 ===== */
+.wentry{margin:0}
+.wd .src.link{display:block;margin-top:2px;padding:0;font-size:12px;color:var(--accent2);text-align:left}
+.wstat{margin-left:8px;font-size:11px;color:var(--mute)}
+.wd.mem{align-items:flex-start}
+.wno{flex:none;width:26px;height:26px;border-radius:50%;background:var(--card2);display:inline-flex;align-items:center;justify-content:center;font-size:12px;color:var(--mute)}
+.wmodes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.wmodes .ch{height:auto;min-height:40px;padding:8px 10px;white-space:normal;line-height:1.3}
+.wmodes .ch:last-child{grid-column:1/-1}
+.wnums{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wnums label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--mute)}
+.wnums .num,.winput{height:46px;border:0;border-radius:var(--r-ctl);background:var(--card2);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink);font:inherit;font-size:18px;padding:0 14px}
+.wnums .num{width:100%}
+.wtest{display:flex;flex-direction:column;gap:10px}
+.wq{font-size:30px;font-weight:600;line-height:1.35;word-break:break-all}
+.wtest .rd{font-size:14px;color:var(--mute)}
+.winput{width:100%;margin-top:6px}
+.wjudge{font-weight:700}.wjudge.ok{color:var(--good)}.wjudge.ng{color:var(--bad)}
+.wans{font-size:15px}
+.wflip{align-self:flex-start;font-size:13px;color:var(--mute);text-decoration:underline;text-underline-offset:3px}
 
 /* ===== 弹层 ===== */
 .sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:rgba(40,25,45,.35)}
@@ -634,10 +657,10 @@ function noteHTML(qid){
   let h = `<div class="note${open ? ' open' : ''}"><button class="note-h" data-act="note" data-q="${qid}" aria-expanded="${open}"><span class="note-t">备注</span><span class="note-pv">${open ? '' : esc(pv)}</span>${ICON.chev}</button>`;
   if (open) {
     h += `<div class="note-b"><div class="note-tw"><textarea id="note-${qid}" data-note="${qid}" placeholder="写给这道题的备注">${esc(v)}</textarea><button class="note-ok${dirty ? ' dirty' : ''}" data-act="savenote" data-q="${qid}" aria-label="保存备注">${ICON.check}</button></div>`;
-    if (imgs.length || up || S.assets) {
-      h += `<div class="note-imgs">` + imgs.map((im, i) => `<button class="ni" data-act="viewimg" data-q="${qid}" data-i="${i}" aria-label="看第${i + 1}张图"><img src="/_blob/${esc(im.id)}" alt="" loading="lazy"></button>`).join('');
+    if (imgs.length || up || S.db) {
+      h += `<div class="note-imgs">` + imgs.map((im, i) => `<button class="ni" data-act="viewimg" data-q="${qid}" data-i="${i}" aria-label="看第${i + 1}张图">${imgTag(im)}</button>`).join('');
       for (let k = 0; k < up; k++) h += `<div class="ni wait">上传中…</div>`;
-      if (S.assets) h += `<label class="ni add" for="nf-${qid}">${ICON.img}<span>加图片</span></label><input id="nf-${qid}" type="file" accept="image/*" multiple hidden data-upimg="${qid}">`;
+      if (S.db) h += `<label class="ni add" for="nf-${qid}">${ICON.img}<span>加图片</span></label><input id="nf-${qid}" type="file" accept="image/*" multiple hidden data-upimg="${qid}">`;
       h += `</div>`;
     }
     h += `</div>`;
@@ -761,7 +784,7 @@ function vDrill(){
   h += questionHTML(q, {mark, sel:s.ans[qid] ?? null, show, locked:show});
   if (show && !mark) h += statusActs(qid);
   h += '</article>';
-  if (show && !mark) h += noteHTML(qid);
+  h += noteHTML(qid);
   h += `<nav class="dots" aria-label="题号">` + s.qids.map((id, i) => {
     let c = ''; const a = s.ans[id];
     if (review || s.rev[id]) c = hasAns(Q[id], a) ? (isRight(Q[id], a) ? 'ok' : 'ng') : '';
@@ -789,20 +812,145 @@ function vResult(){
   return h;
 }
 
+function wordCard(w, tab){
+  const ctx = w.s && w.s !== w.w ? esc(w.s).replace(esc(w.w), `<em>${esc(w.w)}</em>`) : '';
+  const sure = S.del === w.id;
+  const word = esc(w.b || w.w);
+  const right = tab === 'wrong' ? `<button class="del" data-act="wrongoff" data-id="${w.id}">会了</button>` : `<button class="del${sure ? ' sure' : ''}" data-act="${sure ? 'delw' : 'askdel'}" data-id="${w.id}">${sure ? '确定删除' : '删除'}</button>`;
+  const stat = tab !== 'staged' && (w.hit || w.miss) ? `<span class="wstat">对 ${w.hit || 0} · 错 ${w.miss || 0}</span>` : '';
+  const src = w.q && Q[w.q] ? `<button class="src link" data-act="detail" data-q="${w.q}">${esc(w.src || qLabel(Q[w.q]))} ›</button>` : `<div class="src">${esc(w.src || '')}</div>`;
+  return `<div class="wd"><div class="main"><div><span class="w" lang="ja">${word}</span>${w.rd && w.rd !== (w.b || w.w) ? `<span class="rd" lang="ja">${esc(w.rd)}</span>` : ''}${stat}</div>${w.z ? `<div class="z">${esc(w.z)}</div>` : ''}${ctx ? `<div class="ctx" lang="ja">${ctx}</div>` : ''}${src}</div>${right}</div>`;
+}
 function vWords(){
   const tab = S.vp.tab || 'staged';
   const all = Object.values(S.words).sort((a, b) => (b.t || 0) - (a.t || 0));
-  const list = all.filter(w => tab === 'book' ? w.st === 'book' : w.st !== 'book');
+  const book = all.filter(w => w.st === 'book'), wrong = book.filter(w => w.wrong), staged = all.filter(w => w.st !== 'book');
+  const list = tab === 'book' ? book : tab === 'wrong' ? wrong : staged;
   let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">单词</div>${cloudHTML()}</header><div class="stack">`;
-  h += `<div class="tabs"><button class="${tab === 'staged' ? 'on' : ''}" data-act="wtab" data-t="staged">暂存 ${all.filter(w => w.st !== 'book').length}</button><button class="${tab === 'book' ? 'on' : ''}" data-act="wtab" data-t="book">单词本 ${all.filter(w => w.st === 'book').length}</button></div>`;
+  h += `<div class="tabs"><button class="${tab === 'staged' ? 'on' : ''}" data-act="wtab" data-t="staged">暂存 ${staged.length}</button><button class="${tab === 'book' ? 'on' : ''}" data-act="wtab" data-t="book">单词本 ${book.length}</button><button class="${tab === 'wrong' ? 'on' : ''}" data-act="wtab" data-t="wrong">错词本 ${wrong.length}</button></div>`;
   if (tab === 'staged') h += `<div class="hint">做题时标绿、存进来的词都在这里，会了的直接删掉。整理的时候跟我说一声，我从这里读出来，补上读音和意思，放进单词本。</div>`;
-  if (!list.length) h += `<div class="empty">${tab === 'book' ? '单词本还是空的。暂存的词整理好以后会出现在这里。' : '还没有暂存的生词。做题时切到「标生词」，把不会的词点绿，再点 ✓ 保存。'}</div>`;
-  h += list.map(w => {
-    const ctx = w.s && w.s !== w.w ? esc(w.s).replace(esc(w.w), `<em>${esc(w.w)}</em>`) : '';
-    const sure = S.del === w.id;
-    return `<div class="wd"><div class="main"><div><span class="w" lang="ja">${esc(w.b || w.w)}</span>${w.rd ? `<span class="rd" lang="ja">${esc(w.rd)}</span>` : ''}</div>${w.z ? `<div class="z">${esc(w.z)}</div>` : ''}${ctx ? `<div class="ctx" lang="ja">${ctx}</div>` : ''}<div class="src">${esc(w.src || '')}</div></div><button class="del${sure ? ' sure' : ''}" data-act="${sure ? 'delw' : 'askdel'}" data-id="${w.id}">${sure ? '确定删除' : '删除'}</button></div>`;
-  }).join('');
+  if (tab !== 'staged' && list.length) h += `<button class="entry wentry" data-act="wsetup" data-from="${tab}"><b>${tab === 'wrong' ? '练错词' : '开始背单词'}</b>${ICON.chev}</button>`;
+  if (tab === 'wrong' && list.length) h += `<div class="hint">背单词时答错的词会进这里。连着答对两次会自动移出，也可以点「会了」直接移出。</div>`;
+  if (!list.length) h += `<div class="empty">${tab === 'book' ? '单词本还是空的。暂存的词整理好以后会出现在这里。' : tab === 'wrong' ? '错词本是空的。背单词时答错的词会出现在这里。' : '还没有暂存的生词。做题时切到「标生词」，把不会的词点绿，再点 ✓ 保存。'}</div>`;
+  h += list.map(w => wordCard(w, tab)).join('');
   return h + '</div>';
+}
+
+/* ---------- 背单词：设置 → 记忆 → 测验 → 结果 → 再练错词 ---------- */
+const WMODES = [
+  ['jz','日 → 中','看日语，写中文意思'],
+  ['zj','中 → 日','看中文，写日语（汉字或假名都行）'],
+  ['mix','中日混合','日译中、中译日交替出现'],
+  ['kz','纯假名 → 中文','只看假名，写中文意思'],
+  ['yd','读音优先','有汉字的词写读音，没汉字的写意思'],
+  ['hk','汉字 → 假名','看汉字，写读音'],
+  ['kh','纯假名 → 汉字或中文','只看假名，写出汉字或中文意思都算对'],
+];
+const hasKanji = s => /[一-鿿々]/.test(s || '');
+const kata2hira = s => (s || '').replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+const normJ = s => kata2hira(String(s || '').replace(/[\s　〜~～・（）()「」]/g, ''));
+const normZ = s => String(s || '').replace(/[\s　（）()【】「」"“”'‘’…．。.!！?？]/g, '');
+function zParts(z){ return String(z || '').replace(/（[^）]*）|\([^)]*\)/g, '').split(/[、，,；;／/]/).map(normZ).filter(Boolean) }
+function okZh(ans, w){ const a = normZ(ans); if (!a) return false; return zParts(w.z).some(p => p === a || (a.length >= 2 && p.includes(a)) || (p.length >= 2 && a.includes(p))) }
+function okJa(ans, w){ const a = normJ(ans); if (!a) return false; return [w.b, w.w, w.rd].filter(Boolean).some(x => normJ(x) === a) }
+function wKind(mode, w, i){
+  if (mode === 'mix') return i % 2 ? 'zj' : 'jz';
+  if (mode === 'yd') return hasKanji(w.b || w.w) && w.rd ? 'hk' : 'jz';
+  if (mode === 'hk') return hasKanji(w.b || w.w) && w.rd ? 'hk' : 'jz';
+  if ((mode === 'kz' || mode === 'kh') && !w.rd) return 'jz';
+  return mode;
+}
+function wPrompt(k, w){
+  const word = w.b || w.w;
+  if (k === 'jz') return {q:word, sub:w.rd && w.rd !== word ? w.rd : '', ask:'写中文意思', ja:true};
+  if (k === 'zj') return {q:w.z || '（没有中文意思）', sub:'', ask:'写日语', ja:false};
+  if (k === 'kz') return {q:w.rd, sub:'', ask:'写中文意思', ja:true};
+  if (k === 'hk') return {q:word, sub:'', ask:'写读音（假名）', ja:true};
+  if (k === 'kh') return {q:w.rd, sub:'', ask:'写汉字或中文意思', ja:true};
+}
+function wCheck(k, ans, w){
+  if (k === 'jz' || k === 'kz') return okZh(ans, w);
+  if (k === 'zj') return okJa(ans, w);
+  if (k === 'hk') return normJ(ans) === normJ(w.rd);
+  if (k === 'kh') return okZh(ans, w) || [w.b, w.w].some(x => x && normJ(x) === normJ(ans));
+}
+function wAnswer(k, w){
+  const word = w.b || w.w;
+  if (k === 'hk') return w.rd;
+  if (k === 'zj') return word + (w.rd && w.rd !== word ? `（${w.rd}）` : '');
+  if (k === 'kh') return `${word} / ${w.z}`;
+  return w.z;
+}
+function wPool(from){ const book = Object.values(S.words).filter(w => w.st === 'book' && (w.z || w.rd)); return from === 'wrong' ? book.filter(w => w.wrong) : book }
+function vWSetup(){
+  const ws = S.wset; const pool = wPool(ws.from);
+  const papers = [...new Set(pool.map(w => Q[w.q] && Q[w.q].p).filter(Boolean))];
+  const usable = pool.filter(w => !ws.paper || (Q[w.q] && Q[w.q].p === ws.paper));
+  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">背单词</div></header><div class="stack">`;
+  h += `<section class="fs"><div class="label">从哪里抽</div><div class="chs"><button class="ch${ws.from === 'book' ? ' on' : ''}" data-act="ws-from" data-v="book">整本单词本</button><button class="ch${ws.from === 'wrong' ? ' on' : ''}" data-act="ws-from" data-v="wrong">只练错词</button></div>`;
+  if (papers.length > 1) h += `<div class="chs"><button class="ch${!ws.paper ? ' on' : ''}" data-act="ws-paper" data-v="">全部卷子</button>` + papers.sort().reverse().map(p => `<button class="ch${ws.paper === p ? ' on' : ''}" data-act="ws-paper" data-v="${p}">${shortP(p)}</button>`).join('') + `</div>`;
+  h += `</section>`;
+  h += `<section class="fs"><div class="label">挑战方式</div><div class="wmodes">` + WMODES.map(([k, n]) => `<button class="ch${ws.mode === k ? ' on' : ''}" data-act="ws-mode" data-v="${k}">${n}</button>`).join('') + `</div><div class="hint">${WMODES.find(m => m[0] === ws.mode)[2]}</div></section>`;
+  if (ws.count > usable.length) ws.count = usable.length; if (ws.count < 1 && usable.length) ws.count = Math.min(10, usable.length);
+  h += `<section class="fs"><div class="label">这一轮 · 现在能抽 ${usable.length} 个</div><div class="wnums"><label>词数<input id="ws-n" class="num" type="number" inputmode="numeric" min="1" max="${usable.length}" value="${ws.count}"></label><label>记忆时间（分钟，0 = 不限时）<input id="ws-t" class="num" type="number" inputmode="numeric" min="0" max="30" value="${ws.min}"></label></div><div class="hint">没做过、错得多的词优先。</div></section>`;
+  h += `<button class="btn pri full" data-act="ws-start" ${usable.length ? '' : 'disabled'}>开始记忆</button>`;
+  return h + '</div>';
+}
+function vWMem(){
+  const s = S.wsess;
+  let h = `<header class="top"><button class="ibtn" data-act="wquit" aria-label="返回">${ICON.back}</button><div class="ttl">记忆 ${s.items.length} 个</div>${s.end ? `<span class="cloud ok" id="wtimer"></span>` : ''}</header><div class="stack">`;
+  h += s.items.map((it, i) => { const w = S.words[it.id] || it.w; return `<div class="wd mem"><span class="wno">${i + 1}</span><div class="main"><div><span class="w" lang="ja">${esc(w.b || w.w)}</span>${w.rd && w.rd !== (w.b || w.w) ? `<span class="rd" lang="ja">${esc(w.rd)}</span>` : ''}</div><div class="z">${esc(w.z || '')}</div>${w.s && w.s !== w.w ? `<div class="ctx" lang="ja">${esc(w.s).replace(esc(w.w), `<em>${esc(w.w)}</em>`)}</div>` : ''}</div></div>` }).join('');
+  h += `</div><div class="foot"><div class="in"><button class="btn sec" data-act="wquit">返回</button><button class="btn pri" data-act="wtest">记好了，开始测</button></div></div>`;
+  return h;
+}
+function vWTest(){
+  const s = S.wsess; const it = s.items[s.i]; const w = S.words[it.id] || it.w; const p = wPrompt(it.k, w);
+  const done = it.ok !== undefined;
+  let h = `<header class="top"><button class="ibtn" data-act="wquit" aria-label="返回">${ICON.back}</button><div class="ttl prog">${s.i + 1}<small> / ${s.items.length}</small></div></header><div class="stack">`;
+  h += `<article class="card wtest"><div class="label">${p.ask}</div><div class="wq"${p.ja ? ' lang="ja"' : ''}>${esc(p.q)}</div>${p.sub ? `<div class="rd" lang="ja">${esc(p.sub)}</div>` : ''}`;
+  h += `<input id="w-in" class="winput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(it.a || '')}" ${done ? 'readonly' : ''} placeholder="在这里写答案">`;
+  if (done) {
+    h += `<div class="wjudge ${it.ok ? 'ok' : 'ng'}">${it.ok ? '✓ 对了' : '✗ 不对'}</div><div class="wans">答案：<b${it.k === 'zj' || it.k === 'hk' ? ' lang="ja"' : ''}>${esc(wAnswer(it.k, w))}</b></div>`;
+    if (it.k !== 'hk' && it.k !== 'zj') h += `<div class="wans" lang="ja">${esc(w.b || w.w)}${w.rd ? '（' + esc(w.rd) + '）' : ''}</div>`;
+    h += `<button class="wflip" data-act="wflip">${it.ok ? '其实答错了' : '其实我答对了'}</button>`;
+  }
+  h += `</article></div>`;
+  const last = s.i === s.items.length - 1;
+  h += `<div class="foot"><div class="in">${done ? `<button class="btn pri" data-act="${last ? 'wfinish' : 'wnext'}">${last ? '看结果' : '下一个'}</button>` : `<button class="btn sec" data-act="wskip">不会</button><button class="btn pri" data-act="wcheck">确定</button>`}</div></div>`;
+  return h;
+}
+function vWRes(){
+  const s = S.wsess; const ok = s.items.filter(it => it.ok).length; const bad = s.items.filter(it => !it.ok);
+  let h = `<header class="top"><button class="ibtn" data-act="wquit" aria-label="返回">${ICON.back}</button><div class="ttl">这一轮的结果</div>${cloudHTML()}</header><div class="stack">`;
+  h += `<section class="score"><b>${ok}</b><span> / ${s.items.length}</span><p>${bad.length ? `错了 ${bad.length} 个，已经放进错词本` : '全对！'}</p></section><div class="rlist">`;
+  h += s.items.map(it => { const w = S.words[it.id] || it.w; return `<div class="rrow"><span class="ic ${it.ok ? 'ok' : 'ng'}">${it.ok ? '✓' : '✗'}</span><span class="t"><b lang="ja">${esc(w.b || w.w)}</b> <small lang="ja">${esc(w.rd || '')}</small><span class="s">${esc(w.z || '')}</span></span><span class="r">${it.ok ? '' : '你写：' + esc(it.a || '—')}</span></div>` }).join('');
+  h += `</div>`;
+  if (bad.length) h += `<button class="btn pri full" data-act="wretry">再练这 ${bad.length} 个错词</button>`;
+  h += `<button class="btn sec full" data-act="wquit">回单词本</button></div>`;
+  return h;
+}
+let wTimer = null;
+function tickTimer(){
+  clearInterval(wTimer); const s = S.wsess; if (!s || !s.end) return;
+  const f = () => { const el = document.getElementById('wtimer'); const left = Math.max(0, s.end - Date.now());
+    if (S.view !== 'wmem') { clearInterval(wTimer); return }
+    if (el) el.textContent = `${Math.floor(left / 60000)}:${String(Math.floor(left / 1000) % 60).padStart(2, '0')}`;
+    if (!left) { clearInterval(wTimer); toast('时间到，开始测'); A.wtest() } };
+  f(); wTimer = setInterval(f, 1000);
+}
+function startWords(list, mode, min){
+  const items = list.map((w, i) => ({id:w.id, w, k:wKind(mode, w, i)}));
+  S.wsess = {items, i:0, mode, end:min > 0 ? Date.now() + min * 60000 : 0};
+  S.view = 'wmem'; S.vp = {}; render(); window.scrollTo(0, 0); tickTimer();
+}
+async function saveWordStats(){
+  for (const it of S.wsess.items) {
+    const w = S.words[it.id]; if (!w) continue;
+    const patch = it.ok ? {hit:(w.hit || 0) + 1, streak:(w.streak || 0) + 1, last:Date.now()} : {miss:(w.miss || 0) + 1, streak:0, wrong:true, last:Date.now()};
+    if (it.ok && w.wrong && patch.streak >= 2) patch.wrong = false;
+    Object.assign(w, patch);
+    write('words/' + it.id, () => S.db.doc('words/' + it.id).update(patch));
+  }
 }
 
 /* ---------- 主渲染 ---------- */
@@ -810,7 +958,7 @@ let lastHTML = '';
 function render(fromData){
   if (fromData && document.activeElement && /^(TEXTAREA|INPUT)$/.test(document.activeElement.tagName)) return;
   applySkin();
-  const v = {home:vHome, paper:vPaper, detail:vDetail, setup:vSetup, drill:vDrill, result:vResult, words:vWords}[S.view] || vHome;
+  const v = {home:vHome, paper:vPaper, detail:vDetail, setup:vSetup, drill:vDrill, result:vResult, words:vWords, wsetup:vWSetup, wmem:vWMem, wtest:vWTest, wres:vWRes}[S.view] || vHome;
   const html = v();
   if (html !== lastHTML) { const app = document.getElementById('app'); app.innerHTML = html; lastHTML = html; paint(app) }
 }
@@ -876,6 +1024,27 @@ const A = {
   peekd:() => { S.peekOpen = !S.peekOpen; render() },
   drillone:d => startDrill([d.q]),
   words:d => go('words', {tab:d.tab || 'staged'}),
+  wsetup:d => { S.wset = Object.assign({mode:'jz', count:10, min:5, paper:''}, S.wset || {}, {from:d.from === 'wrong' ? 'wrong' : 'book'}); go('wsetup') },
+  'ws-from':d => { S.wset.from = d.v; S.wset.paper = ''; render() },
+  'ws-paper':d => { S.wset.paper = d.v; render() },
+  'ws-mode':d => { S.wset.mode = d.v; render() },
+  'ws-start':() => {
+    const ws = S.wset; const n = parseInt(document.getElementById('ws-n').value, 10), m = parseInt(document.getElementById('ws-t').value, 10);
+    let pool = wPool(ws.from).filter(w => !ws.paper || (Q[w.q] && Q[w.q].p === ws.paper));
+    if (['hk','yd'].includes(ws.mode)) pool = pool.filter(w => w.rd || w.z);
+    ws.count = Math.max(1, Math.min(pool.length, isNaN(n) ? ws.count : n)); ws.min = Math.max(0, Math.min(30, isNaN(m) ? ws.min : m));
+    pool = shuffle(pool).sort((a, b) => ((a.hit || 0) - (a.miss || 0) * 2) - ((b.hit || 0) - (b.miss || 0) * 2));
+    startWords(pool.slice(0, ws.count), ws.mode, ws.min);
+  },
+  wtest:() => { clearInterval(wTimer); S.wsess.i = 0; S.view = 'wtest'; render(); window.scrollTo(0, 0); setTimeout(() => { const i = document.getElementById('w-in'); if (i) i.focus() }, 50) },
+  wcheck:() => { const s = S.wsess; const it = s.items[s.i]; const w = S.words[it.id] || it.w; it.a = document.getElementById('w-in').value.trim(); if (!it.a) { toast('先写答案，不会就点「不会」'); return } it.ok = !!wCheck(it.k, it.a, w); render() },
+  wskip:() => { const it = S.wsess.items[S.wsess.i]; it.a = ''; it.ok = false; render() },
+  wflip:() => { const it = S.wsess.items[S.wsess.i]; it.ok = !it.ok; render() },
+  wnext:() => { S.wsess.i++; render(); window.scrollTo(0, 0); setTimeout(() => { const i = document.getElementById('w-in'); if (i) i.focus() }, 50) },
+  wfinish:() => { saveWordStats(); S.view = 'wres'; render(); window.scrollTo(0, 0) },
+  wretry:() => { const s = S.wsess; startWords(s.items.filter(it => !it.ok).map(it => S.words[it.id] || it.w), s.mode, 0) },
+  wquit:() => { clearInterval(wTimer); S.wsess = null; S.stack = [{view:'home', vp:{}}]; S.view = 'words'; S.vp = {tab:'book'}; render(); window.scrollTo(0, 0) },
+  wrongoff:d => { const w = S.words[d.id]; if (!w) return; w.wrong = false; write('words/' + d.id, () => S.db.doc('words/' + d.id).update({wrong:false, streak:0})); render(); toast('移出错词本了') },
   wtab:d => { S.vp.tab = d.t; S.del = null; render() },
   askdel:d => { S.del = d.id; render() },
   delw:d => { S.del = null; write('words/' + d.id, () => S.db.doc('words/' + d.id).delete()); delete S.words[d.id]; render() },
@@ -932,13 +1101,41 @@ const A = {
 };
 function openImg(qid, i){
   const im = ((S.prog[qid] || {}).imgs || [])[i]; if (!im) return;
-  document.getElementById('layer').innerHTML = `<div class="lb" role="dialog" aria-label="备注图片"><div class="lb-bar"><button data-act="closelayer">关闭</button>${S.assets ? `<button data-act="imgdel" data-q="${qid}" data-i="${i}">删除这张</button>` : ''}</div><div class="lb-img"><img src="/_blob/${esc(im.id)}" alt="备注图片"></div></div>`;
+  document.getElementById('layer').innerHTML = `<div class="lb" role="dialog" aria-label="备注图片"><div class="lb-bar"><button data-act="closelayer">关闭</button>${S.db ? `<button data-act="imgdel" data-q="${qid}" data-i="${i}">删除这张</button>` : ''}</div><div class="lb-img" data-id="${esc(im.id)}">${imgTag(im, true)}</div></div>`;
 }
 async function delImg(qid, i){
   const imgs = ((S.prog[qid] || {}).imgs || []).slice(); const im = imgs[i]; if (!im) return;
   imgs.splice(i, 1); closeLayer();
   await setProg(qid, {imgs}); render(); toast('删掉了');
-  try { await S.assets.delete(im.id) } catch(e) { console.error(e) }
+  try {
+    if (im.n) for (let k = 0; k < im.n; k++) await S.db.doc(`noteimg/${im.id}_${k}`).delete();
+    else if (S.assets) await S.assets.delete(im.id);
+  } catch(e) { console.error(e) }
+}
+/* 备注图片存在云端数据库里（切成小块），显示时拼回来 */
+const IMG = {};   // id -> data URL / 'loading' / 'bad'
+function imgTag(im, big){
+  const v = IMG[im.id];
+  if (v && v !== 'loading' && v !== 'bad') return `<img src="${v}" alt="${big ? '备注图片' : ''}">`;
+  if (v === 'bad') return `<span class="ni-bad">这张打不开<br>删掉重传</span>`;
+  if (!v) loadImg(im);
+  return `<span class="ni-bad">加载中…</span>`;
+}
+async function loadImg(im){
+  IMG[im.id] = 'loading';
+  try {
+    if (im.n) {
+      let d = '';
+      for (let k = 0; k < im.n; k++) { const s = await S.db.doc(`noteimg/${im.id}_${k}`).get(); if (!s.exists) throw 0; d += s.data().d }
+      IMG[im.id] = d;
+    } else {
+      const r = await fetch('/_blob/' + im.id, {credentials:'include'}); if (!r.ok) throw 0;
+      const b = await r.blob(); if (!/^image\//.test(b.type)) throw 0;
+      IMG[im.id] = await new Promise(res => { const f = new FileReader(); f.onload = () => res(f.result); f.readAsDataURL(b) });
+    }
+  } catch(e) { IMG[im.id] = 'bad' }
+  lastHTML = ''; render(true);
+  const lb = document.querySelector('.lb-img'); if (lb && lb.dataset.id === im.id) lb.innerHTML = imgTag(im, true);
 }
 /* 截图太大时先压缩：长边最多 2000px，转成 JPEG */
 async function shrink(file){
@@ -952,23 +1149,30 @@ async function shrink(file){
     return b && b.size < file.size ? b : file;
   } catch(e) { return file }
 }
+async function toDataURL(file){
+  const bmp = await createImageBitmap(file);
+  const k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+  const c = document.createElement('canvas'); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+  const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(bmp, 0, 0, c.width, c.height);
+  let q = 0.82, d = c.toDataURL('image/jpeg', q);
+  while (d.length > 1.6e6 && q > 0.4) { q -= 0.12; d = c.toDataURL('image/jpeg', q) }
+  return d;
+}
 async function uploadImgs(qid, files){
-  if (!S.assets) { toast('现在没法传图片，刷新一下再试'); return }
   if (!S.db) { toast('云端没连上，图片存不进去'); return }
   files = [...files].filter(f => /^image\//.test(f.type)); if (!files.length) return;
   S.uploading[qid] = (S.uploading[qid] || 0) + files.length; render();
   let ok = 0;
   for (const f of files) {
     try {
-      const blob = await shrink(f);
-      const type = blob.type && /^image\/(png|jpeg|gif|webp)$/.test(blob.type) ? blob.type : 'image/jpeg';
-      const r = await S.assets.upload(blob, {type});
-      const cur = ((S.prog[qid] || {}).imgs || []).slice(); cur.push({id:r.id, t:Date.now()});
+      const d = await toDataURL(f);
+      const id = 'i' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+      const CH = 180000, n = Math.ceil(d.length / CH);
+      for (let k = 0; k < n; k++) await S.db.doc(`noteimg/${id}_${k}`).set({q:qid, k, d:d.slice(k * CH, (k + 1) * CH)});
+      IMG[id] = d;
+      const cur = ((S.prog[qid] || {}).imgs || []).slice(); cur.push({id, n, t:Date.now()});
       await setProg(qid, {imgs:cur}); ok++;
-    } catch(e) {
-      console.error(e);
-      toast({too_large:'图片太大了（超过20MB）', unsupported_type:'这个格式传不了，换成截图或照片试试', quota_or_state:'存储空间满了', rate_limited:'传得太快了，等一下再试'}[e && e.code] || '这张没传上去，再试一次');
-    }
+    } catch(e) { console.error(e); toast(e && e.code === 'quota_exceeded' ? '云端空间满了' : '这张没传上去，再试一次') }
     S.uploading[qid]--; render();
   }
   if (ok) toast(`加了 ${ok} 张图`);
@@ -994,6 +1198,7 @@ document.addEventListener('click', e => {
   if (A[act]) { if (el.tagName !== 'INPUT') e.preventDefault(); A[act](el.dataset, el) }
 });
 document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && e.target.id === 'w-in') { e.preventDefault(); const it = S.wsess && S.wsess.items[S.wsess.i]; if (it && it.ok === undefined) A.wcheck(); else (S.wsess.i === S.wsess.items.length - 1 ? A.wfinish : A.wnext)(); return }
   if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role=button][data-act]')) { e.preventDefault(); e.target.click() }
 });
 document.addEventListener('input', e => {
