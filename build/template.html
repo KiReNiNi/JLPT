@@ -11,7 +11,7 @@
   --bg:#F3F1F6; --card:#FFFFFF; --card2:#F7F5FA; --ink:#2C2733; --mute:#7B7387; --line:#E3DEE9;
   --accent:#E07A38; --accent2:#C9652A; --accent-soft:#FBE7D8; --lav:#8F7EC6; --lav-soft:#ECE7F7;
   --sel:#4A72D6; --sel-bg:#E2EAFB; --mark:#2F6B28; --mark-bg:#D3EBC8;
-  --hold:#E2B32E; --hold-bg:#FFF4CC; --good:#2E8B57; --good-bg:#DDF1E5; --bad:#CC4B45; --bad-bg:#FBE3E1;
+  --hold:#E2B32E; --hold-bg:#FFF4CC; --good:#5E9A76; --good-bg:#E6F2EA; --bad:#C08A7E; --bad-bg:#F7EBE6;
   --on-accent:#FFFFFF; --sheet:#FBF8FC; --glass:none;
   --shadow:0 1px 2px rgba(60,40,80,.06),0 4px 14px rgba(60,40,80,.05);
   --r-card:20px; --r-ctl:14px;
@@ -23,19 +23,19 @@
   --bg:#1B1920; --card:#25222C; --card2:#2C2834; --ink:#ECE7F3; --mute:#A79FB3; --line:#3A3544;
   --accent:#F0955A; --accent2:#F6AD7B; --accent-soft:#4A3022; --lav:#B4A6E6; --lav-soft:#332D45;
   --sel:#88A6F2; --sel-bg:#27324D; --mark:#AEDDA0; --mark-bg:#2B4527;
-  --hold:#E9C552; --hold-bg:#43391A; --good:#6FCB95; --good-bg:#1F3A2A; --bad:#F08B85; --bad-bg:#4A2422;
+  --hold:#E9C552; --hold-bg:#43391A; --good:#8FC6A3; --good-bg:#24352B; --bad:#D9A99D; --bad-bg:#3D2C28;
   --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#1B1920; --card:#25222C; --card2:#2C2834; --ink:#ECE7F3; --mute:#A79FB3; --line:#3A3544;
   --accent:#F0955A; --accent2:#F6AD7B; --accent-soft:#4A3022; --lav:#B4A6E6; --lav-soft:#332D45;
   --sel:#88A6F2; --sel-bg:#27324D; --mark:#AEDDA0; --mark-bg:#2B4527;
-  --hold:#E9C552; --hold-bg:#43391A; --good:#6FCB95; --good-bg:#1F3A2A; --bad:#F08B85; --bad-bg:#4A2422;
+  --hold:#E9C552; --hold-bg:#43391A; --good:#8FC6A3; --good-bg:#24352B; --bad:#D9A99D; --bad-bg:#3D2C28;
   --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
 body[data-skin="orchard"]{
   --bg:#EAD8E4; --card:rgba(255,250,246,.82); --card2:rgba(255,247,242,.66); --ink:#3B2B3A; --mute:#7D6979; --line:rgba(150,110,150,.22);
   --accent:#E8803C; --accent2:#C8652B; --accent-soft:rgba(250,214,186,.75); --lav:#8B76C2; --lav-soft:rgba(234,226,248,.85);
   --sel:#4A72D6; --sel-bg:#DCE6FB; --mark:#2F6B28; --mark-bg:#CDEAC0;
-  --hold:#D9A21C; --hold-bg:#FFF0BF; --good:#2E8B57; --good-bg:#DAF0E2; --bad:#C9443E; --bad-bg:#FADCDA;
+  --hold:#D9A21C; --hold-bg:#FFF0BF; --good:#5E9A76; --good-bg:rgba(226,242,232,.9); --bad:#C08A7E; --bad-bg:rgba(248,234,228,.9);
   --on-accent:#FFFFFF; --sheet:#FBF2EE; --glass:none;
   --shadow:0 2px 6px rgba(120,70,90,.10),0 10px 30px rgba(120,70,90,.10);
   color-scheme:light;
@@ -232,7 +232,7 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .lb{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;background:rgba(20,14,20,.92);padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px))}
 .lb .lb-bar{display:flex;justify-content:space-between;gap:10px}
 .lb .lb-bar button{height:38px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.14);color:#fff;font-size:14px}
-.lb .lb-bar button.sure{background:#C9443E}
+.lb .lb-bar button.sure{background:#B98579}
 .lb .lb-img{flex:1;min-height:0;overflow:auto;display:flex;align-items:flex-start;justify-content:center;margin-top:10px;-webkit-overflow-scrolling:touch}
 .lb .lb-img img{max-width:100%;height:auto;border-radius:8px}
 
@@ -309,7 +309,10 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .wtest .rd{font-size:14px;color:var(--mute)}
 .winput{width:100%;margin-top:6px}
 .winput.ok{box-shadow:inset 0 0 0 1.5px var(--good)}.winput.ng{box-shadow:inset 0 0 0 1.5px var(--bad)}
-.rrow.wr{border-left:3px solid transparent}.rrow.wr.ok{border-left-color:var(--good)}.rrow.wr.ng{border-left-color:var(--bad)}
+.rrow .sym{flex:none;width:18px;text-align:center;font-size:15px}.rrow.wr.ok .sym{color:var(--good)}.rrow.wr.ng .sym{color:var(--bad)}
+.wfb{margin-top:4px;padding:12px 14px;border-radius:var(--r-ctl);display:flex;flex-direction:column;gap:4px}
+.wfb.ok{background:var(--good-bg)}.wfb.ng{background:var(--bad-bg)}
+.wfb-t{font-size:14px}.wfb.ok .wfb-t{color:var(--good)}.wfb.ng .wfb-t{color:var(--bad)}
 .rrow .ww{font-size:16px}
 .wans{font-size:15px}
 
@@ -911,8 +914,9 @@ function vWTest(){
   h += `<article class="card wtest"><div class="label">${p.ask}</div><div class="wq"${p.ja ? ' lang="ja"' : ''}>${esc(p.q)}</div>${p.sub ? `<div class="rd" lang="ja">${esc(p.sub)}</div>` : ''}`;
   h += `<input id="w-in" class="winput${done ? (it.ok ? ' ok' : ' ng') : ''}" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(it.a || '')}" ${done ? 'readonly' : ''} placeholder="在这里写答案">`;
   if (done) {
-    h += `<div class="wans"${it.k === 'zj' || it.k === 'hk' ? ' lang="ja"' : ''}>${esc(wAnswer(it.k, w))}</div>`;
+    h += `<div class="wfb ${it.ok ? 'ok' : 'ng'}"><div class="wfb-t">${it.ok ? '✓ 记住了' : '↺ 再看一眼'}</div><div class="wans"${it.k === 'zj' || it.k === 'hk' ? ' lang="ja"' : ''}>${esc(wAnswer(it.k, w))}</div>`;
     if (it.k !== 'hk' && it.k !== 'zj') h += `<div class="wans" lang="ja">${esc(w.b || w.w)}${w.rd && w.rd !== (w.b || w.w) ? '（' + esc(w.rd) + '）' : ''}</div>`;
+    h += `</div>`;
   }
   h += `</article></div>`;
   const last = s.i === s.items.length - 1;
@@ -923,7 +927,7 @@ function vWRes(){
   const s = S.wsess; const ok = s.items.filter(it => it.ok).length; const bad = s.items.filter(it => !it.ok);
   let h = `<header class="top"><button class="ibtn" data-act="wquit" aria-label="返回">${ICON.back}</button><div class="ttl">这一轮的结果</div>${cloudHTML()}</header><div class="stack">`;
   h += `<section class="score"><b>${ok}</b><span> / ${s.items.length}</span><p>${bad.length ? `${bad.length} 个放进了错词本` : '这一轮都记住了'}</p></section><div class="rlist">`;
-  h += s.items.map(it => { const w = S.words[it.id] || it.w; return `<div class="rrow wr ${it.ok ? 'ok' : 'ng'}"><span class="t"><span class="ww" lang="ja">${esc(w.b || w.w)}</span> <small lang="ja">${w.rd && w.rd !== (w.b || w.w) ? esc(w.rd) : ''}</small><span class="s">${esc(w.z || '')}</span></span><span class="r">${it.ok ? '' : '你写：' + esc(it.a || '—')}</span></div>` }).join('');
+  h += s.items.map(it => { const w = S.words[it.id] || it.w; return `<div class="rrow wr ${it.ok ? 'ok' : 'ng'}"><span class="sym">${it.ok ? '✓' : '↺'}</span><span class="t"><span class="ww" lang="ja">${esc(w.b || w.w)}</span> <small lang="ja">${w.rd && w.rd !== (w.b || w.w) ? esc(w.rd) : ''}</small><span class="s">${esc(w.z || '')}</span></span><span class="r">${it.ok ? '' : '你写：' + esc(it.a || '—')}</span></div>` }).join('');
   h += `</div>`;
   if (bad.length) h += `<button class="btn pri full" data-act="wretry">再练这 ${bad.length} 个错词</button>`;
   h += `<button class="btn sec full" data-act="wquit">回单词本</button></div>`;
