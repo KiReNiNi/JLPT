@@ -246,6 +246,7 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .dots button.done{background:var(--sel-bg);color:var(--sel)}
 .dots button.ok{background:var(--good-bg);color:var(--good)}
 .dots button.ng{background:var(--bad-bg);color:var(--bad)}
+.dots button.filled{background:var(--hold-bg);color:var(--ink)}
 .dots button.cur{box-shadow:0 0 0 2px var(--accent)}
 
 /* ===== 选题 ===== */
@@ -309,7 +310,7 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .wtest .rd{font-size:14px;color:var(--mute)}
 .winput{width:100%;margin-top:6px}
 .winput.ok{box-shadow:inset 0 0 0 1.5px var(--good)}.winput.ng{box-shadow:inset 0 0 0 1.5px var(--bad)}
-.rrow .sym{flex:none;width:18px;text-align:center;font-size:15px}.rrow.wr.ok .sym{color:var(--good)}.rrow.wr.ng .sym{color:var(--bad)}
+.rrow .sym{flex:none;width:18px;text-align:center;font-size:15px}.rrow.wr.ok .sym{color:var(--good)}.rrow.wr.ng .sym{color:var(--bad)}.rrow.wr.na .sym{color:var(--mute)}
 .wfb{margin-top:4px;padding:12px 14px;border-radius:var(--r-ctl);display:flex;flex-direction:column;gap:4px}
 .wfb.ok{background:var(--good-bg)}.wfb.ng{background:var(--bad-bg)}
 .wfb-t{font-size:14px}.wfb.ok .wfb-t{color:var(--good)}.wfb.ng .wfb-t{color:var(--bad)}
@@ -907,6 +908,7 @@ function vWMem(){
   h += `</div><div class="foot"><div class="in"><button class="btn sec" data-act="wquit">返回</button><button class="btn pri" data-act="wtest">记好了，开始测</button></div></div>`;
   return h;
 }
+function keepAns(){ const s = S.wsess; const it = s && s.items[s.i]; const el = document.getElementById('w-in'); if (it && el && it.ok === undefined) it.a = el.value.trim() }
 function vWTest(){
   const s = S.wsess; const it = s.items[s.i]; const w = S.words[it.id] || it.w; const p = wPrompt(it.k, w);
   const done = it.ok !== undefined;
@@ -918,18 +920,21 @@ function vWTest(){
     if (it.k !== 'hk' && it.k !== 'zj') h += `<div class="wans" lang="ja">${esc(w.b || w.w)}${w.rd && w.rd !== (w.b || w.w) ? '（' + esc(w.rd) + '）' : ''}</div>`;
     h += `</div>`;
   }
-  h += `</article></div>`;
+  h += `</article>`;
+  if (s.items.length > 1) h += `<nav class="dots" aria-label="题号">` + s.items.map((x, j) => `<button class="${(x.a || x.ok !== undefined) ? 'filled' : ''}${j === s.i ? ' cur' : ''}" data-act="wjump" data-i="${j}" aria-label="第${j + 1}个">${j + 1}</button>`).join('') + `</nav>`;
+  h += `</div>`;
   const last = s.i === s.items.length - 1;
-  h += `<div class="foot"><div class="in">${done ? `<button class="btn pri" data-act="${last ? 'wfinish' : 'wnext'}">${last ? '看结果' : '下一个'}</button>` : `<button class="btn sec" data-act="wskip">不会</button><button class="btn pri" data-act="wcheck">确定</button>`}</div></div>`;
+  const nx = `<button class="btn ${done ? 'pri' : 'sec'}" data-act="${last ? 'wfinish' : 'wnext'}">${last ? '看结果' : '下一题'}</button>`;
+  h += `<div class="foot"><div class="in">${done ? nx : nx + `<button class="btn pri" data-act="wcheck">判定</button>`}</div></div>`;
   return h;
 }
 function vWRes(){
-  const s = S.wsess; const ok = s.items.filter(it => it.ok).length; const bad = s.items.filter(it => !it.ok);
+  const s = S.wsess; const ok = s.items.filter(it => it.ok).length; const bad = s.items.filter(it => it.ok === false); const skip = s.items.filter(it => it.ok === undefined).length;
   let h = `<header class="top"><button class="ibtn" data-act="wquit" aria-label="返回">${ICON.back}</button><div class="ttl">这一轮的结果</div>${cloudHTML()}</header><div class="stack">`;
-  h += `<section class="score"><b>${ok}</b><span> / ${s.items.length}</span><p>${bad.length ? `${bad.length} 个放进了错词本` : '这一轮都记住了'}</p></section><div class="rlist">`;
-  h += s.items.map(it => { const w = S.words[it.id] || it.w; return `<div class="rrow wr ${it.ok ? 'ok' : 'ng'}"><span class="sym">${it.ok ? '✓' : '↺'}</span><span class="t"><span class="ww" lang="ja">${esc(w.b || w.w)}</span> <small lang="ja">${w.rd && w.rd !== (w.b || w.w) ? esc(w.rd) : ''}</small><span class="s">${esc(w.z || '')}</span></span><span class="r">${it.ok ? '' : '你写：' + esc(it.a || '—')}</span></div>` }).join('');
+  h += `<section class="score"><b>${ok}</b><span> / ${s.items.length}</span><p>${(bad.length + skip ? `${bad.length + skip} 个放进了错词本` : '') || '这一轮都记住了'}</p></section><div class="rlist">`;
+  h += s.items.map(it => { const w = S.words[it.id] || it.w; const st = it.ok === undefined ? 'na' : it.ok ? 'ok' : 'ng'; return `<div class="rrow wr ${st}"><span class="sym">${{ok:'✓', ng:'↺', na:'○'}[st]}</span><span class="t"><span class="ww" lang="ja">${esc(w.b || w.w)}</span> <small lang="ja">${w.rd && w.rd !== (w.b || w.w) ? esc(w.rd) : ''}</small><span class="s">${esc(w.z || '')}</span></span><span class="r">${it.ok === undefined ? '没做' : it.ok ? '' : '你写：' + esc(it.a || '—')}</span></div>` }).join('');
   h += `</div>`;
-  if (bad.length) h += `<button class="btn pri full" data-act="wretry">再练这 ${bad.length} 个错词</button>`;
+  if (bad.length + skip) h += `<button class="btn pri full" data-act="wretry">再练这 ${bad.length + skip} 个${skip ? '' : '错词'}</button>`;
   h += `<button class="btn sec full" data-act="wquit">回单词本</button></div>`;
   return h;
 }
@@ -950,6 +955,7 @@ function startWords(list, mode, min){
 async function saveWordStats(){
   for (const it of S.wsess.items) {
     const w = S.words[it.id]; if (!w) continue;
+    if (it.ok === undefined) { const pt = {wrong:true, streak:0, last:Date.now()}; Object.assign(w, pt); write('words/' + it.id, () => S.db.doc('words/' + it.id).update(pt)); continue }
     const patch = it.ok ? {hit:(w.hit || 0) + 1, streak:(w.streak || 0) + 1, last:Date.now()} : {miss:(w.miss || 0) + 1, streak:0, wrong:true, last:Date.now()};
     if (it.ok && w.wrong && patch.streak >= 2) patch.wrong = false;
     Object.assign(w, patch);
@@ -1040,12 +1046,13 @@ const A = {
     pool = shuffle(pool).sort((a, b) => ((a.hit || 0) - (a.miss || 0) * 2) - ((b.hit || 0) - (b.miss || 0) * 2));
     startWords(pool.slice(0, ws.count), ws.mode, ws.min);
   },
-  wtest:() => { clearInterval(wTimer); S.wsess.i = 0; S.view = 'wtest'; render(); window.scrollTo(0, 0); setTimeout(() => { const i = document.getElementById('w-in'); if (i) i.focus() }, 50) },
-  wcheck:() => { const s = S.wsess; const it = s.items[s.i]; const w = S.words[it.id] || it.w; it.a = document.getElementById('w-in').value.trim(); if (!it.a) { toast('先写答案，不会就点「不会」'); return } it.ok = !!wCheck(it.k, it.a, w); render() },
-  wskip:() => { const it = S.wsess.items[S.wsess.i]; it.a = ''; it.ok = false; render() },
-  wnext:() => { S.wsess.i++; render(); window.scrollTo(0, 0); setTimeout(() => { const i = document.getElementById('w-in'); if (i) i.focus() }, 50) },
-  wfinish:() => { saveWordStats(); S.view = 'wres'; render(); window.scrollTo(0, 0) },
-  wretry:() => { const s = S.wsess; startWords(s.items.filter(it => !it.ok).map(it => S.words[it.id] || it.w), s.mode, 0) },
+  wtest:() => { clearInterval(wTimer); S.wsess.items = shuffle(S.wsess.items); S.wsess.i = 0; S.view = 'wtest'; render(); window.scrollTo(0, 0); setTimeout(() => { const i = document.getElementById('w-in'); if (i) i.focus() }, 50) },
+  wcheck:() => { const s = S.wsess; const it = s.items[s.i]; const w = S.words[it.id] || it.w; it.a = document.getElementById('w-in').value.trim(); it.ok = !!(it.a && wCheck(it.k, it.a, w)); render() },
+  wjump:d => { keepAns(); S.wsess.i = +d.i; render(); window.scrollTo(0, 0) },
+
+  wnext:() => { keepAns(); S.wsess.i++; render(); window.scrollTo(0, 0) },
+  wfinish:() => { keepAns(); const s = S.wsess; s.items.forEach(it => { if (it.ok === undefined && it.a) it.ok = !!wCheck(it.k, it.a, S.words[it.id] || it.w) }); saveWordStats(); S.view = 'wres'; render(); window.scrollTo(0, 0) },
+  wretry:() => { const s = S.wsess; startWords(s.items.filter(it => it.ok !== true).map(it => S.words[it.id] || it.w), s.mode, 0) },
   wquit:() => { clearInterval(wTimer); S.wsess = null; S.stack = [{view:'home', vp:{}}]; S.view = 'words'; S.vp = {tab:'book'}; render(); window.scrollTo(0, 0) },
   wrongoff:d => { const w = S.words[d.id]; if (!w) return; w.wrong = false; write('words/' + d.id, () => S.db.doc('words/' + d.id).update({wrong:false, streak:0})); render(); toast('移出错词本了') },
   wtab:d => { S.vp.tab = d.t; S.del = null; render() },
