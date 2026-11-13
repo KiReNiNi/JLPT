@@ -189,7 +189,7 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .exp .full{font-size:16px;margin-bottom:4px}
 .exp .starw{color:var(--accent2)}
 .exp .ord{font-size:13px;color:var(--mute);margin-bottom:6px}
-.verdict{font-weight:700;font-size:14px;margin-bottom:6px}
+.verdict{font-weight:500;font-size:14px;margin-bottom:6px}
 .verdict.ok{color:var(--good)} .verdict.ng{color:var(--bad)} .verdict.na{color:var(--mute)}
 .times{font-size:12px;color:var(--mute);margin-top:8px}
 /* 备用 / 过 */
@@ -282,7 +282,7 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 /* ===== 单词 ===== */
 .wd{display:flex;gap:12px;align-items:flex-start;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);padding:14px 16px}
 .wd .main{flex:1;min-width:0}
-.wd .w{font-size:19px;font-weight:600}
+.wd .w{font-size:19px;font-weight:400}
 .wd .rd{font-size:13px;color:var(--mute);margin-left:6px}
 .wd .z{font-size:14px;margin-top:2px}
 .wd .ctx{font-size:13px;color:var(--mute);margin-top:4px;line-height:1.6}
@@ -305,12 +305,13 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .wnums .num,.winput{height:46px;border:0;border-radius:var(--r-ctl);background:var(--card2);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink);font:inherit;font-size:18px;padding:0 14px}
 .wnums .num{width:100%}
 .wtest{display:flex;flex-direction:column;gap:10px}
-.wq{font-size:30px;font-weight:600;line-height:1.35;word-break:break-all}
+.wq{font-size:28px;font-weight:400;line-height:1.35;word-break:break-all}
 .wtest .rd{font-size:14px;color:var(--mute)}
 .winput{width:100%;margin-top:6px}
-.wjudge{font-weight:700}.wjudge.ok{color:var(--good)}.wjudge.ng{color:var(--bad)}
+.winput.ok{box-shadow:inset 0 0 0 1.5px var(--good)}.winput.ng{box-shadow:inset 0 0 0 1.5px var(--bad)}
+.rrow.wr{border-left:3px solid transparent}.rrow.wr.ok{border-left-color:var(--good)}.rrow.wr.ng{border-left-color:var(--bad)}
+.rrow .ww{font-size:16px}
 .wans{font-size:15px}
-.wflip{align-self:flex-start;font-size:13px;color:var(--mute);text-decoration:underline;text-underline-offset:3px}
 
 /* ===== 弹层 ===== */
 .sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:rgba(40,25,45,.35)}
@@ -626,7 +627,7 @@ function questionHTML(q, ctx){
 }
 function expHTML(q, sel){
   let v;
-  if (hasAns(q, sel)) v = isRight(q, sel) ? '<div class="verdict ok">✓ 答对了</div>' : '<div class="verdict ng">✗ 答错了</div>';
+  if (hasAns(q, sel)) v = isRight(q, sel) ? '<div class="verdict ok">答对了</div>' : '<div class="verdict ng">答错了</div>';
   else v = '<div class="verdict na">没作答</div>';
   let h = `<div class="exp">${v}`;
   if (q.ty === 'sort') {
@@ -908,11 +909,10 @@ function vWTest(){
   const done = it.ok !== undefined;
   let h = `<header class="top"><button class="ibtn" data-act="wquit" aria-label="返回">${ICON.back}</button><div class="ttl prog">${s.i + 1}<small> / ${s.items.length}</small></div></header><div class="stack">`;
   h += `<article class="card wtest"><div class="label">${p.ask}</div><div class="wq"${p.ja ? ' lang="ja"' : ''}>${esc(p.q)}</div>${p.sub ? `<div class="rd" lang="ja">${esc(p.sub)}</div>` : ''}`;
-  h += `<input id="w-in" class="winput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(it.a || '')}" ${done ? 'readonly' : ''} placeholder="在这里写答案">`;
+  h += `<input id="w-in" class="winput${done ? (it.ok ? ' ok' : ' ng') : ''}" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(it.a || '')}" ${done ? 'readonly' : ''} placeholder="在这里写答案">`;
   if (done) {
-    h += `<div class="wjudge ${it.ok ? 'ok' : 'ng'}">${it.ok ? '✓ 对了' : '✗ 不对'}</div><div class="wans">答案：<b${it.k === 'zj' || it.k === 'hk' ? ' lang="ja"' : ''}>${esc(wAnswer(it.k, w))}</b></div>`;
-    if (it.k !== 'hk' && it.k !== 'zj') h += `<div class="wans" lang="ja">${esc(w.b || w.w)}${w.rd ? '（' + esc(w.rd) + '）' : ''}</div>`;
-    h += `<button class="wflip" data-act="wflip">${it.ok ? '其实答错了' : '其实我答对了'}</button>`;
+    h += `<div class="wans"${it.k === 'zj' || it.k === 'hk' ? ' lang="ja"' : ''}>${esc(wAnswer(it.k, w))}</div>`;
+    if (it.k !== 'hk' && it.k !== 'zj') h += `<div class="wans" lang="ja">${esc(w.b || w.w)}${w.rd && w.rd !== (w.b || w.w) ? '（' + esc(w.rd) + '）' : ''}</div>`;
   }
   h += `</article></div>`;
   const last = s.i === s.items.length - 1;
@@ -922,8 +922,8 @@ function vWTest(){
 function vWRes(){
   const s = S.wsess; const ok = s.items.filter(it => it.ok).length; const bad = s.items.filter(it => !it.ok);
   let h = `<header class="top"><button class="ibtn" data-act="wquit" aria-label="返回">${ICON.back}</button><div class="ttl">这一轮的结果</div>${cloudHTML()}</header><div class="stack">`;
-  h += `<section class="score"><b>${ok}</b><span> / ${s.items.length}</span><p>${bad.length ? `错了 ${bad.length} 个，已经放进错词本` : '全对！'}</p></section><div class="rlist">`;
-  h += s.items.map(it => { const w = S.words[it.id] || it.w; return `<div class="rrow"><span class="ic ${it.ok ? 'ok' : 'ng'}">${it.ok ? '✓' : '✗'}</span><span class="t"><b lang="ja">${esc(w.b || w.w)}</b> <small lang="ja">${esc(w.rd || '')}</small><span class="s">${esc(w.z || '')}</span></span><span class="r">${it.ok ? '' : '你写：' + esc(it.a || '—')}</span></div>` }).join('');
+  h += `<section class="score"><b>${ok}</b><span> / ${s.items.length}</span><p>${bad.length ? `${bad.length} 个放进了错词本` : '这一轮都记住了'}</p></section><div class="rlist">`;
+  h += s.items.map(it => { const w = S.words[it.id] || it.w; return `<div class="rrow wr ${it.ok ? 'ok' : 'ng'}"><span class="t"><span class="ww" lang="ja">${esc(w.b || w.w)}</span> <small lang="ja">${w.rd && w.rd !== (w.b || w.w) ? esc(w.rd) : ''}</small><span class="s">${esc(w.z || '')}</span></span><span class="r">${it.ok ? '' : '你写：' + esc(it.a || '—')}</span></div>` }).join('');
   h += `</div>`;
   if (bad.length) h += `<button class="btn pri full" data-act="wretry">再练这 ${bad.length} 个错词</button>`;
   h += `<button class="btn sec full" data-act="wquit">回单词本</button></div>`;
@@ -1039,7 +1039,6 @@ const A = {
   wtest:() => { clearInterval(wTimer); S.wsess.i = 0; S.view = 'wtest'; render(); window.scrollTo(0, 0); setTimeout(() => { const i = document.getElementById('w-in'); if (i) i.focus() }, 50) },
   wcheck:() => { const s = S.wsess; const it = s.items[s.i]; const w = S.words[it.id] || it.w; it.a = document.getElementById('w-in').value.trim(); if (!it.a) { toast('先写答案，不会就点「不会」'); return } it.ok = !!wCheck(it.k, it.a, w); render() },
   wskip:() => { const it = S.wsess.items[S.wsess.i]; it.a = ''; it.ok = false; render() },
-  wflip:() => { const it = S.wsess.items[S.wsess.i]; it.ok = !it.ok; render() },
   wnext:() => { S.wsess.i++; render(); window.scrollTo(0, 0); setTimeout(() => { const i = document.getElementById('w-in'); if (i) i.focus() }, 50) },
   wfinish:() => { saveWordStats(); S.view = 'wres'; render(); window.scrollTo(0, 0) },
   wretry:() => { const s = S.wsess; startWords(s.items.filter(it => !it.ok).map(it => S.words[it.id] || it.w), s.mode, 0) },
