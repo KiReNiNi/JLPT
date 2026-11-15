@@ -12,7 +12,7 @@
   --accent:#E07A38; --accent2:#C9652A; --accent-soft:#FBE7D8; --lav:#8F7EC6; --lav-soft:#ECE7F7;
   --sel:#4A72D6; --sel-bg:#E2EAFB; --mark:#2F6B28; --mark-bg:#D3EBC8;
   --hold:#E2B32E; --hold-bg:#FFF4CC; --good:#5E9A76; --good-bg:#E6F2EA; --bad:#C08A7E; --bad-bg:#F7EBE6;
-  --pass-bg:#F9DFCB; --pass-line:rgba(214,130,75,.35); --on-accent:#FFFFFF; --sheet:#FBF8FC; --glass:none;
+  --trk1:#C9C4BC; --trk2:#F6CF8A; --pass-bg:#F9DFCB; --pass-line:rgba(214,130,75,.35); --on-accent:#FFFFFF; --sheet:#FBF8FC; --glass:none;
   --shadow:0 1px 2px rgba(60,40,80,.06),0 4px 14px rgba(60,40,80,.05);
   --r-card:20px; --r-ctl:14px;
   --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","PingFang SC",sans-serif;
@@ -24,19 +24,19 @@
   --accent:#F0955A; --accent2:#F6AD7B; --accent-soft:#4A3022; --lav:#B4A6E6; --lav-soft:#332D45;
   --sel:#88A6F2; --sel-bg:#27324D; --mark:#AEDDA0; --mark-bg:#2B4527;
   --hold:#E9C552; --hold-bg:#43391A; --good:#8FC6A3; --good-bg:#24352B; --bad:#D9A99D; --bad-bg:#3D2C28;
-  --pass-bg:#4A3326; --pass-line:rgba(240,149,90,.4); --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
+  --trk1:#6A6560; --trk2:#B98A3A; --pass-bg:#4A3326; --pass-line:rgba(240,149,90,.4); --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#1B1920; --card:#25222C; --card2:#2C2834; --ink:#ECE7F3; --mute:#A79FB3; --line:#3A3544;
   --accent:#F0955A; --accent2:#F6AD7B; --accent-soft:#4A3022; --lav:#B4A6E6; --lav-soft:#332D45;
   --sel:#88A6F2; --sel-bg:#27324D; --mark:#AEDDA0; --mark-bg:#2B4527;
   --hold:#E9C552; --hold-bg:#43391A; --good:#8FC6A3; --good-bg:#24352B; --bad:#D9A99D; --bad-bg:#3D2C28;
-  --pass-bg:#4A3326; --pass-line:rgba(240,149,90,.4); --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
+  --trk1:#6A6560; --trk2:#B98A3A; --pass-bg:#4A3326; --pass-line:rgba(240,149,90,.4); --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
 body[data-skin="orchard"]{
   --bg:#EAD8E4; --card:rgba(255,250,246,.82); --card2:rgba(255,247,242,.66); --ink:#3B2B3A; --mute:#7D6979; --line:rgba(150,110,150,.22);
   --accent:#E8803C; --accent2:#C8652B; --accent-soft:rgba(250,214,186,.75); --lav:#8B76C2; --lav-soft:rgba(234,226,248,.85);
   --sel:#4A72D6; --sel-bg:#DCE6FB; --mark:#2F6B28; --mark-bg:#CDEAC0;
   --hold:#D9A21C; --hold-bg:#FFF0BF; --good:#5E9A76; --good-bg:rgba(226,242,232,.9); --bad:#C08A7E; --bad-bg:rgba(248,234,228,.9);
-  --pass-bg:rgba(246,198,160,.62); --pass-line:rgba(214,125,70,.32); --on-accent:#FFFFFF; --sheet:#FBF2EE; --glass:none;
+  --trk1:rgba(170,160,160,.55); --trk2:rgba(246,196,110,.85); --pass-bg:rgba(246,198,160,.62); --pass-line:rgba(214,125,70,.32); --on-accent:#FFFFFF; --sheet:#FBF2EE; --glass:none;
   --shadow:0 2px 6px rgba(120,70,90,.10),0 10px 30px rgba(120,70,90,.10);
   color-scheme:light;
 }
@@ -333,6 +333,37 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .wq-b{display:flex;flex-direction:column;gap:8px;padding:0 8px 8px}
 .wq-b .wd{box-shadow:none}
 
+/* 真题进度 */
+.trk-thumb{display:flex;flex-direction:column;gap:10px;width:100%;text-align:left;padding:14px 16px;border-radius:var(--r-card);background:var(--card);box-shadow:var(--shadow);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
+.trk-t{display:flex;align-items:center;justify-content:space-between;font-size:15px}
+.trk-mini{display:grid;grid-template-columns:auto repeat(7,minmax(0,1fr));gap:4px 5px;align-items:center}
+.tm-h{font-size:10px;color:var(--mute);text-align:center;font-variant-numeric:tabular-nums}
+.tm-l{font-size:11px;color:var(--mute);padding-right:4px;white-space:nowrap}
+.tm-c{height:10px;border-radius:5px;box-shadow:inset 0 0 0 1px var(--line)}
+.trk-lg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mute)}
+.trk-lg i{width:10px;height:10px;border-radius:50%;margin-left:6px;box-shadow:inset 0 0 0 1px var(--line)}
+.s1{--tk:var(--trk1)} .s2{--tk:var(--trk2)}
+.tm-c.s1,.trk-lg i.s1,.trk .c.s1,.trk .m.s1{background:var(--trk1);box-shadow:none}
+.tm-c.s2,.trk-lg i.s2,.trk .c.s2,.trk .m.s2{background:var(--trk2);box-shadow:none}
+.trk-card{background:var(--card);border-radius:var(--r-card);box-shadow:var(--shadow);padding:6px 8px 10px;backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass)}
+.trk{width:100%;border-collapse:collapse;table-layout:fixed}
+.trk .trk-c1{width:25%}
+.trk th{font-size:11px;font-weight:500;color:var(--mute);padding:8px 0 4px;text-align:center;line-height:1.3}
+.trk td{text-align:center;padding:5px 0}
+.trk td.l{text-align:left;font-size:13px;white-space:nowrap;cursor:pointer;padding-left:2px}
+.trk .ar{display:inline-block;width:12px;color:var(--mute);font-size:10px}
+.trk tr.sec td{font-size:12px;color:var(--mute);text-align:left;padding:12px 0 4px;border-bottom:1px solid var(--line)}
+.trk .c{width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--line);border:1.5px dashed var(--mute);display:block;margin:0 auto}
+.trk .c.s1,.trk .c.s2{border:0}
+.trk td.dt{padding:2px 0 8px}
+.trk .box{background:var(--card2);border-radius:12px;padding:6px 8px;text-align:left}
+.trk .yr{display:flex;align-items:flex-start;gap:8px;padding:5px 0}
+.trk .yr+.yr{border-top:1px solid var(--line)}
+.trk .yl{font-size:11px;color:var(--mute);width:48px;flex:none;padding-top:5px}
+.trk .ms{display:flex;flex-wrap:wrap;gap:5px}
+.trk .m{width:26px;height:26px;border-radius:50%;border:1.5px dashed var(--mute);font-size:11px;color:var(--mute);display:inline-flex;align-items:center;justify-content:center}
+.trk .m.s1,.trk .m.s2{border:0;color:var(--ink)}
+
 /* ===== 弹层 ===== */
 .sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:rgba(40,25,45,.35)}
 .sheet .pn{display:flex;flex-direction:column;gap:12px;width:100%;max-width:680px;background:var(--sheet);border-radius:24px 24px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));max-height:86vh;overflow:auto}
@@ -444,7 +475,7 @@ const S = {
   view:'home', vp:{}, stack:[],
   prog:{}, words:{}, settings:{skin:'orchard', bg:'random'}, session:null,
   db:null, cloud:'ld', gotProg:false, gotWords:false,
-  paperTab:'vocab', open:new Set(), mode:'answer', marks:new Set(), unmarks:new Set(), hideMarks:false, peekOpen:false, noteOpen:new Set(), wopen:new Set(), uploading:{}, assets:null, filter:'', del:null, noteDraft:{},
+  paperTab:'vocab', open:new Set(), mode:'answer', marks:new Set(), unmarks:new Set(), hideMarks:false, peekOpen:false, noteOpen:new Set(), trk:{}, trkOpen:new Set(), wopen:new Set(), uploading:{}, assets:null, filter:'', del:null, noteDraft:{},
   setup:{papers:new Set(['2026.07']), cat:'vocab', types:new Set([1,2,3,4,5,6,7]), holdOnly:false, order:'rand', count:10, skip:true},
 };
 
@@ -498,6 +529,7 @@ async function initCloud(){
     const m = {}; snap.docs.forEach(d => m[d.id] = Object.assign({id:d.id}, d.data()));
     S.words = m; if (!snap.metadata.fromCache) S.gotWords = true; done(); render(true);
   }, fail);
+  db.doc('tracker/main').onSnapshot(d => { if (d.exists) { const v = d.data(); S.trk = Object.assign({}, v.s || {}) } S.gotTrk = true; render(true) }, () => {});
   db.doc('settings/main').onSnapshot(d => {
     if (d.exists) { const v = d.data(); if (v.skin !== S.settings.skin || v.bg !== S.settings.bg) { S.settings = {skin:v.skin || 'orchard', bg:v.bg || 'random'}; applySkin(); render(true) } }
   }, () => {});
@@ -714,6 +746,7 @@ function vHome(){
   h += `<section class="hero"><h1>橘园 N1</h1><p>真题 ${QS.length} 道 · 做过 ${st.done} · 过 ${st.pass}</p></section><div class="stack">`;
   if (S.cloud === 'off') h += `<div class="warn">云端没连上，现在做的题不会被记下来。关掉页面重新打开试试。</div>`;
   if (S.cloud === 'slow') h += `<div class="warn">云端还没回应，记录可能还没加载出来，稍等一下。</div>`;
+  h += trackerThumb();
   h += `<section class="panel start"><button class="entry" data-act="setup"><b>开始做题</b>${ICON.chev}</button>`;
   if (S.session && !S.session.done) {
     const s = S.session; const n = s.qids.filter(id => hasAns(Q[id], s.ans[id])).length;
@@ -876,6 +909,41 @@ function vWPaper(){
   if (pid !== '其他') h += `<button class="entry wentry" data-act="wsetup" data-from="${tab}" data-paper="${pid}"><b>背这套的 ${list.length} 个</b>${ICON.chev}</button>`;
   return h + list.map(w => wordCard(w, tab)).join('') + '</div>';
 }
+
+/* ---------- 真题进度表：没做 → 做过 → 复盘过 ---------- */
+const TY = PAPERS.slice().reverse();   // 旧 → 新
+const rgN = (a, b) => Array.from({length:b - a + 1}, (_, i) => String(a + i));
+const TS = [
+  ['文字・語彙', [['V1','問題1',rgN(1,6)],['V2','問題2',rgN(7,13)],['V3','問題3',rgN(14,19)],['V4','問題4',rgN(20,25)]]],
+  ['文法', [['G5','問題5',rgN(26,35)],['G6','問題6',rgN(36,40)]]],
+  ['読解', [['R7','問題7',rgN(41,44)],['R8','問題8',rgN(45,48)],['R9','問題9',rgN(49,56)],['R10','問題10',rgN(57,59)],['R11','問題11',rgN(60,61)],['R12','問題12',rgN(62,64)],['R13','問題13',rgN(65,66)]]],
+  ['聴解', [['L1','問題1',rgN(1,5)],['L2','問題2',rgN(1,6)],['L3','問題3',rgN(1,5)],['L4','問題4',rgN(1,11)],['L5a','問題5 1番',['1']],['L5b','問題5 2番',['1','2']]]],
+];
+const tv = (k, big) => (k in S.trk) ? S.trk[k] : (S.trk[big] || 0);
+function rowState(r, pid){ const big = r[0] + '|' + pid; const vs = r[2].map(n => tv(big + '|' + n, big)); return vs.every(v => v === 2) ? 2 : vs.some(v => v) ? 1 : 0 }
+function secState(sec, pid){ const vs = sec[1].map(r => rowState(r, pid)); return vs.every(v => v === 2) ? 2 : vs.some(v => v) ? 1 : 0 }
+function trackerThumb(){
+  let h = `<button class="trk-thumb" data-act="trk" aria-label="打开真题进度表"><span class="trk-t"><b>真题进度</b>${ICON.chev}</span><span class="trk-mini">`;
+  h += `<span class="tm-l"></span>` + TY.map(p => `<span class="tm-h">${shortP(p.id)}</span>`).join('');
+  TS.forEach(sec => { h += `<span class="tm-l">${sec[0].replace('・','')}</span>` + TY.map(p => `<span class="tm-c s${secState(sec, p.id)}"></span>`).join('') });
+  return h + `</span><span class="trk-lg"><i class="s0"></i>没做<i class="s1"></i>做过<i class="s2"></i>复盘过</span></button>`;
+}
+let trkTimer = null;
+function saveTrk(){ clearTimeout(trkTimer); trkTimer = setTimeout(() => { const s = Object.assign({}, S.trk); write('tracker/main', () => S.db.doc('tracker/main').set({s, t:Date.now()})) }, 600) }
+function vTrk(){
+  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">真题进度</div>${cloudHTML()}</header><div class="stack">`;
+  h += `<div class="hint">点圆圈切换：没做 → 做过 → 复盘过。点左边的“問題○”展开，可以一道一道标。</div>`;
+  h += `<div class="trk-card"><table class="trk"><colgroup><col class="trk-c1">${TY.map(() => '<col>').join('')}</colgroup><tr><th></th>${TY.map(p => `<th>${shortP(p.id).replace('.', '.<br>')}</th>`).join('')}</tr>`;
+  TS.forEach(sec => {
+    h += `<tr class="sec"><td colspan="${TY.length + 1}">${sec[0]}</td></tr>`;
+    sec[1].forEach(r => {
+      const open = S.trkOpen.has(r[0]);
+      h += `<tr><td class="l" data-act="trkrow" data-r="${r[0]}"><span class="ar">${open ? '▾' : '▸'}</span>${r[1]}</td>` + TY.map(p => { const k = r[0] + '|' + p.id; return `<td><button class="c s${S.trk[k] || 0}" data-act="trkbig" data-k="${k}" aria-label="${p.name} ${sec[0]} ${r[1]}"></button></td>` }).join('') + `</tr>`;
+      if (open) h += `<tr><td class="dt" colspan="${TY.length + 1}"><div class="box">` + TY.slice().reverse().map(p => { const big = r[0] + '|' + p.id; return `<div class="yr"><div class="yl">${p.name.replace('20', '')}</div><div class="ms">${r[2].map(n => `<button class="m s${tv(big + '|' + n, big)}" data-act="trksm" data-k="${big}|${n}" data-big="${big}">${n}</button>`).join('')}</div></div>` }).join('') + `</div></td></tr>`;
+    });
+  });
+  return h + `</table></div></div>`;
+}
 function vWords(){
   const tab = S.vp.tab || 'staged';
   const all = Object.values(S.words).sort((a, b) => (b.t || 0) - (a.t || 0));
@@ -1019,7 +1087,7 @@ let lastHTML = '';
 function render(fromData){
   if (fromData && document.activeElement && /^(TEXTAREA|INPUT)$/.test(document.activeElement.tagName)) return;
   applySkin();
-  const v = {home:vHome, paper:vPaper, detail:vDetail, setup:vSetup, drill:vDrill, result:vResult, words:vWords, wpaper:vWPaper, fav:vFav, wsetup:vWSetup, wmem:vWMem, wtest:vWTest, wres:vWRes}[S.view] || vHome;
+  const v = {home:vHome, paper:vPaper, detail:vDetail, setup:vSetup, drill:vDrill, result:vResult, words:vWords, trk:vTrk, wpaper:vWPaper, fav:vFav, wsetup:vWSetup, wmem:vWMem, wtest:vWTest, wres:vWRes}[S.view] || vHome;
   const html = v();
   if (html !== lastHTML) { const app = document.getElementById('app'); app.innerHTML = html; lastHTML = html; paint(app) }
 }
@@ -1098,6 +1166,10 @@ const A = {
   words:d => go('words', {tab:d.tab || 'staged'}),
   wsetup:d => { S.wset = Object.assign({mode:'jz', count:10, min:5, paper:''}, S.wset || {}, {from:d.from === 'wrong' ? 'wrong' : 'book', paper:d.paper || ''}); go('wsetup') },
   wpaper:d => go('wpaper', {p:d.p, tab:d.tab}),
+  trk:() => go('trk'),
+  trkrow:d => { S.trkOpen.has(d.r) ? S.trkOpen.delete(d.r) : S.trkOpen.add(d.r); render() },
+  trkbig:d => { const v = ((S.trk[d.k] || 0) + 1) % 3; if (v) S.trk[d.k] = v; else delete S.trk[d.k]; Object.keys(S.trk).forEach(k => { if (k.startsWith(d.k + '|')) delete S.trk[k] }); render(); saveTrk() },
+  trksm:d => { const v = (tv(d.k, d.big) + 1) % 3; if (v === (S.trk[d.big] || 0)) delete S.trk[d.k]; else S.trk[d.k] = v; render(); saveTrk() },
   wgrp:d => { S.wopen.has(d.k) ? S.wopen.delete(d.k) : S.wopen.add(d.k); render() },
   'ws-from':d => { S.wset.from = d.v; S.wset.paper = ''; render() },
   'ws-paper':d => { S.wset.paper = d.v; render() },
