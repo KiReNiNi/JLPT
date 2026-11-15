@@ -95,7 +95,8 @@ body:not([data-skin="orchard"]) .top{background:var(--bg)}
 .resume .rs-t{font-family:var(--f-display);font-weight:700;font-size:17px}
 .resume .rs-s{grid-column:1;font-size:13px;color:var(--mute)}
 .resume svg{grid-row:1/3;grid-column:2;color:var(--accent);width:24px;height:24px}
-.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tile.fav b{color:var(--accent2)}
 .tile{display:flex;flex-direction:column;align-items:flex-start;background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-ctl);box-shadow:var(--shadow);padding:12px 14px}
 .tile b{font-family:var(--f-display);font-size:24px;line-height:1.2;font-variant-numeric:tabular-nums}
 .tile span{font-size:12px;color:var(--mute)}
@@ -136,6 +137,10 @@ body:not([data-skin="orchard"]) .top{background:var(--bg)}
 .qc .s{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:14px}
 .qc.hold{background:var(--hold-bg)}
 .qc.pass{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.star{font-style:normal;color:var(--accent);margin-left:4px;font-size:.95em}
+.dots button{position:relative}
+.dstar{position:absolute;top:-6px;right:-5px;font-style:normal;font-size:11px;color:var(--accent);line-height:1}
+[data-fav]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .dot{position:absolute;top:12px;right:12px;width:8px;height:8px;border-radius:50%;background:var(--bad)}
 
 /* ===== 题目卡 ===== */
@@ -387,6 +392,7 @@ body[data-skin="orchard"] .ch{background:rgba(255,250,246,.7);box-shadow:inset 0
 body[data-skin="orchard"] .ch.on{background:var(--accent-soft);box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent2)}
 body[data-skin="orchard"] .grp-h b,body[data-skin="orchard"] .sh-h b{font-family:var(--f-display);font-weight:600}
 body[data-skin="orchard"] .score b{font-weight:600}
+body[data-skin="orchard"] .stack > .hint{background:rgba(255,250,246,.72);padding:8px 12px;border-radius:12px;color:var(--ink)}
 body[data-skin="orchard"] .cloud{height:30px;padding:0 10px;border-radius:999px;background:rgba(255,250,246,.72);color:var(--ink)}
 body[data-skin="orchard"] .top .ttl{flex:none;padding:4px 12px;border-radius:999px;background:rgba(255,250,246,.72)}
 body[data-skin="orchard"] .top .ttl:empty{display:none}
@@ -703,7 +709,7 @@ function vHome(){
     h += `<button class="resume" data-act="resume"><span class="rs-t">继续上次</span><span class="rs-s">共 ${s.qids.length} 题 · 做了 ${n} 题</span>${ICON.play}</button>`;
   }
   h += `</section>`;
-  h += `<div class="tiles"><button class="tile hold" data-act="setup" data-hold="1"><b>${st.hold}</b><span>暂时备用</span></button><button class="tile word" data-act="words"><b>${staged}</b><span>暂存生词</span></button><button class="tile" data-act="words" data-tab="book"><b>${book}</b><span>单词本</span></button></div>`;
+  h += `<div class="tiles"><button class="tile hold" data-act="setup" data-hold="1"><b>${st.hold}</b><span>暂时备用</span></button><button class="tile fav" data-act="favlist"><b>${QS.filter(q => (S.prog[q.id] || {}).fav).length}</b><span>收藏</span></button><button class="tile word" data-act="words"><b>${staged}</b><span>暂存生词</span></button><button class="tile" data-act="words" data-tab="book"><b>${book}</b><span>单词本</span></button></div>`;
   h += `<section class="panel papers"><div class="panel-h">题库 · 按套卷</div>`;
   PAPERS.forEach(p => {
     const qs = QS.filter(q => q.p === p.id);
@@ -732,7 +738,7 @@ function vPaper(){
       const p = S.prog[q.id] || {};
       const wrong = p.n && p.ok === false;
       const cls = 'qc' + (p.st === 'hold' ? ' hold' : '') + (p.st === 'pass' ? ' pass' : '');
-      return `<button class="${cls}" data-act="detail" data-q="${q.id}"><span class="qn">问${q.n}</span><span class="s" lang="ja">${esc(q.plain)}</span>${wrong ? '<span class="dot" aria-label="上次错"></span>' : ''}</button>`;
+      return `<button class="${cls}" data-act="detail" data-q="${q.id}" data-fav="${q.id}"><span class="qn">问${q.n}${p.fav ? '<i class="star">★</i>' : ''}</span><span class="s" lang="ja">${esc(q.plain)}</span>${wrong ? '<span class="dot" aria-label="上次错"></span>' : ''}</button>`;
     }).join('') + '</div>';
     h += '</div>';
   }
@@ -746,7 +752,7 @@ function vDetail(){
   const open = S.peekOpen;
   const mark = S.mode === 'mark';
   let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">问${q.n}</div>${modeHTML()}</header><div class="stack">`;
-  h += `<article class="card qcard"><div class="qhead"><span class="tag-l">${esc(qLabel(q))}</span>${!mark ? `<button class="peek${open ? ' on' : ''}" data-act="peekd" aria-pressed="${open}" aria-label="${open ? '收起答案' : '查看答案'}">${open ? ICON.eye : ICON.eyeoff}</button>` : ''}</div>`;
+  h += `<article class="card qcard"><div class="qhead"><span class="tag-l" data-fav="${q.id}">${esc(qLabel(q))}${(S.prog[q.id] || {}).fav ? ' <i class="star">★</i>' : ''}</span>${!mark ? `<button class="peek${open ? ' on' : ''}" data-act="peekd" aria-pressed="${open}" aria-label="${open ? '收起答案' : '查看答案'}">${open ? ICON.eye : ICON.eyeoff}</button>` : ''}</div>`;
   h += questionHTML(q, {mark, sel:open && p.n ? p.sel : null, show:open, locked:true});
   if (!mark && open && p.n) h += `<div class="times">做过 ${p.n} 次</div>`;
   if (!mark) h += statusActs(q.id);
@@ -758,7 +764,7 @@ function vDetail(){
 }
 
 function availFor(su){
-  return QS.filter(q => su.papers.has(q.p) && su.types.has(q.m) && (!su.holdOnly || (S.prog[q.id] || {}).st === 'hold') && (!su.skip || su.holdOnly || (S.prog[q.id] || {}).st !== 'pass'));
+  return QS.filter(q => su.papers.has(q.p) && su.types.has(q.m) && (!su.holdOnly || (S.prog[q.id] || {}).st === 'hold') && (!su.favOnly || (S.prog[q.id] || {}).fav) && (!su.skip || su.holdOnly || su.favOnly || (S.prog[q.id] || {}).st !== 'pass'));
 }
 function vSetup(){
   const su = S.setup; const av = availFor(su);
@@ -771,6 +777,7 @@ function vSetup(){
   h += `<section class="fs"><div class="label">题范围</div><div class="chs"><button class="ch on">单词</button><button class="ch" disabled>阅读</button><button class="ch" disabled>听力</button></div>`;
   h += `<div class="chs"><button class="ch${su.types.size === 7 ? ' on' : ''}" data-act="su-tall">全部题型</button>` + [1,2,3,4,5,6,7].map(m => `<button class="ch${su.types.has(m) && su.types.size < 7 ? ' on' : ''}" data-act="su-t" data-m="${m}">第${m}题·${MT[m]}</button>`).join('') + '</div>';
   h += `<label class="chk"><input type="checkbox" id="su-hold" data-act="su-hold" ${su.holdOnly ? 'checked' : ''}>只抽暂时备用的题</label>`;
+  h += `<label class="chk"><input type="checkbox" id="su-fav" data-act="su-fav" ${su.favOnly ? 'checked' : ''}>只抽收藏的题</label>`;
   h += `<label class="chk"><input type="checkbox" id="su-skip" data-act="su-skip" ${su.skip ? 'checked' : ''} ${su.holdOnly ? 'disabled' : ''}>跳过已经过的</label></section>`;
   h += `<section class="fs"><div class="label">排题顺序</div><div class="chs"><button class="ch${su.order === 'rand' ? ' on' : ''}" data-act="su-o" data-o="rand">随机</button><button class="ch${su.order === 'seq' ? ' on' : ''}" data-act="su-o" data-o="seq">按问号顺序</button></div></section>`;
   h += `<section class="fs"><div class="label">题数 · 现在能抽 ${av.length} 道</div><div class="stepper"><button class="stp" data-act="su-c" data-d="-1" aria-label="减一">−</button><input id="su-n" class="num" type="number" inputmode="numeric" min="1" max="${av.length}" value="${su.count}" aria-label="题数"><button class="stp" data-act="su-c" data-d="1" aria-label="加一">+</button><button class="ch" data-act="su-all">全部</button></div></section>`;
@@ -785,7 +792,7 @@ function vDrill(){
   const review = s.done; const show = review || !!s.rev[qid];
   const mark = S.mode === 'mark';
   let h = `<header class="top"><button class="ibtn" data-act="${review ? 'toresult' : 'exitdrill'}" aria-label="返回">${ICON.back}</button><div class="ttl prog">${s.i + 1}<small> / ${s.qids.length}</small></div>${modeHTML()}</header><div class="stack">`;
-  h += `<article class="card qcard"><div class="qhead"><span class="tag-l">${esc(qLabel(q))}</span>${!show && !mark ? `<button class="peek" data-act="peek" aria-label="当场查看答案">${ICON.eyeoff}</button>` : ''}</div>`;
+  h += `<article class="card qcard"><div class="qhead"><span class="tag-l" data-fav="${q.id}">${esc(qLabel(q))}${(S.prog[q.id] || {}).fav ? ' <i class="star">★</i>' : ''}</span>${!show && !mark ? `<button class="peek" data-act="peek" aria-label="当场查看答案">${ICON.eyeoff}</button>` : ''}</div>`;
   h += questionHTML(q, {mark, sel:s.ans[qid] ?? null, show, locked:show});
   if (show && !mark) h += statusActs(qid);
   h += '</article>';
@@ -794,7 +801,7 @@ function vDrill(){
     let c = ''; const a = s.ans[id];
     if (review || s.rev[id]) c = hasAns(Q[id], a) ? (isRight(Q[id], a) ? 'ok' : 'ng') : '';
     else if (hasAns(Q[id], a)) c = 'done';
-    return `<button class="${c}${i === s.i ? ' cur' : ''}" data-act="jump" data-i="${i}" aria-label="第${i + 1}题">${i + 1}</button>`;
+    return `<button class="${c}${i === s.i ? ' cur' : ''}" data-act="jump" data-i="${i}" data-fav="${id}" aria-label="第${i + 1}题">${i + 1}${(S.prog[id] || {}).fav ? '<i class="dstar">★</i>' : ''}</button>`;
   }).join('') + '</nav></div>';
   const last = s.i === s.qids.length - 1;
   h += `<div class="foot">${markBar(qid)}<div class="in"><button class="btn sec" data-act="prev" ${s.i ? '' : 'disabled'}>上一题</button>${review ? `<button class="btn pri" data-act="${last ? 'toresult' : 'next'}">${last ? '看结果' : '下一题'}</button>` : `<button class="btn pri" data-act="${last ? 'submit' : 'next'}">${last ? '交卷' : '下一题'}</button>`}</div></div>`;
@@ -825,6 +832,21 @@ function wordCard(w, tab){
   const stat = tab !== 'staged' && (w.hit || w.miss) ? `<span class="wstat">对 ${w.hit || 0} · 错 ${w.miss || 0}</span>` : '';
   const src = w.q && Q[w.q] ? `<button class="src link" data-act="detail" data-q="${w.q}">${esc(w.src || qLabel(Q[w.q]))} ›</button>` : `<div class="src">${esc(w.src || '')}</div>`;
   return `<div class="wd"><div class="main"><div><span class="w" lang="ja">${word}</span>${w.rd && w.rd !== (w.b || w.w) ? `<span class="rd" lang="ja">${esc(w.rd)}</span>` : ''}${stat}</div>${w.z ? `<div class="z">${esc(w.z)}</div>` : ''}${ctx ? `<div class="ctx" lang="ja">${ctx}</div>` : ''}${src}</div>${right}</div>`;
+}
+function vFav(){
+  const qs = QS.filter(q => (S.prog[q.id] || {}).fav);
+  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">收藏本</div>${cloudHTML()}</header><div class="stack">`;
+  if (!qs.length) return h + `<div class="empty">还没有收藏的题。在题库或做题时长按题号，就能收藏。</div></div>`;
+  h += `<button class="entry wentry" data-act="favdrill"><b>把这 ${qs.length} 道做一遍</b>${ICON.chev}</button><div class="hint">长按题号可以取消收藏。</div>`;
+  PAPERS.forEach(p => {
+    const g = qs.filter(q => q.p === p.id); if (!g.length) return;
+    h += `<div class="grp open"><div class="grp-h"><b>${p.name}</b><span class="gs">${g.length} 道</span></div><div class="qlist">` + g.map(q => {
+      const pr = S.prog[q.id] || {};
+      const cls = 'qc' + (pr.st === 'hold' ? ' hold' : '') + (pr.st === 'pass' ? ' pass' : '');
+      return `<button class="${cls}" data-act="detail" data-q="${q.id}" data-fav="${q.id}"><span class="qn">问${q.n}<i class="star">★</i> · 第${q.m}题·${MT[q.m]}</span><span class="s" lang="ja">${esc(q.plain)}</span>${pr.n && pr.ok === false ? '<span class="dot" aria-label="上次错"></span>' : ''}</button>`;
+    }).join('') + `</div></div>`;
+  });
+  return h + '</div>';
 }
 function vWords(){
   const tab = S.vp.tab || 'staged';
@@ -968,7 +990,7 @@ let lastHTML = '';
 function render(fromData){
   if (fromData && document.activeElement && /^(TEXTAREA|INPUT)$/.test(document.activeElement.tagName)) return;
   applySkin();
-  const v = {home:vHome, paper:vPaper, detail:vDetail, setup:vSetup, drill:vDrill, result:vResult, words:vWords, wsetup:vWSetup, wmem:vWMem, wtest:vWTest, wres:vWRes}[S.view] || vHome;
+  const v = {home:vHome, paper:vPaper, detail:vDetail, setup:vSetup, drill:vDrill, result:vResult, words:vWords, fav:vFav, wsetup:vWSetup, wmem:vWMem, wtest:vWTest, wres:vWRes}[S.view] || vHome;
   const html = v();
   if (html !== lastHTML) { const app = document.getElementById('app'); app.innerHTML = html; lastHTML = html; paint(app) }
 }
@@ -1058,7 +1080,10 @@ const A = {
   wtab:d => { S.vp.tab = d.t; S.del = null; render() },
   askdel:d => { S.del = d.id; render() },
   delw:d => { S.del = null; write('words/' + d.id, () => S.db.doc('words/' + d.id).delete()); delete S.words[d.id]; render() },
-  setup:d => { S.setup.holdOnly = !!d.hold; go('setup') },
+  setup:d => { S.setup.holdOnly = !!d.hold; S.setup.favOnly = false; go('setup') },
+  'su-fav':(d, el) => { S.setup.favOnly = el.checked; render() },
+  favlist:() => go('fav'),
+  favdrill:() => startDrill(QS.filter(q => (S.prog[q.id] || {}).fav).map(q => q.id)),
   'su-p':d => { const s = S.setup.papers; s.has(d.p) ? (s.size > 1 && s.delete(d.p)) : s.add(d.p); render() },
   'su-tall':() => { S.setup.types = new Set([1,2,3,4,5,6,7]); render() },
   'su-t':d => { const m = +d.m; let s = S.setup.types; if (s.size === 7) s = S.setup.types = new Set(); s.has(m) ? s.delete(m) : s.add(m); if (!s.size) S.setup.types = new Set([1,2,3,4,5,6,7]); render() },
@@ -1200,7 +1225,20 @@ function openSettings(){
   h += `<div class="hint">做题记录、备用、过、备注、生词都自动存在云端，换手机也在。</div></div></div>`;
   const layer = document.getElementById('layer'); layer.innerHTML = h; paint(layer);
 }
+/* 长按题号收藏 */
+let lpTimer = null, lpFired = false, lpStart = null;
+function toggleFav(qid){ const cur = !!(S.prog[qid] || {}).fav; setProg(qid, {fav:!cur}); render(); toast(cur ? '取消收藏了' : '收藏了 ★'); try { navigator.vibrate && navigator.vibrate(15) } catch(e) {} }
+document.addEventListener('pointerdown', e => {
+  lpFired = false;
+  const el = e.target.closest('[data-fav]'); if (!el) return;
+  lpStart = [e.clientX, e.clientY];
+  clearTimeout(lpTimer); lpTimer = setTimeout(() => { lpFired = true; toggleFav(el.dataset.fav) }, 500);
+});
+document.addEventListener('pointermove', e => { if (lpStart && Math.hypot(e.clientX - lpStart[0], e.clientY - lpStart[1]) > 10) clearTimeout(lpTimer) });
+['pointerup','pointercancel','scroll'].forEach(ev => document.addEventListener(ev, () => { clearTimeout(lpTimer); lpStart = null }, true));
+document.addEventListener('contextmenu', e => { if (e.target.closest('[data-fav]')) e.preventDefault() });
 document.addEventListener('click', e => {
+  if (lpFired) { lpFired = false; e.preventDefault(); e.stopPropagation(); return }
   const el = e.target.closest('[data-act]');
   if (!el) return;
   const act = el.dataset.act;
