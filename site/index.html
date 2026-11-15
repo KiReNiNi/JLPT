@@ -1022,6 +1022,17 @@ function sentenceAround(tokens, i){
   while (b < tokens.length - 1 && tokens[b][2] !== 'n' && !/[。！？]$/.test(tokens[b][0])) b++;
   return tokens.slice(a, b + 1).map(t => t[2] === 'b' ? '（　）' : t[2] === 'n' ? '' : t[0]).join('');
 }
+/* 用法题的错误选项：存生词时换成正确的句子
+   标的是题目那个词 → 用正确选项的句子；标的是别的词 → 把错用的词换成解析里「应该用」的词 */
+function goodSentence(q, sc, tk, i){
+  const s = sentenceAround(tk, i);
+  if (q.ty !== 'use' || sc[0] !== 'o') return s;
+  const n = +sc.slice(1); if (n === q.ans) return s;
+  const t = tk[i]; const right = q.opts[q.ans - 1].t;
+  if (t[2] === 'u') return right;
+  const u = tk.find(x => x[2] === 'u'); const m = /「([^」]+)」/.exec(q.opts[n - 1].z || '');
+  return u && m ? s.replace(u[0], m[1]) : s;
+}
 async function saveMarks(){
   if (!S.db) { toast('云端没连上，这次没存进去'); return }
   const adds = [];
@@ -1030,7 +1041,7 @@ async function saveMarks(){
     const src = `${paperName(q.p)} 第${q.m}题·${MT[q.m]} 问${q.n}`;
     if (idx === 'all') { const o = q.opts[+sc.slice(1) - 1]; adds.push({w:o.t, b:'', s:o.t, q:qid, k, src, st:'staged', rd:'', z:'', t:Date.now()}); return }
     const tk = scopeTokens(q, sc); const t = tk[+idx]; if (!t) return;
-    adds.push({w:t[0], b:t[1] || '', s:sentenceAround(tk, +idx), q:qid, k, src, st:'staged', rd:'', z:'', t:Date.now()});
+    adds.push({w:t[0], b:t[1] || '', s:goodSentence(q, sc, tk, +idx), q:qid, k, src, st:'staged', rd:'', z:'', t:Date.now()});
   });
   const dels = [...S.unmarks];
   try {
