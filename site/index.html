@@ -322,6 +322,17 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .rrow .ww{font-size:16px}
 .wans{font-size:15px}
 
+/* 单词本分组 */
+.wgrp-act{padding:0 14px 10px}
+.wqs{display:flex;flex-direction:column;gap:8px;padding:0 10px 12px}
+.wq-g{border-radius:var(--r-ctl);background:var(--card2)}
+.wq-h{display:flex;align-items:center;gap:10px;width:100%;padding:11px 14px;text-align:left;font-size:14px}
+.wq-h>span:first-child{flex:none;font-weight:600}
+.wq-pv{flex:1;min-width:0;font-size:13px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wq-g.open>.wq-h .chev{transform:rotate(90deg)}
+.wq-b{display:flex;flex-direction:column;gap:8px;padding:0 8px 8px}
+.wq-b .wd{box-shadow:none}
+
 /* ===== 弹层 ===== */
 .sheet{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center;background:rgba(40,25,45,.35)}
 .sheet .pn{display:flex;flex-direction:column;gap:12px;width:100%;max-width:680px;background:var(--sheet);border-radius:24px 24px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));max-height:86vh;overflow:auto}
@@ -433,7 +444,7 @@ const S = {
   view:'home', vp:{}, stack:[],
   prog:{}, words:{}, settings:{skin:'orchard', bg:'random'}, session:null,
   db:null, cloud:'ld', gotProg:false, gotWords:false,
-  paperTab:'vocab', open:new Set(), mode:'answer', marks:new Set(), unmarks:new Set(), hideMarks:false, peekOpen:false, noteOpen:new Set(), uploading:{}, assets:null, filter:'', del:null, noteDraft:{},
+  paperTab:'vocab', open:new Set(), mode:'answer', marks:new Set(), unmarks:new Set(), hideMarks:false, peekOpen:false, noteOpen:new Set(), wopen:new Set(), uploading:{}, assets:null, filter:'', del:null, noteDraft:{},
   setup:{papers:new Set(['2026.07']), cat:'vocab', types:new Set([1,2,3,4,5,6,7]), holdOnly:false, order:'rand', count:10, skip:true},
 };
 
@@ -848,6 +859,27 @@ function vFav(){
   });
   return h + '</div>';
 }
+/* 单词本按卷子 → 题号分组，都可以展开收起 */
+function wordGroups(list, tab){
+  const byP = {};
+  list.forEach(w => { const q = Q[w.q]; const p = q ? q.p : '其他'; (byP[p] = byP[p] || []).push(w) });
+  const order = PAPERS.map(p => p.id).filter(id => byP[id]).concat(byP['其他'] ? ['其他'] : []);
+  return order.map(pid => {
+    const ws = byP[pid]; const pk = tab + '|' + pid; const open = S.wopen.has(pk);
+    let h = `<div class="grp wgrp${open ? ' open' : ''}"><button class="grp-h" data-act="wgrp" data-k="${pk}" aria-expanded="${open}"><b>${pid === '其他' ? '其他' : paperName(pid)}</b><span class="gs">${ws.length} 个</span>${ICON.chev}</button>`;
+    if (open) {
+      if (pid !== '其他') h += `<div class="wgrp-act"><button class="ch" data-act="wsetup" data-from="${tab}" data-paper="${pid}">背这套的 ${ws.length} 个</button></div>`;
+      const byQ = {};
+      ws.forEach(w => { const n = Q[w.q] ? Q[w.q].n : 0; (byQ[n] = byQ[n] || []).push(w) });
+      h += `<div class="wqs">` + Object.keys(byQ).map(Number).sort((a, b) => a - b).map(n => {
+        const qk = pk + '|' + n; const qo = S.wopen.has(qk); const g = byQ[n]; const q = Q[g[0].q];
+        const head = q ? `问${n} · 第${q.m}题·${MT[q.m]}` : '没有出处';
+        return `<div class="wq-g${qo ? ' open' : ''}"><button class="wq-h" data-act="wgrp" data-k="${qk}" aria-expanded="${qo}"><span>${head}</span><span class="wq-pv" lang="ja">${qo ? '' : esc(g.map(w => w.b || w.w).join('、'))}</span>${ICON.chev}</button>${qo ? `<div class="wq-b">${g.map(w => wordCard(w, tab)).join('')}</div>` : ''}</div>`;
+      }).join('') + `</div>`;
+    }
+    return h + `</div>`;
+  }).join('');
+}
 function vWords(){
   const tab = S.vp.tab || 'staged';
   const all = Object.values(S.words).sort((a, b) => (b.t || 0) - (a.t || 0));
@@ -859,7 +891,8 @@ function vWords(){
   if (tab !== 'staged' && list.length) h += `<button class="entry wentry" data-act="wsetup" data-from="${tab}"><b>${tab === 'wrong' ? '练错词' : '开始背单词'}</b>${ICON.chev}</button>`;
   if (tab === 'wrong' && list.length) h += `<div class="hint">背单词时答错的词会进这里。连着答对两次会自动移出，也可以点「会了」直接移出。</div>`;
   if (!list.length) h += `<div class="empty">${tab === 'book' ? '单词本还是空的。暂存的词整理好以后会出现在这里。' : tab === 'wrong' ? '错词本是空的。背单词时答错的词会出现在这里。' : '还没有暂存的生词。做题时切到「标生词」，把不会的词点绿，再点 ✓ 保存。'}</div>`;
-  h += list.map(w => wordCard(w, tab)).join('');
+  if (tab === 'staged') h += list.map(w => wordCard(w, tab)).join('');
+  else h += wordGroups(list, tab);
   return h + '</div>';
 }
 
@@ -1067,7 +1100,8 @@ const A = {
   peekd:() => { S.peekOpen = !S.peekOpen; render() },
   drillone:d => startDrill([d.q]),
   words:d => go('words', {tab:d.tab || 'staged'}),
-  wsetup:d => { S.wset = Object.assign({mode:'jz', count:10, min:5, paper:''}, S.wset || {}, {from:d.from === 'wrong' ? 'wrong' : 'book'}); go('wsetup') },
+  wsetup:d => { S.wset = Object.assign({mode:'jz', count:10, min:5, paper:''}, S.wset || {}, {from:d.from === 'wrong' ? 'wrong' : 'book', paper:d.paper || ''}); go('wsetup') },
+  wgrp:d => { S.wopen.has(d.k) ? S.wopen.delete(d.k) : S.wopen.add(d.k); render() },
   'ws-from':d => { S.wset.from = d.v; S.wset.paper = ''; render() },
   'ws-paper':d => { S.wset.paper = d.v; render() },
   'ws-mode':d => { S.wset.mode = d.v; render() },
