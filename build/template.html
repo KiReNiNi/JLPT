@@ -869,13 +869,8 @@ function wordGroups(list, tab){
     let h = `<div class="grp wgrp${open ? ' open' : ''}"><button class="grp-h" data-act="wgrp" data-k="${pk}" aria-expanded="${open}"><b>${pid === '其他' ? '其他' : paperName(pid)}</b><span class="gs">${ws.length} 个</span>${ICON.chev}</button>`;
     if (open) {
       if (pid !== '其他') h += `<div class="wgrp-act"><button class="ch" data-act="wsetup" data-from="${tab}" data-paper="${pid}">背这套的 ${ws.length} 个</button></div>`;
-      const byQ = {};
-      ws.forEach(w => { const n = Q[w.q] ? Q[w.q].n : 0; (byQ[n] = byQ[n] || []).push(w) });
-      h += `<div class="wqs">` + Object.keys(byQ).map(Number).sort((a, b) => a - b).map(n => {
-        const qk = pk + '|' + n; const qo = S.wopen.has(qk); const g = byQ[n]; const q = Q[g[0].q];
-        const head = q ? `问${n} · 第${q.m}题·${MT[q.m]}` : '没有出处';
-        return `<div class="wq-g${qo ? ' open' : ''}"><button class="wq-h" data-act="wgrp" data-k="${qk}" aria-expanded="${qo}"><span>${head}</span><span class="wq-pv" lang="ja">${qo ? '' : esc(g.map(w => w.b || w.w).join('、'))}</span>${ICON.chev}</button>${qo ? `<div class="wq-b">${g.map(w => wordCard(w, tab)).join('')}</div>` : ''}</div>`;
-      }).join('') + `</div>`;
+      const sorted = ws.slice().sort((x, y) => ((Q[x.q] || {}).n || 0) - ((Q[y.q] || {}).n || 0) || (y.t || 0) - (x.t || 0));
+      h += `<div class="wq-b">${sorted.map(w => wordCard(w, tab)).join('')}</div>`;
     }
     return h + `</div>`;
   }).join('');
