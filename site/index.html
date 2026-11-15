@@ -859,21 +859,22 @@ function vFav(){
   });
   return h + '</div>';
 }
-/* 单词本按卷子 → 题号分组，都可以展开收起 */
+/* 单词本按卷子分栏，点进去是单独的一页 */
+function wordPaperOf(w){ const q = Q[w.q]; return q ? q.p : '其他' }
 function wordGroups(list, tab){
   const byP = {};
-  list.forEach(w => { const q = Q[w.q]; const p = q ? q.p : '其他'; (byP[p] = byP[p] || []).push(w) });
+  list.forEach(w => { const p = wordPaperOf(w); (byP[p] = byP[p] || []).push(w) });
   const order = PAPERS.map(p => p.id).filter(id => byP[id]).concat(byP['其他'] ? ['其他'] : []);
-  return order.map(pid => {
-    const ws = byP[pid]; const pk = tab + '|' + pid; const open = S.wopen.has(pk);
-    let h = `<div class="grp wgrp${open ? ' open' : ''}"><button class="grp-h" data-act="wgrp" data-k="${pk}" aria-expanded="${open}"><b>${pid === '其他' ? '其他' : paperName(pid)}</b><span class="gs">${ws.length} 个</span>${ICON.chev}</button>`;
-    if (open) {
-      if (pid !== '其他') h += `<div class="wgrp-act"><button class="ch" data-act="wsetup" data-from="${tab}" data-paper="${pid}">背这套的 ${ws.length} 个</button></div>`;
-      const sorted = ws.slice().sort((x, y) => ((Q[x.q] || {}).n || 0) - ((Q[y.q] || {}).n || 0) || (y.t || 0) - (x.t || 0));
-      h += `<div class="wq-b">${sorted.map(w => wordCard(w, tab)).join('')}</div>`;
-    }
-    return h + `</div>`;
-  }).join('');
+  return `<div class="papers panel">` + order.map(pid => `<button class="paper" data-act="wpaper" data-p="${pid}" data-tab="${tab}"><span class="pp"><span class="yr">${pid === '其他' ? '其他' : paperName(pid)}</span><span class="ps" lang="ja">${esc(byP[pid].slice(0, 6).map(w => w.b || w.w).join('、'))}${byP[pid].length > 6 ? '…' : ''}</span></span><span class="pct">${byP[pid].length}</span>${ICON.chev}</button>`).join('') + `</div>`;
+}
+function vWPaper(){
+  const pid = S.vp.p, tab = S.vp.tab;
+  const all = Object.values(S.words).filter(w => w.st === 'book' && (tab !== 'wrong' || w.wrong) && wordPaperOf(w) === pid);
+  const list = all.sort((x, y) => ((Q[x.q] || {}).n || 0) - ((Q[y.q] || {}).n || 0) || (y.t || 0) - (x.t || 0));
+  let h = `<header class="top"><button class="ibtn" data-act="back" aria-label="返回">${ICON.back}</button><div class="ttl">${pid === '其他' ? '其他' : paperName(pid)}${tab === 'wrong' ? ' · 错词' : ''}</div>${cloudHTML()}</header><div class="stack">`;
+  if (!list.length) return h + `<div class="empty">这里没有词了。</div></div>`;
+  if (pid !== '其他') h += `<button class="entry wentry" data-act="wsetup" data-from="${tab}" data-paper="${pid}"><b>背这套的 ${list.length} 个</b>${ICON.chev}</button>`;
+  return h + list.map(w => wordCard(w, tab)).join('') + '</div>';
 }
 function vWords(){
   const tab = S.vp.tab || 'staged';
@@ -1018,7 +1019,7 @@ let lastHTML = '';
 function render(fromData){
   if (fromData && document.activeElement && /^(TEXTAREA|INPUT)$/.test(document.activeElement.tagName)) return;
   applySkin();
-  const v = {home:vHome, paper:vPaper, detail:vDetail, setup:vSetup, drill:vDrill, result:vResult, words:vWords, fav:vFav, wsetup:vWSetup, wmem:vWMem, wtest:vWTest, wres:vWRes}[S.view] || vHome;
+  const v = {home:vHome, paper:vPaper, detail:vDetail, setup:vSetup, drill:vDrill, result:vResult, words:vWords, wpaper:vWPaper, fav:vFav, wsetup:vWSetup, wmem:vWMem, wtest:vWTest, wres:vWRes}[S.view] || vHome;
   const html = v();
   if (html !== lastHTML) { const app = document.getElementById('app'); app.innerHTML = html; lastHTML = html; paint(app) }
 }
@@ -1096,6 +1097,7 @@ const A = {
   drillone:d => startDrill([d.q]),
   words:d => go('words', {tab:d.tab || 'staged'}),
   wsetup:d => { S.wset = Object.assign({mode:'jz', count:10, min:5, paper:''}, S.wset || {}, {from:d.from === 'wrong' ? 'wrong' : 'book', paper:d.paper || ''}); go('wsetup') },
+  wpaper:d => go('wpaper', {p:d.p, tab:d.tab}),
   wgrp:d => { S.wopen.has(d.k) ? S.wopen.delete(d.k) : S.wopen.add(d.k); render() },
   'ws-from':d => { S.wset.from = d.v; S.wset.paper = ''; render() },
   'ws-paper':d => { S.wset.paper = d.v; render() },
