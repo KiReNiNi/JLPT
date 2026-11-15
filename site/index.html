@@ -12,7 +12,7 @@
   --accent:#E07A38; --accent2:#C9652A; --accent-soft:#FBE7D8; --lav:#8F7EC6; --lav-soft:#ECE7F7;
   --sel:#4A72D6; --sel-bg:#E2EAFB; --mark:#2F6B28; --mark-bg:#D3EBC8;
   --hold:#E2B32E; --hold-bg:#FFF4CC; --good:#5E9A76; --good-bg:#E6F2EA; --bad:#C08A7E; --bad-bg:#F7EBE6;
-  --on-accent:#FFFFFF; --sheet:#FBF8FC; --glass:none;
+  --pass-bg:#F9DFCB; --pass-line:rgba(214,130,75,.35); --on-accent:#FFFFFF; --sheet:#FBF8FC; --glass:none;
   --shadow:0 1px 2px rgba(60,40,80,.06),0 4px 14px rgba(60,40,80,.05);
   --r-card:20px; --r-ctl:14px;
   --f-display:"Zen Maru Gothic","Hiragino Maru Gothic ProN","PingFang SC",sans-serif;
@@ -24,19 +24,19 @@
   --accent:#F0955A; --accent2:#F6AD7B; --accent-soft:#4A3022; --lav:#B4A6E6; --lav-soft:#332D45;
   --sel:#88A6F2; --sel-bg:#27324D; --mark:#AEDDA0; --mark-bg:#2B4527;
   --hold:#E9C552; --hold-bg:#43391A; --good:#8FC6A3; --good-bg:#24352B; --bad:#D9A99D; --bad-bg:#3D2C28;
-  --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
+  --pass-bg:#4A3326; --pass-line:rgba(240,149,90,.4); --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#1B1920; --card:#25222C; --card2:#2C2834; --ink:#ECE7F3; --mute:#A79FB3; --line:#3A3544;
   --accent:#F0955A; --accent2:#F6AD7B; --accent-soft:#4A3022; --lav:#B4A6E6; --lav-soft:#332D45;
   --sel:#88A6F2; --sel-bg:#27324D; --mark:#AEDDA0; --mark-bg:#2B4527;
   --hold:#E9C552; --hold-bg:#43391A; --good:#8FC6A3; --good-bg:#24352B; --bad:#D9A99D; --bad-bg:#3D2C28;
-  --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
+  --pass-bg:#4A3326; --pass-line:rgba(240,149,90,.4); --on-accent:#1B1920; --sheet:#211E27; --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
 body[data-skin="orchard"]{
   --bg:#EAD8E4; --card:rgba(255,250,246,.82); --card2:rgba(255,247,242,.66); --ink:#3B2B3A; --mute:#7D6979; --line:rgba(150,110,150,.22);
   --accent:#E8803C; --accent2:#C8652B; --accent-soft:rgba(250,214,186,.75); --lav:#8B76C2; --lav-soft:rgba(234,226,248,.85);
   --sel:#4A72D6; --sel-bg:#DCE6FB; --mark:#2F6B28; --mark-bg:#CDEAC0;
   --hold:#D9A21C; --hold-bg:#FFF0BF; --good:#5E9A76; --good-bg:rgba(226,242,232,.9); --bad:#C08A7E; --bad-bg:rgba(248,234,228,.9);
-  --on-accent:#FFFFFF; --sheet:#FBF2EE; --glass:none;
+  --pass-bg:rgba(246,198,160,.62); --pass-line:rgba(214,125,70,.32); --on-accent:#FFFFFF; --sheet:#FBF2EE; --glass:none;
   --shadow:0 2px 6px rgba(120,70,90,.10),0 10px 30px rgba(120,70,90,.10);
   color-scheme:light;
 }
@@ -121,10 +121,10 @@ body:not([data-skin="orchard"]) .top{background:var(--bg)}
 .flt{display:inline-flex;align-items:center;gap:6px;flex:none;height:34px;padding:0 12px;border-radius:999px;font-size:13px;background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
 .flt i{width:12px;height:12px;border-radius:4px}
 .flt.hold i{background:var(--hold-bg);box-shadow:inset 0 0 0 1.5px var(--hold)}
-.flt.pass i{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.flt.pass i{background:var(--pass-bg);box-shadow:inset 0 0 0 1.5px var(--pass-line)}
 .flt.wrong i{background:var(--bad);border-radius:50%;width:8px;height:8px}
 .flt.on{background:var(--ink);color:var(--bg)}
-.flt.on.pass i{box-shadow:inset 0 0 0 2.5px var(--bg)}
+.flt.on.pass i{box-shadow:inset 0 0 0 1.5px var(--bg)}
 .grp{background:var(--card);backdrop-filter:var(--glass);-webkit-backdrop-filter:var(--glass);border-radius:var(--r-card);box-shadow:var(--shadow);overflow:hidden}
 .grp-h{display:flex;width:100%;align-items:center;gap:10px;padding:15px 18px;text-align:left}
 .grp-h b{flex:1;font-size:16px}
@@ -136,7 +136,7 @@ body:not([data-skin="orchard"]) .top{background:var(--bg)}
 .qc .qn{font-size:12px;font-weight:700}
 .qc .s{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:14px}
 .qc.hold{background:var(--hold-bg)}
-.qc.pass{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.qc.pass{background:var(--pass-bg);box-shadow:inset 0 0 0 1px var(--pass-line)}
 .star{font-style:normal;color:var(--accent);margin-left:4px;font-size:.95em}
 .dots button{position:relative}
 .dstar{position:absolute;top:-6px;right:-5px;font-style:normal;font-size:11px;color:var(--accent);line-height:1}
@@ -201,7 +201,7 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .act{min-height:46px;border-radius:var(--r-ctl);font-weight:600;background:var(--card2);box-shadow:inset 0 0 0 1.5px var(--line)}
 .act.hold.on{background:var(--hold-bg);box-shadow:inset 0 0 0 2px var(--hold)}
-.act.pass.on{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.act.pass.on{background:var(--pass-bg);box-shadow:inset 0 0 0 1.5px var(--pass-line);color:var(--accent2)}
 
 /* ===== 标生词 ===== */
 .marking .tk{box-shadow:inset 0 0 0 1px var(--line);border-radius:6px;padding:1px 3px;margin:0 1px;cursor:pointer}
@@ -277,7 +277,7 @@ body[data-skin="orchard"] .op{background:rgba(255,252,250,.92)}
 .rlist{display:flex;flex-direction:column;gap:8px}
 .rrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 14px;border-radius:var(--r-ctl);background:var(--card)}
 .rrow.hold{background:var(--hold-bg)}
-.rrow.pass{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.rrow.pass{background:var(--pass-bg);box-shadow:inset 0 0 0 1px var(--pass-line)}
 .rrow .ic{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex:none}
 .rrow .ic.ok{background:var(--good-bg);color:var(--good)} .rrow .ic.ng{background:var(--bad-bg);color:var(--bad)} .rrow .ic.na{background:var(--line);color:var(--mute)}
 .rrow .t{flex:1;min-width:0;display:flex;flex-direction:column}
